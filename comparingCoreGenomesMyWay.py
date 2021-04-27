@@ -44,16 +44,16 @@ def findCoreGenome(prevalenceFileName): # extra are M6, M9, M11, M12,M50,M37,M10
             totalGenes += 1
     return [genes0_15,genes15_95,genes95_99,genes99_100]
 mastGenes = findCoreGenome(mastitisPrevalenceFileName)
-lowerMast = mastGenes[0] + mastGenes[1]
+lowerMastGenes = mastGenes[0] + mastGenes[1]
 mastGenes = mastGenes[-1]# + mastGenes[-2]
 comensalBovineGenes = findCoreGenome(commensalBovinePrevalenceFileName)
-lowerBovine = comensalBovineGenes[0] + comensalBovineGenes[1]
+lowerComensalBovineGenes = comensalBovineGenes[0] + comensalBovineGenes[1]
 comensalBovineGenes = comensalBovineGenes[-1] #+ comensalBovineGenes[-2]
 APECGenes = findCoreGenome(APECPrevalenceFileName)
-lowerAPEC = APECGenes[0] + APECGenes[1]
+lowerAPECGenes = APECGenes[0] + APECGenes[1]
 APECGenes = APECGenes[-1] #+ APECGenes[-2]
 avianGenes = findCoreGenome(commensalAvianPrevalenceFileName)
-lowerAvian = avianGenes[0] + avianGenes[1]
+lowerAvianGenes = avianGenes[0] + avianGenes[1]
 avianGenes = avianGenes[-1]# + avianGenes[-2]
 
 sharedByAll = []
@@ -112,45 +112,45 @@ sharedByComensal = []
 for mastGene in mastGenes:
     if mastGene in comensalBovineGenes and mastGene in APECGenes and mastGene in avianGenes:
         sharedByAll.append(mastGene)
-    elif mastGene in comensalBovineGenes and not mastGene in APECGenes and not mastGene in avianGenes:
+    elif mastGene in comensalBovineGenes and mastGene in lowerAPECGenes and mastGene in lowerAvianGenes:
         sharedByBovine.append(mastGene)
-    elif not mastGene in comensalBovineGenes and mastGene in APECGenes and not mastGene in avianGenes:
+    elif mastGene in lowerComensalBovineGenes and mastGene in APECGenes and mastGene in lowerAvianGenes:
         sharedByDiseased.append(mastGene)
 
 for commensalGene in comensalBovineGenes:
-    if commensalGene in APECGenes and not commensalGene in avianGenes and not commensalGene in mastGenes:
+    if commensalGene in APECGenes and commensalGene in lowerAvianGenes and commensalGene in lowerMastGenes:
         sharedcomensalBovineAndAPEC.append(commensalGene)
-    elif not commensalGene in APECGenes and commensalGene in avianGenes and not commensalGene in mastGenes:
+    elif commensalGene in lowerAPECGenes and commensalGene in avianGenes and commensalGene in lowerMastGenes:
         sharedByComensal.append(commensalGene)
 
 for APECGene in APECGenes:
-    if not APECGene in comensalBovineGenes and APECGene in avianGenes and not APECGene in mastGenes:
+    if APECGene in lowerComensalBovineGenes and APECGene in avianGenes and APECGene in lowerMastGenes:
         sharedByChicken.append(APECGene)
 
 for avianGene in avianGenes:
-    if not avianGene in comensalBovineGenes and not avianGene in APECGenes and avianGene in mastGenes:
+    if avianGene in lowerComensalBovineGenes and avianGene in lowerAPECGenes and avianGene in mastGenes:
         sharedMastAndAvian.append(avianGene)
 
 largeDifInPrevalence = []
 for mastGene in mastGenes:
-    if (mastGene in lowerBovine and mastGene in APECGenes and mastGene in lowerAvian):
+    if (mastGene in lowerComensalBovineGenes and mastGene in APECGenes and mastGene in lowerAvianGenes):
         largeDifInPrevalence.append(mastGene)
 
 print("sharedByAll")
 print(sharedByAll)
-print("\n\n\n\n\n\n\n\n\n\n\nsharedByBovine")
+print("\n\nsharedByBovine")
 print(sharedByBovine)
-print("\n\n\n\n\n\n\n\n\n\n\nsharedByChicken")
+print("\n\nsharedByChicken")
 print(sharedByChicken)
-print("\n\n\n\n\n\n\n\n\n\n\nsharedByDiseased")
+print("\n\nsharedByDiseased")
 print(sharedByDiseased)
-print("\n\n\n\n\n\n\n\nlargeDifInPrevalence")
+print("\n\nlargeDifInPrevalence")
 print(largeDifInPrevalence)
-print("\n\n\n\n\n\n\n\n\n\n\nsharedMastAndAvian")
+print("\n\nsharedMastAndAvian")
 print(sharedMastAndAvian)
-print("\n\n\n\n\n\n\n\n\n\n\nsharedcomensalBovineAndAPEC")
+print("\n\nsharedcomensalBovineAndAPEC")
 print(sharedcomensalBovineAndAPEC)
-print("\n\n\n\n\n\n\n\n\n\n\nsharedByComensal")
+print("\n\nsharedByComensal")
 print(sharedByComensal)
 print('\n\nmastitisCoregenomeSize')
 print(len(mastGenes))
@@ -161,3 +161,32 @@ c95 = ['pdeI', 'zinT', 'ygjI', 'yhdJ', 'ulaE_2', 'qorB', 'tauA', 'clsB', 'recF_1
 c98 = ['ptrB', 'garP', 'agaC_2', 'yhdJ', 'qorB', 'tauA', 'hha', 'srlR_2', 'clsB', 'recF_1', 'rbsA_1', 'gsk', 'gadE', 'dbpA_1', 'cbpA', 'ycaO', 'fhlA', 'bhsA_3', 'gss', 'nrdE', 'chbF', 'rlmA', 'xseA', 'gadW', 'xylB', 'yjfF', 'phoE', 'aqpZ', 'torA', 'por_2', 'sutR', 'rtcA', 'leuO', 'dsbG', 'ltaE', 'efeB', 'yedK', 'creD', 'maeA', 'marR', 'fbaB', 'nudI', 'glmU_2', 'xerC_1', 'comEC', 'nagB_2', 'fbpC2', 'rfaC', 'rhaR_2', 'fdrA_1', 'fucI', 'uidA', 'yjfC', 'group_2417', 'ygfK', 'ghxQ', 'fliK', 'ybbY', 'mocA', 'bioF_1', 'ymgD']
 c100 = ['yjjQ', 'malZ', 'entA', 'dhaM', 'pmrD', 'yhdY', 'frmB', 'copA', 'glsA1', 'ybcI', 'rpsU', 'fur', 'cspD', 'ygdR_2', 'ygaM', 'entS', 'nagA', 'rsfS', 'exbB', 'narH', 'rlmM', 'glgB', 'clpA', 'entH', 'rnd', 'purU', 'gltK', 'corC', 'malK', 'cysB', 'hybO', 'recF_1', 'trpS', 'dnaG', 'rfaF', 'topA_2', 'rbsA_1', 'ftsP', 'exbD', 'uppP', 'ttdB', 'plsC', 'rlmB', 'rlmH', 'ycgM', 'yeiP', 'rffH', 'yccU', 'kdpB', 'matP', 'yegT', 'gltI', 'bdm', 'truD', 'holE', 'aas', 'yebV', 'recX', 'sbp', 'gshA', 'moeA', 'ydiB', 'eptC', 'cca', 'amiB', 'ybjG', 'bcsZ', 'serC', 'mzrA', 'chbF', 'ogt', 'cmoB', 'yfcF', 'allS', 'helD', 'ugpA', 'dgcM', 'rlmA', 'arnF', 'fepE', 'xseA', 'eamB', 'ygdG', 'fucK', 'loiP', 'ygiD', 'yiaB', 'phnO', 'yjfF', 'gcd', 'frmA', 'ybdL', 'lnt', 'chiQ', 'pflB', 'ycaL', 'torA', 'por_2', 'dauA', 'narJ', 'uspF', 'manY', 'yegS', 'mglA_1', 'inaA', 'srlB', 'lplT', 'dsbC', 'pepP', 'nupG', 'qseC', 'ygiF', 'yhjB', 'lldD', 'rffG', 'wecD', 'glnA', 'thiE', 'ulaA', 'prpC', 'ssuC_2', 'lrp', 'rpsA', 'mrdA', 'creD', 'ghrA', 'cvrA', 'hslJ', 'marA', 'yebF', 'fliS', 'mtfA', 'fbaB', 'arnE', 'flk', 'pdxK', 'amiA', 'endA', 'glmU_2', 'ttdA', 'argE_1', 'argC', 'ghxP', 'alsT', 'allR', 'citX', 'mntS', 'artQ', 'dmsB_1', 'msbA_2', 'ompA', 'chbG', 'cysH_1', 'astD', 'yfcG', 'tmcA', 'nagB_2', 'torD', 'tilS', 'purT', 'ypdF', 'ydjZ_1', 'fucI', 'gcvP']
 # large diff : 'ulaE_2', 'glmU_2'
+
+with open("genesShared.tsv", "w") as sharedGenesFile:
+
+
+    def writeOutSharedGeneList(sharedGeneList):
+        for gene in sharedGeneList:
+            sharedGenesFile.write("\t"+gene)
+        sharedGenesFile.write("\n")
+
+    sharedGenesFile.write("sharedByAll")
+    writeOutSharedGeneList(sharedByAll)
+
+    sharedGenesFile.write("sharedByBovine")
+    writeOutSharedGeneList(sharedByBovine)
+
+    sharedGenesFile.write("sharedByChicken")
+    writeOutSharedGeneList(sharedByChicken)
+
+    sharedGenesFile.write("sharedByDiseased")
+    writeOutSharedGeneList(sharedByDiseased)
+
+    sharedGenesFile.write("sharedMastAndAvian")
+    writeOutSharedGeneList(sharedMastAndAvian)
+
+    sharedGenesFile.write("sharedcomensalBovineAndAPEC")
+    writeOutSharedGeneList(sharedcomensalBovineAndAPEC)
+
+    sharedGenesFile.write("sharedByComensal")
+    writeOutSharedGeneList(sharedByComensal)
