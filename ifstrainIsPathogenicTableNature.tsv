@@ -1,0 +1,573 @@
+Table S1. Isolates and genomes used in this study.											
+											
+Identifier	Isolate name	Country of isolation	Date of isolation	Phylogenetic group	Sequence typea	Clonal complexb	Isolation source	Additional infection/isolation information	Population 	Additional infection/isolation information	NCBI Reference
+1465	SS_220			B2	127		Avian Wildfowl	"Dawlish, Devon, wildfowl sanctuary"	Asymptomatic carriage		This study
+1466	SS_221			B2	127		Avian Wildfowl	"Dawlish, Devon, wildfowl sanctuary"	Asymptomatic carriage		This study
+1467	SS_222			B2	127		Avian Wildfowl	"Dawlish, Devon, wildfowl sanctuary"	Asymptomatic carriage		This study
+1468	SS_223			B1	5628		Avian Wildfowl	"Dawlish, Devon, wildfowl sanctuary"	Asymptomatic carriage		This study
+1469	SS_224			B2	127		Avian Wildfowl	"Dawlish, Devon, wildfowl sanctuary"	Asymptomatic carriage		This study
+1471	SS_226			A	206	ST206 Cplx	Avian Wildfowl	"Dawlish, Devon, wildfowl sanctuary"	Asymptomatic carriage		This study
+1472	SS_227			A			Avian Wildfowl	"Dawlish, Devon, wildfowl sanctuary"	Asymptomatic carriage		This study
+1474	SS_229			A	10	ST10 Cplx	Avian Wildfowl	"Dawlish, Devon, wildfowl sanctuary"	Asymptomatic carriage		This study
+1475	SS_230			B2	127		Avian Wildfowl	"Dawlish, Devon, wildfowl sanctuary"	Asymptomatic carriage		This study
+1476	SS_231			B1	155	ST155 Cplx	Avian Wildfowl	"Dawlish, Devon, wildfowl sanctuary"	Asymptomatic carriage		This study
+1477	SS_232			B1	666		Avian Wildfowl	"Dawlish, Devon, wildfowl sanctuary"	Asymptomatic carriage		This study
+1478	SS_233			B2	95	ST95 Cplx	Avian Wildfowl	"Dawlish, Devon, wildfowl sanctuary"	Asymptomatic carriage		This study
+1548	SS_303			ST117	117	ST117 CC	Avian Common Gull	"Exe Bridges, Exeter"	Asymptomatic carriage		This study
+1549	SS_304			ST117	657		Avian Common Gull	"Exe Bridges, Exeter"	Asymptomatic carriage		This study
+1550	SS_305			B2			Avian Common Gull	"Exe Bridges, Exeter"	Asymptomatic carriage		This study
+1551	SS_306			D			Avian Common Gull	"Exe Bridges, Exeter"	Asymptomatic carriage		This study
+1552	SS_307			B1	453	ST86 Cplx	Avian Common Gull	"Exe Bridges, Exeter"	Asymptomatic carriage		This study
+1554	SS_317			A	3006		Broiler chicken	Faecal	Asymptomatic carriage		This study
+1555	SS_320			A	3006		Broiler chicken	Faecal	Asymptomatic carriage		This study
+1556	SS_324			B2	352		Broiler chicken	Faecal	Asymptomatic carriage		This study
+1557	SS_328			A	48	ST10 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+1558	SS_330			A	10	ST10 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+1559	SS_331			B1			Broiler chicken	Faecal	Asymptomatic carriage		This study
+1560	SS_332			E	57	ST350 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+1561	SS_333			B1			Broiler chicken	Faecal	Asymptomatic carriage		This study
+1562	SS_334			B1			Broiler chicken	Faecal	Asymptomatic carriage		This study
+1563	SS_335			A	43	ST10 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+1564	SS_338			E	57	ST350 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+1565	SS_339			A	43	ST10 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+1566	SS_340			A	43	ST10 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+1567	SS_343			A	10	ST10 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+1568	SS_344			A	10	ST10 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+1569	SS_345			A	43	ST10 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+1570	SS_346			A	43	ST10 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+1571	SS_347			A			Broiler chicken	Faecal	Asymptomatic carriage		This study
+1572	SS_349			A			Broiler chicken	Faecal	Asymptomatic carriage		This study
+1573	SS_350			A	206	ST206 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+1574	SS_355			A	10	ST10 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+1575	SS_356			B1	1049		Broiler chicken	Faecal	Asymptomatic carriage		This study
+1576	SS_358			D	69	ST69 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+1577	SS_360			A	10	ST10 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+1578	SS_361			A			Broiler chicken	Faecal	Asymptomatic carriage		This study
+1580	SS_364			E	2184		Broiler chicken	Faecal	Asymptomatic carriage		This study
+1581	SS_367			E			Broiler chicken	Faecal	Asymptomatic carriage		This study
+1582	SS_369			D	38	ST38 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+1583	SS_370			A	10	ST10 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+1584	SS_373			A	10	ST10 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+1585	SS_374			D	69	ST69 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+1586	SS_375			A			Broiler chicken	Faecal	Asymptomatic carriage		This study
+1587	SS_377			A	10	ST10 Cplx	Broiler chicken	Pericarditis	Infection 		This study
+1588	SS_378			A	10	ST10 Cplx	Broiler chicken	Pericarditis	Infection 		This study
+1589	SS_379			A	10	ST10 Cplx	Broiler chicken	Liver	Infection 		This study
+1590	SS_380			B1	616	ST155 Cplx	Broiler chicken	Pericarditis	Infection 		This study
+1591	SS_382			B1			Broiler chicken	Lung	Infection 		This study
+1592	SS_383			A	10	ST10 Cplx	Broiler chicken	Pericarditis	Infection 		This study
+1593	SS_384			A	10	ST10 Cplx	Broiler chicken	Pericarditis	Infection 		This study
+1594	SS_385			A	10	ST10 Cplx	Broiler chicken	Pericarditis	Infection 		This study
+1595	SS_386			A	10	ST10 Cplx	Broiler chicken	Liver	Infection 		This study
+1596	SS_388			A	10	ST10 Cplx	Broiler chicken	Liver	Infection 		This study
+1597	SS_390			D	349	ST349 Cplx	Broiler chicken	Lung	Infection 		This study
+1598	SS_391			D	349	ST349 Cplx	Broiler chicken	Lung	Infection 		This study
+1599	SS_392			A			Broiler chicken	Kidney	Infection 		This study
+1600	SS_393			A			Broiler chicken	Kidney	Infection 		This study
+1602	SS_395			A			Broiler chicken	Spleen	Infection 		This study
+1603	SS_396			A	10	ST10 Cplx	Broiler chicken	Spleen	Infection 		This study
+1604	SS_397			A	93	ST168 Cplx	Broiler chicken	Liver	Infection 		This study
+1605	SS_399			A	93	ST168 Cplx	Broiler chicken	Pericarditis	Infection 		This study
+1606	SS_401			A	93	ST168 Cplx	Broiler chicken	Pericarditis	Infection 		This study
+1607	SS_402			A	48	ST10 Cplx	Broiler chicken	Pericarditis	Infection 		This study
+1608	SS_404			B2	352		Broiler chicken	Pericarditis	Infection 		This study
+1609	SS_406			ST117	117	ST117 CC	Broiler chicken	Pericarditis	Infection 		This study
+1610	SS_407			A	93	ST168 Cplx	Broiler chicken	Liver	Infection 		This study
+1611	SS_408			ST117	117	ST117 CC	Broiler chicken	Yolk sac	Infection 		This study
+1612	SS_409			ST117	117	ST117 CC	Broiler chicken		Infection 		This study
+1613	SS_410			ST117	117	ST117 CC	Broiler chicken		Infection 		This study
+1614	SS_411			B2	95	ST95 Cplx	Broiler chicken		Infection 		This study
+1623	APEC_O1			B2	95	ST95 Cplx			Infection 		GCF_000014845.1
+1624	APEC_O78			B1	23	ST23 Cplx			Infection 		GCF_000332755.1
+2349	Ec_O08			B1	453	ST86 Cplx	Broiler chicken				This study
+3667	6265	UK	2015-06-26	B2	95	ST95 Cplx	Broiler chicken	spleen - peritonitis	Infection 		This study
+3668	6344	UK	2015-08-05	ST117	117	ST117 CC	Broiler chicken	Liver - perihepatitis/peritonitis	Infection 		This study
+3669	7950	UK	2016-07-05	ST117	117	ST117 CC	Broiler chicken	spleen - peritonitis	Infection 		This study
+3670	8805	Finland	2016-11-09	ST117	117	ST117 CC	Broiler chicken	Bone Marrow - systemic	Infection 		This study
+3673	8808	Finland	2016-11-09	ST117	117	ST117 CC	Broiler chicken	Bone Marrow - systemic	Infection 		This study
+3729	AV01		1/20/14	ST117	117	ST117 CC	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3730	AV02		1/20/14	D	38	ST38 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3731	AV03		1/17/14	B2	135		Broiler chicken	Faecal	Asymptomatic carriage		This study
+3732	AV04		1/14/14	E			Broiler chicken	Faecal	Asymptomatic carriage		This study
+3733	AV05		1/20/14	ST117	117	ST117 CC	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3734	AV06		1/7/14	A	1638		Broiler chicken	Faecal	Asymptomatic carriage		This study
+3735	AV07		1/6/14	A	1638		Broiler chicken	Faecal	Asymptomatic carriage		This study
+3736	AV08		1/8/14	A	1638		Broiler chicken	Faecal	Asymptomatic carriage		This study
+3737	AV09		1/6/14	A	1638		Broiler chicken	Faecal	Asymptomatic carriage		This study
+3738	AV10		1/6/14	B2	131	ST131 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3739	AV097		1/0/00	B2	428		Broiler chicken	Liver - perihepatitis/peritonitis	Infection 		This study
+3740	AV098		1/0/00	B2	1618		Broiler chicken	Yolk Sac Infection	Infection 		This study
+3741	AV099		1/0/00	B2	1618		Broiler chicken	Meconium	Infection 		This study
+3742	AV100		1/0/00	B2	1618		Broiler chicken	Meconium	Infection 		This study
+3743	AV101		1/0/00	B2	428		Broiler chicken	Respiratory disease	Infection 		This study
+3744	AV102		1/0/00	B2	1618		Broiler chicken	Yolk Sac Infection	Infection 		This study
+3745	AV103		1/0/00	B2	428		Broiler chicken	Peritonitis	Infection 		This study
+3746	AV104		1/0/00	B2	1618		Broiler chicken	Meconium	Infection 		This study
+3747	AV105		1/0/00	B2			Broiler chicken	Peritonitis	Infection 		This study
+3748	AV106		1/0/00	B2			Broiler chicken	Meconium	Infection 		This study
+3749	AV11		1/6/14	B2	131	ST131 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3750	AV107		1/0/00	B2	1161		Broiler chicken	Meconium	Infection 		This study
+3751	AV12		6/8/12	B2	95	ST95 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3752	AV13		5/17/13	F	648	ST648 Cplx	Broiler chicken	Liver - Periheaptitis 	Infection 		This study
+3753	AV14		6/22/12	B1	155	ST155 Cplx	Broiler chicken	Liver - Periheaptitis 	Infection 		This study
+3754	AV15		6/22/12	ST117	117	ST117 CC	Broiler chicken	Liver - Periheaptitis 	Infection 		This study
+3755	AV16		6/29/12	ST117	117	ST117 CC	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3757	AV18		7/10/12	B2	428		Broiler chicken	Faecal	Asymptomatic carriage		This study
+3758	AV19		7/10/12	B2	95	ST95 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3759	AV20		7/30/12	B2	95	ST95 Cplx	Broiler chicken	Liver - Periheaptitis 	Infection 		This study
+3760	AV21		7/30/12	B2	95	ST95 Cplx	Broiler chicken	Liver - Periheaptitis 	Infection 		This study
+3761	AV22		7/30/12	B1	162	ST469 Cplx	Broiler chicken	Yolk sac infection	Infection 		This study
+3762	AV23		7/30/12	A	10	ST10 Cplx	Broiler chicken	Yolk sac infection	Infection 		This study
+3763	AV24		8/28/02	A	48	ST10 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3764	AV25		8/29/12	A	48	ST10 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3765	AV26		6/22/12	B1	101	ST101 Cplx	Broiler chicken	Yolk sac infection	Infection 		This study
+3766	AV27		8/30/12	B1	101	ST101 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3767	AV28		9/5/12	B1	616	ST155 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3769	AV30		9/10/12	A	10	ST10 Cplx	Broiler chicken	Yolk sac infection	Infection 		This study
+3770	AV31		9/14/12	F			arrived as US import				This study
+3771	AV32		9/17/12	F	648	ST648 Cplx	Broiler chicken	Yolk sac infection	Infection 		This study
+3772	AV33		9/17/12	A			Broiler chicken	Liver - Periheaptitis 	Infection 		This study
+3773	AV34		9/17/12	A	5625		Broiler chicken	Liver - Periheaptitis 	Infection 		This study
+3774	AV35		9/17/12	A	10	ST10 Cplx	Broiler chicken	Liver - Periheaptitis 	Infection 		This study
+3776	AV37		10/11/12	B2	131	ST131 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3777	AV38		10/18/12	B1	101	ST101 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3778	AV39		11/5/12	E			Broiler chicken	Faecal	Asymptomatic carriage		This study
+3779	AV40		11/20/12	D	38	ST38 Cplx	Broiler chicken	Pericarditis	Infection 		This study
+3780	AV41		11/23/12	B2	352		Broiler chicken	Peritonitis	Infection 		This study
+3781	AV42		12/7/12	B1	162	ST469 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3782	AV43		12/21/12	B1	162	ST469 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3783	AV44		1/3/13	F	648	ST648 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3784	AV45		1/3/13	B1	162	ST469 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3785	AV46		1/2/13	B1	162	ST469 Cplx	Broiler chicken	Pericarditis	Infection 		This study
+3786	AV47		12/11/12	ST117	117	ST117 CC	Broiler chicken	Liver - Periheaptitis 	Infection 		This study
+3788	AV49		1/16/13	B1	101	ST101 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3789	AV50		1/23/13	B2	429		Broiler chicken	Faecal	Asymptomatic carriage		This study
+3790	AV51		1/24/13	ST117	117	ST117 CC	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3791	AV52		1/7/13	A	3642		Broiler chicken	Pericarditis	Infection 		This study
+3792	AV53		1/29/13	ST117	117	ST117 CC	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3793	AV54		2/8/13	B2	95	ST95 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3794	AV55		2/8/13	B2	95	ST95 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3795	AV56		2/18/13	B2	803		Broiler chicken	Faecal	Asymptomatic carriage		This study
+3796	AV57		2/20/13	B1	162	ST469 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3797	AV58		3/4/13	D	38	ST38 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3798	AV59		3/7/13	B1	155	ST155 Cplx	Broiler chicken	Pericarditis	Infection 		This study
+3799	AV60		3/12/13	E	371	ST350 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3800	AV61		3/7/13	B1	162	ST469 Cplx	Broiler chicken	Liver - Periheaptitis 	Infection 		This study
+3801	AV62		3/14/13	A	48	ST10 Cplx	Broiler chicken	Pericarditis	Infection 		This study
+3802	AV63		3/14/13	B1	602	ST446 Cplx	Broiler chicken	Liver - Periheaptitis 	Infection 		This study
+3803	AV64		3/27/13	E	57	ST350 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3804	AV65		3/15/13	A	10	ST10 Cplx	Broiler chicken	Liver - Periheaptitis 	Infection 		This study
+3805	AV66		4/5/13	B1	162	ST469 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3806	AV67		4/18/13	B2	429		Broiler chicken	Faecal	Asymptomatic carriage		This study
+3809	AV70		6/12/13	B1	942		Broiler chicken	Faecal	Asymptomatic carriage		This study
+3810	AV71		6/12/13	B1	162	ST469 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3811	AV72		6/12/13	B2	429		Broiler chicken	Faecal	Asymptomatic carriage		This study
+3812	AV73		6/24/13	D	38	ST38 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3813	AV74		7/3/13	A	10	ST10 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3814	AV75		7/10/13	A	10	ST10 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3815	AV76		7/18/13	A	10	ST10 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3817	AV78		8/13/13	A	48	ST10 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3818	AV79		8/13/13	B1	101	ST101 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3819	AV80		8/22/13	B1	101	ST101 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3820	AV81		8/22/13	ST117	117	ST117 CC	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3821	AV82		8/22/13	B2	95	ST95 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3824	AV85		8/29/13	B2	429		Broiler chicken	Faecal	Asymptomatic carriage		This study
+3826	AV87		9/19/13	B1	616	ST155 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3827	AV88		9/25/13	B1	162	ST469 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3828	AV89		9/25/13	D	38	ST38 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3829	AV90		9/25/13	B1			Broiler chicken	Faecal	Asymptomatic carriage		This study
+3831	AV92		10/15/13	A	10	ST10 Cplx	Broiler chicken	Faecal	Asymptomatic carriage		This study
+3832	AV93			B2	428			Peritonitis	Asymptomatic carriage		This study
+3833	AV94		12/2/13	D	69	ST69 Cplx	Broiler chicken	Peritonitis	Infection 		This study
+3834	AV95		12/2/13	A	542		Broiler chicken	Pericarditis	Infection 		This study
+3835	AV96		12/13/13	B1	602	ST446 Cplx	Broiler chicken	Pericarditis	Infection 		This study
+4056	AV_b2_17			B2	135		Broiler chicken	Liver - Periheaptitis 	Infection 		This study
+4057	AV_b2_29			ST117	117	ST117 CC	Broiler chicken	Liver - Periheaptitis 	Infection 		This study
+4058	AV_b2_48			A	5625		Broiler chicken	Faecal	Infection 		This study
+4059	AV_b2_68			D	38	ST38 Cplx	Broiler chicken	Faecal	Infection 		This study
+4060	AV_b2_69			B2	95	ST95 Cplx	Broiler chicken	Peritonitis	Infection 		This study
+4061	AV_b2_83			B2	355			Faecal	Asymptomatic carriage		This study
+4063	AV_b2_97			B2	95	ST95 Cplx	Broiler chicken	Pericarditis	Infection 		This study
+4064	AV_b2_98			B2	429		Broiler chicken	Liver - Periheaptitis 	Infection 		This study
+4065	AV_b2_99			B2	429		Broiler chicken	Liver - Periheaptitis 	Infection 		This study
+4475	9363-EC-USA-CBL	USA	2017-01-11	B1	155	ST155 Cplx	Broiler chicken	post mortem	Infection 		This study
+4477	9365-EC-USA-CBL	USA	2017-01-11	B1	155	ST155 Cplx	Broiler chicken	post mortem	Infection 		This study
+4478	9366-EC-USA-CBL	USA	2017-01-11	B1	155	ST155 Cplx	Broiler chicken	post mortem	Infection 		This study
+4479	9367-EC-USA-CBL	USA	2017-01-11	B1	155	ST155 Cplx	Broiler chicken	post mortem	Infection 		This study
+4480	9368-EC-USA-CBL	USA	2017-01-11	B2	919		Broiler chicken	post mortem	Infection 		This study
+4481	9369-EC-USA-CBL	USA	2017-01-11	B2	919		Broiler chicken	post mortem	Infection 		This study
+4483	9371-EC-USA-CBL	USA	2017-01-11	B2	919		Broiler chicken	post mortem	Infection 		This study
+4484	9372-EC-USA-CBL	USA	2017-01-11	B2	919		Broiler chicken	post mortem	Infection 		This study
+4486	9374-EC-USA-CBL	USA	2017-01-11	B2	919		Broiler chicken	post mortem	Infection 		This study
+4487	9375-EC-USA-CBL	USA	2017-01-11	B2	919		Broiler chicken	post mortem	Infection 		This study
+4488	9376-EC-USA-CBL	USA	2017-01-11	B2	919		Broiler chicken	post mortem	Infection 		This study
+4489	9377-EC-UK-PM	UK	2017-01-11	B2	95	ST95 Cplx	Broiler chicken	post mortem	Infection 		This study
+4572	8624	UK	2016-10-13	ST117	4674		Broiler chicken	Liver;peritonitis	Infection 		This study
+4573	8625	UK	2016-10-13	E	57	ST350 Cplx	Broiler chicken	Liver;peritonitis	Infection 		This study
+4574	8626	UK	2016-10-13	E	57	ST350 Cplx	Broiler chicken	Bone Marrow;peritonitis	Infection 		This study
+4575	8627	UK	2016-10-13	E			Broiler chicken	Bone Marrow;peritonitis	Infection 		This study
+4577	8628	UK	2016-10-13	B2			Broiler chicken	Bone Marrow;peritonitis	Infection 		This study
+4578	8629	UK	2016-10-13	ST117	117	ST117 CC	Broiler chicken	Spleen ;peritonitis	Infection 		This study
+4579	8630	UK	2016-10-13	ST117	117	ST117 CC	Broiler chicken	Bone Marrow;peritonitis	Infection 		This study
+6556	AV108			B2	95	ST95 Cplx		Liver - Coli Speticaemia	Infection 		This study
+6557	AV109			B2	1618		Broiler chicken	Encephalomyelitis	Infection 		This study
+6558	AV110			B1	974		Broiler chicken	Encephalomyelitis	Infection 		This study
+6559	AV111			B2	1618			Liver - Coli Speticaemia	Infection 		This study
+6560	AV112			A	540		Environment - boot swab		Asymptomatic carriage		This study
+6561	AV113			B2	1257		Broiler chicken		Asymptomatic carriage		This study
+6562	AV114			B2			Broiler chicken		Asymptomatic carriage		This study
+6563	AV115			B2			Broiler chicken		Asymptomatic carriage		This study
+6564	AV116			B1	23	ST23 Cplx	Broiler chicken		Asymptomatic carriage		This study
+6565	AV117			ST117	117	ST117 CC	Broiler chicken	Peritonitis	Infection 		This study
+6566	AV118			B2	95	ST95 Cplx	Broiler chicken	Peritonitis	Infection 		This study
+6567	AV119			B1	602	ST446 Cplx	Broiler chicken	Peritonitis	Infection 		This study
+6568	AV120			B2	429		Chick box liner 				This study
+6569	AV121			B1	442		Boot drag				This study
+6570	AV122			ST117	95	ST95 Cplx		Liver - colibacillosis	Infection 		This study
+6571	AV123			ST117	1163		Boot drag				This study
+6573	AV125			B2	95	ST95 Cplx	Broiler chicken	Peritonitis	Infection 		This study
+6575	AV127			B1	162	ST469 Cplx	Boot drag				This study
+6576	AV128			B1	23	ST23 Cplx	Boot drag				This study
+6578	AV130			ST117	117	ST117 CC	Broiler chicken	Yolk Sac Infection	Infection 		This study
+6579	AV131			A			Boot drag				This study
+6580	AV132			B1	88	ST23 Cplx	Broiler chicken	Oviduct - Salpingtis	Infection 		This study
+6581	AV133			D	38	ST38 Cplx	Boot drag				This study
+6582	AV134			ST117	117	ST117 CC	Broiler chicken	Peritonitis	Infection 		This study
+6583	AV135			B2	429		Chick box liner 				This study
+6584	AV136			ST117			Broiler chicken	Peritonitis	Infection 		This study
+6989	2896		10/28/08	B2	91		Broiler chicken	Liver - Peritonitis	Infection 		This study
+6990	2922		5/26/09	B1	162	ST469 Cplx	Broiler chicken	Yolk Sac Infection	Infection 		This study
+6991	3234		11/23/12	B2	1618		Broiler chicken	Yolk Sac Infection	Infection 		This study
+6992	3273		6/14/13	B1	1049		Broiler chicken	Meconium	Infection 		This study
+6993	3282		8/8/13	B1	1049		Broiler chicken	Meconium	Infection 		This study
+6994	3287		8/13/13	B1	162	ST469 Cplx	Broiler chicken	Respiratory disease	Infection 		This study
+6995	3302		3/103/13	B1	162	ST469 Cplx	Broiler chicken	Yolk Sac Infection	Infection 		This study
+6996	3311		10/29/13	B1	297		Broiler chicken	Peritonitis	Infection 		This study
+6997	3315		11/7/13	B2	1852		Broiler chicken	Peritonitis	Infection 		This study
+6998	3328		1/16/14	B2	428		Broiler chicken	Meconium	Infection 		This study
+6999	3329		1/16/14	B2	428		Broiler chicken	Peritonitis	Infection 		This study
+7000	3354		4/2/14	B2	7804		Broiler chicken	Meconium	Infection 		This study
+7001	3359		4/23/14	B2			Broiler chicken	Meconium	Infection 		This study
+7002	3360		5/2/14	B2			Broiler chicken	Meconium	Infection 		This study
+7003	3366		5/12/14	A	10	ST10 Cplx	Broiler chicken	Systemic infection	Infection 		This study
+7005	3380		9/5/14	D	38	ST38 Cplx	Broiler chicken	Systemic infection	Infection 		This study
+7006	4686		1/17/14	B2	95	ST95 Cplx	Broiler chicken	Peritonitis	Infection 		This study
+7007	4688		1/17/14	B2	95	ST95 Cplx	Broiler chicken	Peritonitis	Infection 		This study
+7008	4689		1/17/14	B2	95	ST95 Cplx	Broiler chicken	Peritonitis	Infection 		This study
+7009	4696		1/20/14	B2	352		Broiler chicken	Peritonitis	Infection 		This study
+7010	4724		2/3/14	B2	95	ST95 Cplx	Chick box liner 				This study
+7011	4737		2/5/14	ST117	117	ST117 CC	Boot drag				This study
+7012	4741		2/6/14	ST117	117	ST117 CC	Broiler chicken	colibacillosis	Infection 		This study
+7013	4777		2/25/14	ST117	117	ST117 CC	Boot drag		Asymptomatic carriage		This study
+7014	4817		3/19/14	ST117	117	ST117 CC	Boot drag		Asymptomatic carriage		This study
+7015	4826		3/25/14	B1	2230		Boot drag		Asymptomatic carriage		This study
+7016	4833		3/26/14	B2	429		Broiler chicken	Peritonitis	Infection 		This study
+7017	4863		4/15/14	B2	95	ST95 Cplx	Boot drag		Asymptomatic carriage		This study
+7018	4865		4/15/14	B1	2040		Boot drag		Asymptomatic carriage		This study
+7019	4999		6/11/14	B2	429		Boot drag		Asymptomatic carriage		This study
+7020	5030		6/24/14	B2	429		Boot drag		Asymptomatic carriage		This study
+7021	5060		6/27/14	B2	429		Broiler chicken	Peritonitis	Infection 		This study
+7022	5082		6/30/14	B2	429		Broiler chicken	Yolk Sac Infection	Infection 		This study
+7030	3371-1		7/1/14	B2	1618		Broiler chicken	Encephalomyelitis	Infection 		This study
+7031	3371-2		7/1/14	B2	141		Broiler chicken	Encephalomyelitis	Infection 		This study
+7032	3373-1		7/17/14	B2	1618		Broiler chicken	Systemic infection	Infection 		This study
+7033	3382-1		9/18/14	B1			Broiler chicken		Asymptomatic carriage		This study
+7034	3382-2		9/18/14	A	10	ST10 Cplx	Broiler chicken		Asymptomatic carriage		This study
+7035	3385-1		9/23/14	A	10	ST10 Cplx	Broiler chicken		Asymptomatic carriage		This study
+7036	3385-2		9/23/14	B2	1618		Broiler chicken		Asymptomatic carriage		This study
+7087	3269			B2	91		Broiler chicken	Meconium	Asymptomatic carriage		This study
+7088	3270			B1	1431		Broiler chicken	Meconium	Asymptomatic carriage		This study
+7089	3279			B2	1618		Broiler chicken	Systemic infection	Infection 		This study
+7090	3370-1			B2	428		Broiler chicken	Peritonitis	Infection 		This study
+7091	3370-2			B2	428		Broiler chicken	Peritonitis	Infection 		This study
+7092	3391			B2	7804		Broiler chicken	Intestine	Asymptomatic carriage		This study
+7093	3394-1			B1	1049		Broiler chicken	Yolk Sac Infection	Infection 		This study
+7094	3394-2			B1	1049		Broiler chicken	Yolk Sac Infection	Infection 		This study
+7095	3398			B1	162	ST469 Cplx	Broiler chicken	faeces	Asymptomatic carriage		This study
+7096	3399			B2	1852		Broiler chicken	Peritonitis	Infection 		This study
+7097	3400			B1	162	ST469 Cplx	Broiler chicken	faeces	Asymptomatic carriage		This study
+7098	3401			B1	297		Broiler chicken	Meconium	Asymptomatic carriage		This study
+7099	3403			A	10	ST10 Cplx	Broiler chicken	faeces	Asymptomatic carriage		This study
+7100	3405			B2			Broiler chicken	yolk sac	Infection 		This study
+7101	3409			B2			Broiler chicken	Peritonitis	Infection 		This study
+7102	3414-1			B2	1618		Broiler chicken	Auto vacc strains	Infection 		This study
+7103	3414-2			B2	141		Broiler chicken	Auto vacc strains	Infection 		This study
+7104	3414-3			B2	1618		Broiler chicken	Auto vacc strains	Infection 		This study
+7106	3415-12			B2	1618		Broiler chicken	Meconium	Asymptomatic carriage		This study
+7107	3415-2			D	38	ST38 Cplx	Broiler chicken	Meconium	Asymptomatic carriage		This study
+7108	3415-3			B1			Broiler chicken	Meconium	Asymptomatic carriage		This study
+7109	3415-4			A	10	ST10 Cplx	Broiler chicken	Meconium	Asymptomatic carriage		This study
+7110	3415-6			A	10	ST10 Cplx	Broiler chicken	Meconium	Asymptomatic carriage		This study
+7120	5366			B2	429		Boot drag				This study
+7121	5473			B2	429		Boot drag				This study
+7122	5474			B2	429		Boot drag				This study
+7123	5476			B2	429		Boot drag				This study
+7124	6051			B2	429		HTP				This study
+7125	6067			B2	95	ST95 Cplx	Boot drag				This study
+7126	6069			B1	2040		Boot drag				This study
+7127	6109			B2	95	ST95 Cplx	Broiler chicken	Post Mortem	Infection 		This study
+7128	6110			B2	140	ST95 Cplx	Broiler chicken	Post Mortem	Infection 		This study
+7129	6111			B2	95	ST95 Cplx	Broiler chicken	Post Mortem	Infection 		This study
+7130	6112			B2	352		Broiler chicken	Post Mortem	Infection 		This study
+7131	6113			B2	95	ST95 Cplx	Broiler chicken	Post Mortem	Infection 		This study
+7132	6114			ST117	117	ST117 CC	Broiler chicken	Post Mortem	Infection 		This study
+7133	6115			ST117	117	ST117 CC	Broiler chicken	Post Mortem	Infection 		This study
+7134	6116			ST117	117	ST117 CC	Broiler chicken	Post Mortem	Infection 		This study
+7135	6117			ST117	117	ST117 CC	Broiler chicken	Post Mortem	Infection 		This study
+7136	6118			B1	2230		Broiler chicken	Post Mortem	Infection 		This study
+7137	6375			A	10	ST10 Cplx	Broiler chicken	yolk sack	Infection 		This study
+7138	6376			B2	95	ST95 Cplx	Broiler chicken	Pericarditis	Infection 		This study
+7139	6377			B2	140	ST95 Cplx	Broiler chicken	Systemic infection	Infection 		This study
+7140	6378			B2	355		Broiler chicken	Pericarditis	Infection 		This study
+7141	6379			B1	155	ST155 Cplx	Broiler chicken	yolk sack	Infection 		This study
+7142	6380			B2	95	ST95 Cplx	Broiler chicken	 swab	Infection 		This study
+7143	6381			B1	101	ST101 Cplx	Broiler chicken	swab	Infection 		This study
+7144	6382			ST117	117	ST117 CC	Broiler chicken	Post Mortem	Infection 		This study
+7145	6383			B2	429		Broiler chicken	swab	Infection 		This study
+7146	6384			ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		This study
+7147	6385			ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		This study
+7148	6386			B2	140	ST95 Cplx	Broiler chicken	Liver	Infection 		This study
+7149	6387			ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		This study
+7150	6388			ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		This study
+7151	6389			ST117			Broiler chicken	Liver	Infection 		This study
+7152	6390			ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		This study
+7153	6391			ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		This study
+7154	6392			ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		This study
+7155	6393			ST117			Broiler chicken	Liver	Infection 		This study
+7156	6414			B1	101	ST101 Cplx	Broiler chicken	Pericarditis	Infection 		This study
+7157	6415			ST117			Broiler chicken	Bone Marrow	Infection 		This study
+7158	6416			ST117	117	ST117 CC	Broiler chicken	Bone Marrow	Infection 		This study
+7160	6418			ST117	117	ST117 CC	Broiler chicken	Bone Marrow	Infection 		This study
+7161	6419			ST117	117	ST117 CC	Broiler chicken	Bone Marrow	Infection 		This study
+7162	6420			ST117	117	ST117 CC	Broiler chicken	Bone Marrow	Infection 		This study
+7163	6421			B1	101	ST101 Cplx	Broiler chicken	Bone Marrow	Infection 		This study
+7164	6422			ST117	117	ST117 CC	Broiler chicken	Bone Marrow	Infection 		This study
+7165	6423			ST117	117	ST117 CC	Broiler chicken	Bone Marrow	Infection 		This study
+7166	6424			B1	101	ST101 Cplx	Broiler chicken	Bone Marrow	Infection 		This study
+7167	6425			ST117	117	ST117 CC	Broiler chicken	Bone Marrow	Infection 		This study
+7168	6426			B2	140	ST95 Cplx	Broiler chicken	Bone Marrow	Infection 		This study
+7169	6427			B2	95	ST95 Cplx	Broiler chicken	Bone Marrow	Infection 		This study
+7170	6428			ST117	117	ST117 CC	Broiler chicken	Bone Marrow	Infection 		This study
+7171	6429			ST117	117	ST117 CC	Broiler chicken	Bone Marrow	Infection 		This study
+7172	6430			ST117	117	ST117 CC	Broiler chicken	Bone Marrow	Infection 		This study
+7173	6431			ST117	117	ST117 CC	Broiler chicken	Bone Marrow	Infection 		This study
+7174	6432			ST117			Broiler chicken	Bone Marrow	Infection 		This study
+7175	6449			D	69	ST69 Cplx	Broiler chicken	Yolk Sac 	Infection 		This study
+8649	897	USA		ST117	117	ST117 CC			Asymptomatic carriage		SRP092633
+8653	53C	Netherlands	2010-05-01	ST117	117	ST117 CC	Retail meat		Asymptomatic carriage		SRP092634
+8654	53C.1	Netherlands	2010-05-01	ST117	117	ST117 CC	Retail meat		Asymptomatic carriage		SRP092635
+8656	blood-10-0682	USA	2010-01-01	ST117	117	ST117 CC	Broiler chicken	Systemic infection	Infection 		SRP092636
+8661	EC5	Malaysia	2013-09-01	ST117	117	ST117 CC		Liver	Infection 		SRP092637
+8669	14M009386	Netherlands		ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage	Amphia Hospital	PRJEB12288
+8670	14M009387	Netherlands		ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage	Amphia Hospital	PRJEB12288
+8671	16009908_S25_L001_R1_001	Denmark	2016-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage	University of Denmark	PRJEB22091
+8678	A-CH-SAP641			ST117	117	ST117 CC	Broiler chicken		Infection 	The Roslin Institute	PRJEB11955
+8679	A-CH-SAP721			ST117	117	ST117 CC	Broiler chicken		Infection 	The Roslin Institute	PRJEB11955
+8680	A-T-SAP708			ST117	117	ST117 CC	Broiler chicken		Infection 	The Roslin Institute	PRJEB11955
+8681	AZ_TG77034	United States	2014-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJNA230968
+8682	AZ_TG77110	United States	2014-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJNA230968
+8683	AZ_TG77134	United States	2014-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJNA230968
+8684	AZ-TG56219	United States	2013-01-01	ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJNA230968
+8685	AZ-TG60957	United States	2013-01-01	ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJNA230968
+8686	AZ-TG71179	United States	2009-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJNA230968
+8687	AZ-TG71187	United States	2009-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJNA230968
+8688	AZ-TG71271	United States	2009-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJNA230968
+8689	AZ-TG71391	United States	2009-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJNA230968
+8690	AZ-TG73123	United States	2013-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJNA230968
+8691	AZ-TG73155	United States	2013-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJNA230968
+8692	AZ-TG73191	United States	2013-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJNA230968
+8693	AZ-TG73287	United States	2013-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJNA230968
+8694	AZ-TG73295	United States	2013-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJNA230968
+8695	AZ-TG73359	United States	2013-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJNA230968
+8696	AZ-TG73367	United States	2013-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJNA230968
+8697	AZ-TG73451	United States	2013-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJNA230968
+8698	AZ-TG73499	United States	2013-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJNA230968
+8699	AZ-TG73523	United States	2013-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJNA230968
+8700	AZ-TG73559	United States	2013-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJNA230968
+8701	AZ-TG73603	United States	2013-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJNA230968
+8702	AZ-TG73619	United States	2013-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJNA230968
+8703	AZ-TG73639	United States	2013-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJNA230968
+8705	DRS016135		2011-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage	KYOTO_PREF	PRJDB2638
+8707	E102	Norway	2015-01-01	ST117	117	ST117 CC	Broiler chicken	Systemic infection	Infection 	Technical University of Denmark	PRJNA352460
+8708	E105	Denmark		ST117	117	ST117 CC	Broiler chicken	Systemic infection	Infection 	Technical University of Denmark	PRJNA352460
+8709	E107	Denmark		ST117	117	ST117 CC	Broiler chicken	Systemic infection	Infection 	Technical University of Denmark	PRJNA352460
+8710	E109	Denmark		ST117	117	ST117 CC	Broiler chicken	Systemic infection	Infection 	Technical University of Denmark	PRJNA352460
+8711	E110	Denmark		ST117	117	ST117 CC	Broiler chicken	Systemic infection	Infection 	Technical University of Denmark	PRJNA352460
+8712	E90	Denmark	2016-01-01	ST117	117	ST117 CC	Broiler chicken	Systemic infection	Infection 	Technical University of Denmark	PRJNA352460
+8713	E91	Denmark	2015-01-01	ST117	117	ST117 CC	Broiler chicken	Systemic infection	Infection 	Technical University of Denmark	PRJNA352460
+8714	E94	Denmark	2015-01-01	ST117	117	ST117 CC	Broiler chicken	Systemic infection	Infection 	Technical University of Denmark	PRJNA352460
+8715	E98	Norway	2015-01-01	ST117	117	ST117 CC	Broiler chicken	Systemic infection	Infection 	Technical University of Denmark	PRJNA352460
+8724	MOD1-EC5115	United States	2006-01-01	ST117	117	ST117 CC	Broiler chicken	Systemic infection	Infection 		PRJNA230969
+8725	MOD1-EC5763	United States	1982-01-01	ST117	117	ST117 CC	Broiler chicken	Systemic infection	Infection 		PRJNA230969
+8726	MOD1-EC5764	United States	1982-01-01	ST117	117	ST117 CC	Broiler chicken	Systemic infection	Infection 		PRJNA230969
+8728	MOD1-EC5996	United States	1983-01-01	ST117	117	ST117 CC	Broiler chicken	Systemic infection	Infection 		PRJNA230969
+8730	MOD1-EC6094	United States	1983-01-01	ST117	117	ST117 CC	Broiler chicken	Systemic infection	Infection 		PRJNA230969
+8731	MOD1-EC6341	United States	1987-01-01	ST117	117	ST117 CC	Broiler chicken	Systemic infection	Infection 		PRJNA230969
+8732	MOD1-EC6541	United States	1990-01-01	ST117	117	ST117 CC	Broiler chicken	Systemic infection	Infection 		PRJNA230969
+8733	MOD1-EC6548	United States	1990-01-01	ST117	117	ST117 CC	Broiler chicken	Systemic infection	Infection 		PRJNA230969
+8737	SAMEA10420594416049438	Germany	2016-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage	Technical University of Denmark	PRJEB22091
+8743	VREC0540	United Kingdom	2015-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage	The Wellcome Trust Sanger Institute	PRJEB8774
+8744	VREC0579	United Kingdom	2015-01-01	ST117	117	ST117 CC	Turkey		Asymptomatic carriage	The Wellcome Trust Sanger Institute	PRJEB8774
+8745	VREC0633		2015-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJEB8774
+8747	VRES0501		2015-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJEB8776
+8748	VRES0502			ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJEB8776
+8749	VRES0523			ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8750	VRES0524			ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8751	VRES0527			ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8752	VRES0528			ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8753	VRES0529			ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8754	VRES0531			ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8755	VRES0532			ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8756	VRES0533			ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8757	VRES0535			ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8758	VRES0536			ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8759	VRES0541			ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8760	VRES0549			ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8761	VRES0550			ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8763	VRES0552		2015-01-01	ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8764	VRES0553			ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8765	VRES0554			ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8766	VRES0555			ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8767	VRES0556			ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8768	VRES0559			ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8769	VRES0576			ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8770	VRES0580			ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8771	VRES0581			ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8772	VRES0582			ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8773	VRES0584			ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8774	VRES0585			ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8775	VRES0667		2015-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJEB8776
+8776	VRES0668		2015-01-01	ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8777	VRES0674		2015-01-01	ST117	117	ST117 CC	Turkey		Asymptomatic carriage		PRJEB8776
+8778	VRES0676		2015-01-01	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		PRJEB8776
+8779	Nordic_E3	Denmark	2015-04-15	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+8780	Nordic_E4	Denmark	2015-04-15	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+8781	Nordic_E6	Denmark	2015-04-15	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+8782	Nordic_E7	Denmark	2015-04-15	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+8783	Nordic_E8	Denmark	2015-04-15	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+8784	Nordic_E9	Finland	2015-01-29	ST117	117	ST117 CC	Broiler chicken	Bone Marrow	Infection 		SRP092633
+8785	Nordic_E10	Finland	2015-01-28	ST117	117	ST117 CC	Broiler chicken	Bone Marrow	Infection 		SRP092633
+8786	Nordic_E12	Finland	2015-02-06	ST117	117	ST117 CC	Broiler chicken	Bone Marrow	Infection 		SRP092633
+8787	Nordic_E16	Finland	2015-02-13	ST117	117	ST117 CC	Broiler chicken	Bone Marrow	Infection 		SRP092633
+8788	Nordic_E18	Finland	2015-02-13	ST117	117	ST117 CC	Broiler chicken	Bone Marrow	Infection 		SRP092633
+8983	Nordic_E20	Denmark	2015-05-13	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+8984	Nordic_E22	Denmark	2015-06-23	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+8985	Nordic_E23	Denmark	2015-07-15	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+8986	Nordic_E26	Norway	2015-08-26	ST117	117	ST117 CC	Broiler chicken	Femur	Infection 		SRP092633
+8987	Nordic_E27	Norway	2015-09-07	ST117	117	ST117 CC	Broiler chicken	Spleen	Infection 		SRP092633
+8988	Nordic_E29	Norway	2015-09-16	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+8989	Nordic_E31	Norway	2015-08-06	ST117	117	ST117 CC	Broiler chicken		Infection 		SRP092633
+8990	Nordic_E32	Norway	2015-08-17	ST117	117	ST117 CC	Broiler chicken		Infection 		SRP092633
+8991	Nordic_E35	Denmark	2015-09-23	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+8992	Nordic_E36	Denmark	2015-09-23	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+8993	Nordic_E39	Finland	2015-08-07	ST117	117	ST117 CC	Broiler chicken	Bone Marrow	Infection 		SRP092633
+8994	Nordic_E40	Finland	2015-08-03	ST117	117	ST117 CC	Broiler chicken	Bone Marrow	Infection 		SRP092633
+8995	Nordic_E44	Denmark	2015-04-20	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+8996	Nordic_E45	Denmark	2015-04-20	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+8997	Nordic_E47	Denmark	2015-04-20	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+8998	Nordic_E48	Denmark	2015-04-20	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+8999	Nordic_E49	Denmark	2015-04-20	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+9000	Nordic_E50	Denmark	2015-04-20	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+9001	Nordic_E57	Denmark	2015-04-17	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+9002	Nordic_E59	Denmark	2015-05-10	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+9003	Nordic_E60	Denmark	2015-04-28	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+9004	Nordic_E63	Denmark	2015-04-28	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+9005	Nordic_E65	Denmark	2015-05-12	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+9006	Nordic_E69	Denmark	2015-11-17	ST117	117	ST117 CC	Broiler chicken	Peritonitis	Infection 		SRP092633
+9007	Nordic_E77	Denmark	2015-11-30	ST117	117	ST117 CC	Broiler chicken	Femur	Infection 		SRP092633
+9008	Nordic_E80	Denmark	2015-11-26	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+9009	Nordic_E86	Denmark	2016-01-09	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+9010	Nordic_E91	Denmark	2015-12-04	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+9011	Nordic_E94	Denmark	2015-12-15	ST117	117	ST117 CC	Broiler chicken	Liver	Infection 		SRP092633
+9012	Nordic_E98	Norway	2015-10-16	ST117	117	ST117 CC	Broiler chicken	Femur	Infection 		SRP092633
+9013	Nordic_E102	Norway	2015-09-27	ST117	117	ST117 CC	Broiler chicken		Infection 		SRP092633
+9014	Nordic_E105	Denmark	2015-01-01	ST117	117	ST117 CC	Broiler chicken	Bone Marrow	Infection 		SRP092633
+9015	Nordic_E109	Denmark	2015-01-01	ST117	117	ST117 CC	Broiler chicken	Bone Marrow	Infection 		SRP092633
+9016	Nordic_E110	Denmark	2015-01-01	ST117	117	ST117 CC	Broiler chicken	Bone Marrow	Infection 		SRP092633
+9017	Nordic_E1	Denmark	2015-03-31	D	69	ST69 Cplx		Liver	Infection 		SRP092633
+9018	Nordic_E30	Norway	2015-08-04	B2	95	ST95 Cplx			Infection 		SRP092633
+9441	5893	USA		ST117	117	ST117 CC	Broiler chicken		Infection 		This study
+9442	5913	USA		ST117	117	ST117 CC	Broiler chicken		Infection 		This study
+9444	6213	USA		ST117	117	ST117 CC	Broiler chicken		Infection 		This study
+9445	6292	USA		ST117	117	ST117 CC	Broiler chicken		Infection 		This study
+9446	6344	USA	2016-02-01	ST117	117	ST117 CC	Broiler chicken		Infection 		This study
+9447	7170			B2	95	ST95 Cplx	Broiler chicken		Infection 		This study
+9448	7171	USA	2014-10-06	B1	101	ST101 Cplx	Broiler chicken		Infection 		This study
+9450	7173	USA	2015-11-09	ST117	117	ST117 CC	Broiler chicken		Infection 		This study
+9451	7174	USA		ST117	117	ST117 CC	Broiler chicken		Infection 		This study
+9452	7175	USA	2016-05-14	ST117	117	ST117 CC	Broiler chicken		Infection 		This study
+9453	7392	USA	2016-01-15	ST117	117	ST117 CC	Broiler chicken		Infection 		This study
+9463	7443	UK	2015-05-25	ST117	117	ST117 CC	Broiler chicken		Infection 		This study
+9464	7444	UK	2015-07-07	ST117	117	ST117 CC	Broiler chicken		Infection 		This study
+9465	7445	UK	2015-08-05	B1	101	ST101 Cplx	Broiler chicken		Infection 		This study
+9466	7446	USA		B2	131	ST131 Cplx	Broiler chicken		Asymptomatic carriage		This study
+9467	7447	USA		E	371	ST350 Cplx	Broiler chicken		Asymptomatic carriage		This study
+9468	7448	USA		ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		This study
+9469	7449	Sweden	2015-12-14	B2	355		Broiler chicken		Infection 		This study
+9470	7451	Sweden	2015-12-02	ST117	117	ST117 CC	Broiler chicken		Infection 		This study
+9471	7452	Sweden	2015-12-15	D	1158		Broiler chicken		Infection 		This study
+9474	7456	Sweden	2016-01-21	ST117	117	ST117 CC	Broiler chicken		Infection 		This study
+9478	7461	USA	2015-09-14	ST117	117	ST117 CC	Broiler chicken		Asymptomatic carriage		This study
+9479	7464	USA	2015-03-16	B2	95	ST95 Cplx	Broiler chicken		Asymptomatic carriage		This study
+9480	7468	Sweden	2016-04-20	B2	95	ST95 Cplx	Broiler chicken		Infection 		This study
+9482	7488	USA		B2	428		Broiler chicken		Asymptomatic carriage		This study
+9484	3807	United Kingdom	2013-03-04	D	38	ST38 Cplx	Broiler chicken		Asymptomatic carriage		This study
+9485	4437	United Kingdom	2013-10-15	B2	429		Broiler chicken		Asymptomatic carriage		This study
+9486	4606	United Kingdom	2013-12-04	B2	429		Broiler chicken		Asymptomatic carriage		This study
+9487	4736	United Kingdom	2014-02-04	D	38	ST38 Cplx	Broiler chicken		Asymptomatic carriage		This study
+9488	4931	United Kingdom	2014-05-15	B2	429		Broiler chicken		Asymptomatic carriage		This study
+9489	4935	United Kingdom	2014-05-19	B2	429		Broiler chicken		Asymptomatic carriage		This study
+9490	4997	United Kingdom	2014-06-11	B2	429		Broiler chicken		Asymptomatic carriage		This study
+9491	5153	United Kingdom	2014-08-08	B1	2040		Broiler chicken		Asymptomatic carriage		This study
+9492	5154	United Kingdom	2014-08-08	B1	2040		Broiler chicken		Asymptomatic carriage		This study
+9493	5155	United Kingdom	2014-08-08	B1	2040		Broiler chicken		Asymptomatic carriage		This study
+9495	5935	United Kingdom	2015-02-06	B2	429		Broiler chicken		Asymptomatic carriage		This study
+9496	5980	United Kingdom	2015-03-03	B1	949		Broiler chicken		Asymptomatic carriage		This study
+9497	5995	United Kingdom	2015-03-06	B1	2040		Broiler chicken		Asymptomatic carriage		This study
+9499	6182	United Kingdom	2015-05-12	B1	2040		Broiler chicken		Asymptomatic carriage		This study
+9500	6183	United Kingdom	2015-05-12	B1	2040		Broiler chicken		Asymptomatic carriage		This study
+9501	6184	United Kingdom	2015-05-12	B1	2040		Broiler chicken		Asymptomatic carriage		This study
+9502	6185	United Kingdom	2015-05-12	B2	429		Broiler chicken		Asymptomatic carriage		This study
+9504	6255	United Kingdom	2015-05-19	B2	429		Broiler chicken		Asymptomatic carriage		This study
+9505	6695	United Kingdom	2015-10-21	B1	2040		Broiler chicken		Asymptomatic carriage		This study
+9506	6723	United Kingdom	2015-10-30	B2	429		Broiler chicken		Asymptomatic carriage		This study
+9507	6746	United Kingdom	2015-11-04	B1	2040		Broiler chicken		Asymptomatic carriage		This study
+9508	6766	United Kingdom	2015-11-12	B1	2040		Broiler chicken		Asymptomatic carriage		This study
+9509	6770	Sweden	2015-11-12	B2	131	ST131 Cplx	Broiler chicken	Peritonitis	Infection 		This study
+9510	6771	Sweden	2015-11-12	B2	131	ST131 Cplx	Broiler chicken	Peritonitis	Infection 		This study
+9512	6773	Sweden	2015-11-12	D	69	ST69 Cplx	Broiler chicken	Peritonitis	Infection 		This study
+9514	6775	Sweden	2015-11-12	B2	95	ST95 Cplx	Broiler chicken	Peritonitis	Infection 		This study
+9515	6776	Sweden	2015-11-12	B2	95	ST95 Cplx	Broiler chicken	Peritonitis	Infection 		This study
+9516	6777	Sweden	2015-11-12	B2	95	ST95 Cplx	Broiler chicken	Peritonitis	Infection 		This study
+9517	6778	Sweden	2015-11-12	B2	95	ST95 Cplx	Broiler chicken	Peritonitis	Infection 		This study
+9518	6829	United Kingdom	2015-11-24	B2	429		Broiler chicken		Asymptomatic carriage		This study
+9523	6848	France	2015-11-27	B2	95	ST95 Cplx	Broiler chicken		Asymptomatic carriage		This study
+9524	6879	Sweden	2015-12-09	F	648	ST648 Cplx	Broiler chicken	"Peritonitis: yolk in ab cavity, congested ovaries"	Infection 		This study
+9525	6880	Sweden	2015-12-09	B2	95	ST95 Cplx	Broiler chicken	"Peritonitis: yolk in ab cavity, congested ovaries"	Infection 		This study
+9526	6885	Sweden	2015-12-10	ST117	117	ST117 CC	Broiler chicken	"Peritonitis: yolk in ab cavity, congested ovaries"	Infection 		This study
+9527	6991	United Kingdom	2015-12-30	B1	2040		Broiler chicken		Infection 		This study
+9528	7150	Sweden	2016-02-09	B2	429		Broiler chicken	Peritonitis	Infection 		This study
+9529	7151	Sweden	2016-02-09	ST117	117	ST117 CC	Broiler chicken	Peritonitis	Infection 		This study
+9530	7152	Sweden	2016-02-09	ST117	117	ST117 CC	Broiler chicken	Peritonitis	Infection 		This study
+9531	7153	Sweden	2016-02-09	B2	429		Broiler chicken	Peritonitis	Infection 		This study
+9532	Nordic_E38	Denmark	2015-10-06	B1	1146			Liver	Infection 		SRP092633
+9533	Nordic_E41	Finland	2015-06-24	ST117	117	ST117 CC		Bone Marrow	Infection 		SRP092633
+9534	Nordic_E43	Finland	2015-05-26	A	10	ST10 Cplx		Bone Marrow	Infection 		SRP092633
+9535	Nordic_E51	Denmark	2015-01-21	B2	140	ST95 Cplx		Liver	Infection 		SRP092633
+9536	Nordic_E89	Denmark	2015-12-11	B2	95	ST95 Cplx		Liver	Infection 		SRP092633
+9537	Nordic_E99	Norway	2015-11-23	E	371	ST350 Cplx	Broiler chicken	Pericarditis	Infection 		SRP092633
+9538	Nordic_E112	Denmark	2015-07-01	B2	95	ST95 Cplx	Broiler chicken	Cloaca	Asymptomatic carriage		SRP092633
+9539	Nordic_E117	Denmark	2015-07-01	B2	95	ST95 Cplx	Broiler chicken	Cloaca	Asymptomatic carriage		SRP092633
+9550	012PP2015	Polamd	2015-01-01	ST117	117	ST117 CC	Broiler chicken	Cell Culture	Infection 	University of Lodz	PRJNA319144
+9561	FSIS11704223	United States	2017-01-01	ST117	117	ST117 CC	Turkey		Infection 	United States Department of Agriculture	PRJNA292667
+9562	FSIS1703765	United States	2017-01-01	ST117	117	ST117 CC	Turkey	Meat	Asymptomatic carriage	United States Department of Agriculture	PRJNA292667
+9571	MOD1-EC3497	United States	2014-01-01	ST117	117	ST117 CC	Turkey	Feces	Asymptomatic carriage		PRJNA230969
+9575	NC_STEC109	United States	2014-01-01	ST117	117	ST117 CC	Broiler chicken	Feces	Asymptomatic carriage		PRJNA293225
+9576	NC_STEC255	United States	2014-01-01	ST117	117	ST117 CC	Broiler chicken	Feces	Asymptomatic carriage		PRJNA293225
+9577	NC_STEC29	United States	2014-01-01	ST117	117	ST117 CC	Broiler chicken	Feces	Asymptomatic carriage		PRJNA293225
+9578	NC_STEC41	United States	2014-01-01	ST117	117	ST117 CC	Broiler chicken	Feces	Asymptomatic carriage		PRJNA293225
+9579	NC_STEC53	United States	2014-01-01	ST117	117	ST117 CC	Broiler chicken	Feces	Asymptomatic carriage		PRJNA293225
+9580	NC_STEC65	United States	2014-01-01	ST117	117	ST117 CC	Broiler chicken	Feces	Asymptomatic carriage		PRJNA293225
+9581	NC_STEC81	United States	2014-01-01	ST117	117	ST117 CC	Broiler chicken	Disposed area soil	Asymptomatic carriage		PRJNA293225
+"a. Sequence types determined using the built-in MLST function of BIGSdb, linked with pubMLST databases. Lack of information denotes the possible truncation of a corresponding MLST locus at the end of a contig."											
+b. Clonal complexes defined by eBURST 											
