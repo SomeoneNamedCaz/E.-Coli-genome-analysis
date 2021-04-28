@@ -5,10 +5,10 @@ from functions import *
 import copy
 
 outFileName = "genePrevalencesMastitis.tsv" # structured as geneName + \t + count
-pathToGenomes = "./annotatedGenomes/"
+pathToGenomes = "./ourMastitisAnnotatedGenomes/"
 # pathToGenomes = "./natureStuff/annotatedPathogenNatureGenomes/gbks/"
 # pathToGenomes = "./natureStuff/annotatedCommensalNatureGenomes/gbks/"
-# pathToGenomes = "./Annotations/DownloadingFilesFromNCBI/AllCommensalStrains/assemblies/bovineCommensalAnnotatedGenomes/gbks/"
+# pathToGenomes = "./commensalBovineAnnotatedGenomes/DownloadingFilesFromNCBI/AllCommensalStrains/assemblies/bovineCommensalAnnotatedGenomes/gbks/"
 writtenToOutFileBefore = False
 fileCount = 0
 for annotationFileName in glob(pathToGenomes + "*"):
