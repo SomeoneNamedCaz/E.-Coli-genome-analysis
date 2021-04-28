@@ -279,3 +279,24 @@ def HypotheticalProteinSeqInList(seq, list, cutoff=0.8):
         if GenesAreWithinPercentIdentical(seq,gene,cutoff=cutoff):
             return True
     return False
+
+def CompareGenesByAAGroup(seq1,seq2, cutoff=0.8):
+    protein1 = translate(seq1)
+    protein2 = translate(seq2)
+    #          pos polar        neg polar   polar                   nonpolar
+    aaGroups = [["R","H","K"],["D","E"], ["S", "T", "N", "Q"], ["A", "V", "I", "L", "M", "F", "Y", "W"]]
+    numSame = 0
+    for aaIndex in range(len(protein1)):
+        aa1 = protein1
+        aa2 = protein2
+        if aa1 == aa2:
+            numSame += 1
+        else:
+            for aaGroup in aaGroups:
+                if aa1 in aaGroup and aa2 in aaGroup:
+                    numSame += 1
+                    break
+    precentSame =  numSame / max(len(protein1), len(protein2))
+    if precentSame >= cutoff:
+        return True
+    return False
