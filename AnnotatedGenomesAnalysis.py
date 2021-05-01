@@ -52,8 +52,8 @@ with open(outFileName,"w") as outFile:
         numFiles += 1
         if numFiles % 100 == 0:
             print("on file", numFiles, "of", len(filesToIterateOver))
-        contigs = GetContigs(fileName)
-        genes = GetGenesOnContigs(fileName, contigs)
+        contigs = getContigs(fileName)
+        genes = getGenesOnContigs(fileName, contigs)
         # this is for writing out gene sequences
         # for geneName in genes:
         #     if "cbtA" in geneName:  # account for duplications

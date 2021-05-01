@@ -4,21 +4,21 @@ import urllib.request
 import os
 from glob import glob
 
-def ReverseComplement(seq):
-    reverseComplement = ''  # string of complementary nucleotides
+def reverseComplement(seq):
+    reverseComplementSeq = ''  # string of complementary nucleotides
     seq = seq.upper()  # to cover for lowercase
     for char in seq:
         if char == 'A':
-            reverseComplement = 'T' + reverseComplement # add nucleotide to front (this flips the sequence)
+            reverseComplementSeq = 'T' + reverseComplementSeq # add nucleotide to front (this flips the sequence)
         elif char == 'T':
-            reverseComplement = "A" + reverseComplement
+            reverseComplementSeq = "A" + reverseComplementSeq
         elif char == 'C':
-            reverseComplement = "G" + reverseComplement
+            reverseComplementSeq = "G" + reverseComplementSeq
         elif char == 'G':
-            reverseComplement = 'C' + reverseComplement
-    return reverseComplement
+            reverseComplementSeq = 'C' + reverseComplementSeq
+    return reverseComplementSeq
 
-def GetContigs(fileName):
+def getContigs(fileName):
     contigs = []
     with open(fileName) as file:
         contig = ""
@@ -37,7 +37,7 @@ def GetContigs(fileName):
                 contig += "".join(cols[1:]) # everything but numbers
     return contigs
 
-def GetGenesOnContigs(fileName, contigs):
+def getGenesOnContigs(fileName, contigs):
     genes = {} # dictionary keys gene_name values = products and seqs
     with open(fileName) as file:
         contig = ""
@@ -77,7 +77,7 @@ def GetGenesOnContigs(fileName, contigs):
                     geneSeq = contigs[contigIndex][geneStartPos - 1:geneStopPos]
                     geneSeq = geneSeq.upper()
                     if not geneIsForward[geneIndex]:
-                        geneSeq = ReverseComplement(geneSeq)
+                        geneSeq = reverseComplement(geneSeq)
                     try:
                         if geneNames[geneIndex] != "unnamed": # use names as keys if you can
                             genes[geneNames[geneIndex]] = [geneProducts[geneIndex], geneSeq]
@@ -119,7 +119,7 @@ def GetGenesOnContigs(fileName, contigs):
                         geneProducts.append(re.sub('/product="', "", line)[:-1])
     return genes
 
-def GeneSimilarity(seq1, seq2):
+def geneSimilarity(seq1, seq2):
     numSame = 0
     printedError = False
     for i in range(len(seq1)):
@@ -132,7 +132,7 @@ def GeneSimilarity(seq1, seq2):
                 printedError = True
     return numSame / min(len(seq1),len(seq2))
 
-def GenesAreWithinPercentIdentical(seq1, seq2, cutoff= 0.8):
+def genesAreWithinPercentIdentical(seq1, seq2, cutoff= 0.8):
     numSame = 0
     if len(seq1) / 2 > len(seq2) or len(seq2) / 2 > len(seq1):
         return False
@@ -188,15 +188,15 @@ def convertHypotheticalProteinsIntoTempNames(hypotheticalProteinSeqs, cutoff=0.8
         inList = False
         for geneAlreadyNamed in nameAndSequence:
             seqOfGeneAlreadyNamed = geneAlreadyNamed[1]
-            if GenesAreWithinPercentIdentical(hypotheticalProteinSeqs[i], seqOfGeneAlreadyNamed, cutoff=cutoff):
+            if genesAreWithinPercentIdentical(hypotheticalProteinSeqs[i], seqOfGeneAlreadyNamed, cutoff=cutoff):
                 inList = True
         if not inList:
             nameAndSequence.append(["HP" + i, hypotheticalProteinSeqs[i]])
     return nameAndSequence
 def hypotheticalProteinsAreTheSame(seq1, seq2, cutoff=0.8):
-    return GenesAreWithinPercentIdentical(seq1, seq2,cutoff=0.8)
+    return genesAreWithinPercentIdentical(seq1, seq2, cutoff=0.8)
 
-def GetSeqFilesNamesFromMasterFiles(masterFileName):
+def getSeqFilesNamesFromMasterFiles(masterFileName):
     """
     :param masterFileName:
     :return: list of seqFileNames that the master file refers to
@@ -228,7 +228,7 @@ def GetSeqFilesNamesFromMasterFiles(masterFileName):
             onFirstLine = False
         return seqFilesNames
 
-def DownloadSeqFileFromMasterFile(masterFileName, outputPath):
+def downloadSeqFileFromMasterFile(masterFileName, outputPath):
     seqFilesNames = []
     onFirstLine = True
     isMasterRecord = False
@@ -261,11 +261,11 @@ def DownloadSeqFileFromMasterFile(masterFileName, outputPath):
                     time.sleep(max(2 / 3 - (time.time() - t1), 0))
             onFirstLine = False
 
-def StringIsOnlyATCG(string):
+def stringIsOnlyATCG(string):
     string = string.upper()
     return string.count("A") + string.count("C") + string.count("T") + string.count("G") == len(string)
 
-def FilesAreIdentical(file1Name, file2Name):
+def filesAreIdentical(file1Name, file2Name):
     with open(file1Name) as file1, open(file2Name) as file2:
         try:
             for line1, line2 in zip(file1,file2):
@@ -274,13 +274,13 @@ def FilesAreIdentical(file1Name, file2Name):
         except IndexError:
             return False
     return True
-def HypotheticalProteinSeqInList(seq, list, cutoff=0.8):
+def hypotheticalProteinSeqInList(seq, list, cutoff=0.8):
     for gene in list:
-        if GenesAreWithinPercentIdentical(seq,gene,cutoff=cutoff):
+        if genesAreWithinPercentIdentical(seq, gene, cutoff=cutoff):
             return True
     return False
 
-def CompareGenesByAAGroup(seq1,seq2, cutoff=0.8):
+def compareGenesByAAGroup(seq1, seq2, cutoff=0.8):
     protein1 = translate(seq1)
     protein2 = translate(seq2)
     #          pos polar        neg polar   polar                   nonpolar
@@ -300,3 +300,15 @@ def CompareGenesByAAGroup(seq1,seq2, cutoff=0.8):
     if precentSame >= cutoff:
         return True
     return False
+
+def filesContainTheSamInformation(fileName1, fileName2):
+    with open(fileName1) as f1:
+        for l1 in f1:
+            foundLine = False
+            with open(fileName2) as f2:
+                for l2 in f2:
+                    if l1 == l2:
+                        foundLine = True
+            if not foundLine:
+                return False
+    return True

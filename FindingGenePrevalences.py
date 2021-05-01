@@ -14,8 +14,8 @@ fileCount = 0
 for annotationFileName in glob(pathToGenomes + "*"):
     fileCount += 1
     print(fileCount)
-    contigs = GetContigs(annotationFileName)
-    genes = GetGenesOnContigs(annotationFileName, contigs)
+    contigs = getContigs(annotationFileName)
+    genes = getGenesOnContigs(annotationFileName, contigs)
     fileData = []
     if writtenToOutFileBefore: # read in data
         with open(outFileName) as outFile:
@@ -38,7 +38,7 @@ for annotationFileName in glob(pathToGenomes + "*"):
             elif geneName.count("A") + geneName.count("C") + geneName.count("T") + geneName.count("G") == len(geneName):
                 foundSeq = ""
                 for hypotheticalProteinSeq in genes.keys():
-                    if GenesAreWithinPercentIdentical(hypotheticalProteinSeq, geneName, cutoff=0.8):
+                    if genesAreWithinPercentIdentical(hypotheticalProteinSeq, geneName, cutoff=0.8):
                         geneCount += 1
                         foundSeq = hypotheticalProteinSeq
                 if foundSeq != "":
@@ -63,8 +63,8 @@ for annotationFileName in glob(pathToGenomes + "*"):
 # for annotationFileName in glob(pathToGenomes + "*"):
 #     fileCount += 1
 #     print(fileCount)
-#     contigs = GetContigs(annotationFileName)
-#     genes = GetGenesOnContigs(annotationFileName, contigs)
+#     contigs = getContigs(annotationFileName)
+#     genes = getGenesOnContigs(annotationFileName, contigs)
 #     fileData = []
 #     for geneToAdd in genes:
 #         addedToExistingGenes = False
@@ -72,7 +72,7 @@ for annotationFileName in glob(pathToGenomes + "*"):
 #         for geneNameAndCount in geneCounts:
 #             name = geneNameAndCount[0]
 #             count = geneNameAndCount[1]
-#             if name == geneToAdd or GenesAreWithinPercentIdentical(name, geneToAdd):
+#             if name == geneToAdd or genesAreWithinPercentIdentical(name, geneToAdd):
 #                 count += 1
 #                 addedToExistingGenes = True
 #                 # print("wrong")
