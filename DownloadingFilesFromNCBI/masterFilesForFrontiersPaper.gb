@@ -1,0 +1,1036 @@
+LOCUS       JACCHG010000000          128 rc    DNA     linear   BCT 28-JUL-2020
+DEFINITION  Escherichia coli strain GCPRC5, whole genome shotgun sequencing
+            project.
+ACCESSION   JACCHG000000000
+VERSION     JACCHG000000000.1
+DBLINK      BioProject: PRJNA644956
+            BioSample: SAMN15486718
+KEYWORDS    WGS.
+SOURCE      Escherichia coli
+  ORGANISM  Escherichia coli
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales;
+            Enterobacteriaceae; Escherichia.
+REFERENCE   1  (bases 1 to 128)
+  AUTHORS   Ramay,H.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JUL-2020) School of Veterianry Science, University of
+            queensland, Gatton, Gattin, QLD 4343, Australia
+COMMENT     The Escherichia coli whole genome shotgun (WGS) project has the
+            project accession JACCHG000000000.  This version of the project
+            (01) has the accession number JACCHG010000000, and consists of
+            sequences JACCHG010000001-JACCHG010000128.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Method        :: SKESA v. 2.3
+            Genome Representation  :: Full
+            Expected Final Version :: No
+            Genome Coverage        :: 12x
+            Sequencing Technology  :: Illumina NextSeq
+            ##Genome-Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..128
+                     /organism="Escherichia coli"
+                     /mol_type="genomic DNA"
+                     /strain="GCPRC5"
+                     /isolation_source="milk"
+                     /host="cattle"
+                     /db_xref="taxon:562"
+                     /lat_lon="20.9176 S 142.7028 E"
+                     /collection_date="22-May-2019"
+                     /collected_by="John Alawneh"
+WGS         JACCHG010000001-JACCHG010000128
+//
+
+LOCUS       JACCHF010000000           95 rc    DNA     linear   BCT 28-JUL-2020
+DEFINITION  Escherichia coli strain GCPRC21B, whole genome shotgun sequencing
+            project.
+ACCESSION   JACCHF000000000
+VERSION     JACCHF000000000.1
+DBLINK      BioProject: PRJNA644956
+            BioSample: SAMN15486719
+KEYWORDS    WGS.
+SOURCE      Escherichia coli
+  ORGANISM  Escherichia coli
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales;
+            Enterobacteriaceae; Escherichia.
+REFERENCE   1  (bases 1 to 95)
+  AUTHORS   Ramay,H.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JUL-2020) School of Veterianry Science, University of
+            queensland, Gatton, Gattin, QLD 4343, Australia
+COMMENT     The Escherichia coli whole genome shotgun (WGS) project has the
+            project accession JACCHF000000000.  This version of the project
+            (01) has the accession number JACCHF010000000, and consists of
+            sequences JACCHF010000001-JACCHF010000095.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Method        :: SKESA v. 2.3
+            Genome Representation  :: Full
+            Expected Final Version :: No
+            Genome Coverage        :: 12x
+            Sequencing Technology  :: Illumina NextSeq
+            ##Genome-Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..95
+                     /organism="Escherichia coli"
+                     /mol_type="genomic DNA"
+                     /strain="GCPRC21B"
+                     /isolation_source="milk"
+                     /host="cattle"
+                     /db_xref="taxon:562"
+                     /lat_lon="20.9176 S 142.7028 E"
+                     /collection_date="01-May-2019"
+                     /collected_by="John Alawneh"
+WGS         JACCHF010000001-JACCHF010000095
+//
+
+LOCUS       JACCHI010000000          102 rc    DNA     linear   BCT 28-JUL-2020
+DEFINITION  Escherichia coli strain GCPRC7, whole genome shotgun sequencing
+            project.
+ACCESSION   JACCHI000000000
+VERSION     JACCHI000000000.1
+DBLINK      BioProject: PRJNA644956
+            BioSample: SAMN15486632
+KEYWORDS    WGS.
+SOURCE      Escherichia coli
+  ORGANISM  Escherichia coli
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales;
+            Enterobacteriaceae; Escherichia.
+REFERENCE   1  (bases 1 to 102)
+  AUTHORS   Ramay,H. and Alawneh,J.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JUL-2020) School of Veterianry Science, University of
+            queensland, Gatton, Gattin, QLD 4343, Australia
+COMMENT     The Escherichia coli whole genome shotgun (WGS) project has the
+            project accession JACCHI000000000.  This version of the project
+            (01) has the accession number JACCHI010000000, and consists of
+            sequences JACCHI010000001-JACCHI010000102.
+            Bacteria and source DNA available from School of veterinary Science
+            ,UQ.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Date          :: MAY-2020
+            Assembly Method        :: SKESA v. 2.3
+            Assembly Name          :: UQ
+            Genome Representation  :: Full
+            Expected Final Version :: Yes
+            Genome Coverage        :: 12.0x
+            Sequencing Technology  :: Illumina NextSeq
+            ##Genome-Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..102
+                     /organism="Escherichia coli"
+                     /mol_type="genomic DNA"
+                     /strain="GCPRC7"
+                     /isolation_source="milk"
+                     /host="cattle"
+                     /db_xref="taxon:562"
+                     /lat_lon="20.9176 S 142.7028 E"
+                     /collection_date="30-Oct-2019"
+                     /collected_by="John Alawneh"
+WGS         JACCHI010000001-JACCHI010000102
+//
+
+LOCUS       JACCHH010000000           95 rc    DNA     linear   BCT 28-JUL-2020
+DEFINITION  Escherichia coli strain GCPRC20A, whole genome shotgun sequencing
+            project.
+ACCESSION   JACCHH000000000
+VERSION     JACCHH000000000.1
+DBLINK      BioProject: PRJNA644956
+            BioSample: SAMN15486717
+KEYWORDS    WGS.
+SOURCE      Escherichia coli
+  ORGANISM  Escherichia coli
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales;
+            Enterobacteriaceae; Escherichia.
+REFERENCE   1  (bases 1 to 95)
+  AUTHORS   Ramay,H.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JUL-2020) School of Veterianry Science, University of
+            queensland, Gatton, Gattin, QLD 4343, Australia
+COMMENT     The Escherichia coli whole genome shotgun (WGS) project has the
+            project accession JACCHH000000000.  This version of the project
+            (01) has the accession number JACCHH010000000, and consists of
+            sequences JACCHH010000001-JACCHH010000095.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Method        :: SKESA v. 2.3
+            Genome Representation  :: Full
+            Expected Final Version :: No
+            Genome Coverage        :: 12x
+            Sequencing Technology  :: Illumina NextSeq
+            ##Genome-Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..95
+                     /organism="Escherichia coli"
+                     /mol_type="genomic DNA"
+                     /strain="GCPRC20A"
+                     /isolation_source="milk"
+                     /host="cattle"
+                     /db_xref="taxon:562"
+                     /lat_lon="20.9176 S 142.7028 E"
+                     /collection_date="21-May-2019"
+                     /collected_by="John Alawneh"
+WGS         JACCHH010000001-JACCHH010000095
+//
+
+LOCUS       JACCGZ010000000           83 rc    DNA     linear   BCT 28-JUL-2020
+DEFINITION  Escherichia coli strain GCPRC55B, whole genome shotgun sequencing
+            project.
+ACCESSION   JACCGZ000000000
+VERSION     JACCGZ000000000.1
+DBLINK      BioProject: PRJNA644956
+            BioSample: SAMN15486725
+KEYWORDS    WGS.
+SOURCE      Escherichia coli
+  ORGANISM  Escherichia coli
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales;
+            Enterobacteriaceae; Escherichia.
+REFERENCE   1  (bases 1 to 83)
+  AUTHORS   Ramay,H.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JUL-2020) School of Veterianry Science, University of
+            queensland, Gatton, Gattin, QLD 4343, Australia
+COMMENT     The Escherichia coli whole genome shotgun (WGS) project has the
+            project accession JACCGZ000000000.  This version of the project
+            (01) has the accession number JACCGZ010000000, and consists of
+            sequences JACCGZ010000001-JACCGZ010000083.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Method        :: SKESA v. 2.3
+            Genome Representation  :: Full
+            Expected Final Version :: No
+            Genome Coverage        :: 12x
+            Sequencing Technology  :: Illumina NextSeq
+            ##Genome-Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..83
+                     /organism="Escherichia coli"
+                     /mol_type="genomic DNA"
+                     /strain="GCPRC55B"
+                     /isolation_source="milk"
+                     /host="cattle"
+                     /db_xref="taxon:562"
+                     /lat_lon="20.9176 S 142.7028 E"
+                     /collection_date="07-May-2019"
+                     /collected_by="John Alawneh"
+WGS         JACCGZ010000001-JACCGZ010000083
+//
+
+LOCUS       JACCHA010000000           81 rc    DNA     linear   BCT 28-JUL-2020
+DEFINITION  Escherichia coli strain GCPRC1, whole genome shotgun sequencing
+            project.
+ACCESSION   JACCHA000000000
+VERSION     JACCHA000000000.1
+DBLINK      BioProject: PRJNA644956
+            BioSample: SAMN15486724
+KEYWORDS    WGS.
+SOURCE      Escherichia coli
+  ORGANISM  Escherichia coli
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales;
+            Enterobacteriaceae; Escherichia.
+REFERENCE   1  (bases 1 to 81)
+  AUTHORS   Ramay,H.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JUL-2020) School of Veterianry Science, University of
+            queensland, Gatton, Gattin, QLD 4343, Australia
+COMMENT     The Escherichia coli whole genome shotgun (WGS) project has the
+            project accession JACCHA000000000.  This version of the project
+            (01) has the accession number JACCHA010000000, and consists of
+            sequences JACCHA010000001-JACCHA010000081.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Method        :: SKESA v. 2.3
+            Genome Representation  :: Full
+            Expected Final Version :: No
+            Genome Coverage        :: 12x
+            Sequencing Technology  :: Illumina NextSeq
+            ##Genome-Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..81
+                     /organism="Escherichia coli"
+                     /mol_type="genomic DNA"
+                     /strain="GCPRC1"
+                     /isolation_source="milk"
+                     /host="cattle"
+                     /db_xref="taxon:562"
+                     /lat_lon="20.9176 S 142.7028 E"
+                     /collection_date="06-May-2019"
+                     /collected_by="John Alawneh"
+WGS         JACCHA010000001-JACCHA010000081
+//
+
+LOCUS       JACCHE010000000           86 rc    DNA     linear   BCT 28-JUL-2020
+DEFINITION  Escherichia coli strain GCPRC6, whole genome shotgun sequencing
+            project.
+ACCESSION   JACCHE000000000
+VERSION     JACCHE000000000.1
+DBLINK      BioProject: PRJNA644956
+            BioSample: SAMN15486720
+KEYWORDS    WGS.
+SOURCE      Escherichia coli
+  ORGANISM  Escherichia coli
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales;
+            Enterobacteriaceae; Escherichia.
+REFERENCE   1  (bases 1 to 86)
+  AUTHORS   Ramay,H.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JUL-2020) School of Veterianry Science, University of
+            queensland, Gatton, Gattin, QLD 4343, Australia
+COMMENT     The Escherichia coli whole genome shotgun (WGS) project has the
+            project accession JACCHE000000000.  This version of the project
+            (01) has the accession number JACCHE010000000, and consists of
+            sequences JACCHE010000001-JACCHE010000086.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Method        :: SKESA v. 2.3
+            Genome Representation  :: Full
+            Expected Final Version :: No
+            Genome Coverage        :: 12x
+            Sequencing Technology  :: Illumina NextSeq
+            ##Genome-Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..86
+                     /organism="Escherichia coli"
+                     /mol_type="genomic DNA"
+                     /strain="GCPRC6"
+                     /isolation_source="milk"
+                     /host="cattle"
+                     /db_xref="taxon:562"
+                     /lat_lon="20.9176 S 142.7028 E"
+                     /collection_date="02-May-2019"
+                     /collected_by="John Alawneh"
+WGS         JACCHE010000001-JACCHE010000086
+//
+
+LOCUS       JACCHC010000000          236 rc    DNA     linear   BCT 28-JUL-2020
+DEFINITION  Escherichia coli strain GCPRC10, whole genome shotgun sequencing
+            project.
+ACCESSION   JACCHC000000000
+VERSION     JACCHC000000000.1
+DBLINK      BioProject: PRJNA644956
+            BioSample: SAMN15486722
+KEYWORDS    WGS.
+SOURCE      Escherichia coli
+  ORGANISM  Escherichia coli
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales;
+            Enterobacteriaceae; Escherichia.
+REFERENCE   1  (bases 1 to 236)
+  AUTHORS   Ramay,H.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JUL-2020) School of Veterianry Science, University of
+            queensland, Gatton, Gattin, QLD 4343, Australia
+COMMENT     The Escherichia coli whole genome shotgun (WGS) project has the
+            project accession JACCHC000000000.  This version of the project
+            (01) has the accession number JACCHC010000000, and consists of
+            sequences JACCHC010000001-JACCHC010000236.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Method        :: SKESA v. 2.3
+            Genome Representation  :: Full
+            Expected Final Version :: No
+            Genome Coverage        :: 12x
+            Sequencing Technology  :: Illumina NextSeq
+            ##Genome-Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..236
+                     /organism="Escherichia coli"
+                     /mol_type="genomic DNA"
+                     /strain="GCPRC10"
+                     /isolation_source="milk"
+                     /host="cattle"
+                     /db_xref="taxon:562"
+                     /lat_lon="20.9176 S 142.7028 E"
+                     /collection_date="04-May-2019"
+                     /collected_by="John Alawneh"
+WGS         JACCHC010000001-JACCHC010000236
+//
+
+LOCUS       JACCGN010000000          112 rc    DNA     linear   BCT 28-JUL-2020
+DEFINITION  Escherichia coli strain GCPRC9, whole genome shotgun sequencing
+            project.
+ACCESSION   JACCGN000000000
+VERSION     JACCGN000000000.1
+DBLINK      BioProject: PRJNA644956
+            BioSample: SAMN15486737
+KEYWORDS    WGS.
+SOURCE      Escherichia coli
+  ORGANISM  Escherichia coli
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales;
+            Enterobacteriaceae; Escherichia.
+REFERENCE   1  (bases 1 to 112)
+  AUTHORS   Ramay,H.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JUL-2020) School of Veterianry Science, University of
+            queensland, Gatton, Gattin, QLD 4343, Australia
+COMMENT     The Escherichia coli whole genome shotgun (WGS) project has the
+            project accession JACCGN000000000.  This version of the project
+            (01) has the accession number JACCGN010000000, and consists of
+            sequences JACCGN010000001-JACCGN010000112.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Method        :: SKESA v. 2.3
+            Genome Representation  :: Full
+            Expected Final Version :: No
+            Genome Coverage        :: 12x
+            Sequencing Technology  :: Illumina NextSeq
+            ##Genome-Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..112
+                     /organism="Escherichia coli"
+                     /mol_type="genomic DNA"
+                     /strain="GCPRC9"
+                     /isolation_source="milk"
+                     /host="cattle"
+                     /db_xref="taxon:562"
+                     /lat_lon="20.9176 S 142.7028 E"
+                     /collection_date="19-May-2019"
+                     /collected_by="John Alawneh"
+WGS         JACCGN010000001-JACCGN010000112
+//
+
+LOCUS       JACCHB010000000           75 rc    DNA     linear   BCT 28-JUL-2020
+DEFINITION  Escherichia coli strain GCPRC143B, whole genome shotgun sequencing
+            project.
+ACCESSION   JACCHB000000000
+VERSION     JACCHB000000000.1
+DBLINK      BioProject: PRJNA644956
+            BioSample: SAMN15486723
+KEYWORDS    WGS.
+SOURCE      Escherichia coli
+  ORGANISM  Escherichia coli
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales;
+            Enterobacteriaceae; Escherichia.
+REFERENCE   1  (bases 1 to 75)
+  AUTHORS   Ramay,H.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JUL-2020) School of Veterianry Science, University of
+            queensland, Gatton, Gattin, QLD 4343, Australia
+COMMENT     The Escherichia coli whole genome shotgun (WGS) project has the
+            project accession JACCHB000000000.  This version of the project
+            (01) has the accession number JACCHB010000000, and consists of
+            sequences JACCHB010000001-JACCHB010000075.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Method        :: SKESA v. 2.3
+            Genome Representation  :: Full
+            Expected Final Version :: No
+            Genome Coverage        :: 12x
+            Sequencing Technology  :: Illumina NextSeq
+            ##Genome-Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..75
+                     /organism="Escherichia coli"
+                     /mol_type="genomic DNA"
+                     /strain="GCPRC143B"
+                     /isolation_source="milk"
+                     /host="cattle"
+                     /db_xref="taxon:562"
+                     /lat_lon="20.9176 S 142.7028 E"
+                     /collection_date="05-May-2019"
+                     /collected_by="John Alawneh"
+WGS         JACCHB010000001-JACCHB010000075
+//
+
+LOCUS       JACCGY010000000          110 rc    DNA     linear   BCT 28-JUL-2020
+DEFINITION  Escherichia coli strain GCPRC8, whole genome shotgun sequencing
+            project.
+ACCESSION   JACCGY000000000
+VERSION     JACCGY000000000.1
+DBLINK      BioProject: PRJNA644956
+            BioSample: SAMN15486726
+KEYWORDS    WGS.
+SOURCE      Escherichia coli
+  ORGANISM  Escherichia coli
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales;
+            Enterobacteriaceae; Escherichia.
+REFERENCE   1  (bases 1 to 110)
+  AUTHORS   Ramay,H.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JUL-2020) School of Veterianry Science, University of
+            queensland, Gatton, Gattin, QLD 4343, Australia
+COMMENT     The Escherichia coli whole genome shotgun (WGS) project has the
+            project accession JACCGY000000000.  This version of the project
+            (01) has the accession number JACCGY010000000, and consists of
+            sequences JACCGY010000001-JACCGY010000110.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Method        :: SKESA v. 2.3
+            Genome Representation  :: Full
+            Expected Final Version :: No
+            Genome Coverage        :: 12x
+            Sequencing Technology  :: Illumina NextSeq
+            ##Genome-Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..110
+                     /organism="Escherichia coli"
+                     /mol_type="genomic DNA"
+                     /strain="GCPRC8"
+                     /isolation_source="milk"
+                     /host="cattle"
+                     /db_xref="taxon:562"
+                     /lat_lon="20.9176 S 142.7028 E"
+                     /collection_date="08-May-2019"
+                     /collected_by="John Alawneh"
+WGS         JACCGY010000001-JACCGY010000110
+//
+
+LOCUS       JACCGW010000000           73 rc    DNA     linear   BCT 28-JUL-2020
+DEFINITION  Escherichia coli strain GCPRC115C, whole genome shotgun sequencing
+            project.
+ACCESSION   JACCGW000000000
+VERSION     JACCGW000000000.1
+DBLINK      BioProject: PRJNA644956
+            BioSample: SAMN15486728
+KEYWORDS    WGS.
+SOURCE      Escherichia coli
+  ORGANISM  Escherichia coli
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales;
+            Enterobacteriaceae; Escherichia.
+REFERENCE   1  (bases 1 to 73)
+  AUTHORS   Ramay,H.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JUL-2020) School of Veterianry Science, University of
+            queensland, Gatton, Gattin, QLD 4343, Australia
+COMMENT     The Escherichia coli whole genome shotgun (WGS) project has the
+            project accession JACCGW000000000.  This version of the project
+            (01) has the accession number JACCGW010000000, and consists of
+            sequences JACCGW010000001-JACCGW010000073.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Method        :: SKESA v. 2.3
+            Genome Representation  :: Full
+            Expected Final Version :: No
+            Genome Coverage        :: 12x
+            Sequencing Technology  :: Illumina NextSeq
+            ##Genome-Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..73
+                     /organism="Escherichia coli"
+                     /mol_type="genomic DNA"
+                     /strain="GCPRC115C"
+                     /isolation_source="milk"
+                     /host="cattle"
+                     /db_xref="taxon:562"
+                     /lat_lon="20.9176 S 142.7028 E"
+                     /collection_date="10-May-2019"
+                     /collected_by="John Alawneh"
+WGS         JACCGW010000001-JACCGW010000073
+//
+
+LOCUS       JACCGV010000000           68 rc    DNA     linear   BCT 28-JUL-2020
+DEFINITION  Escherichia coli strain GCPRC69C, whole genome shotgun sequencing
+            project.
+ACCESSION   JACCGV000000000
+VERSION     JACCGV000000000.1
+DBLINK      BioProject: PRJNA644956
+            BioSample: SAMN15486729
+KEYWORDS    WGS.
+SOURCE      Escherichia coli
+  ORGANISM  Escherichia coli
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales;
+            Enterobacteriaceae; Escherichia.
+REFERENCE   1  (bases 1 to 68)
+  AUTHORS   Ramay,H.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JUL-2020) School of Veterianry Science, University of
+            queensland, Gatton, Gattin, QLD 4343, Australia
+COMMENT     The Escherichia coli whole genome shotgun (WGS) project has the
+            project accession JACCGV000000000.  This version of the project
+            (01) has the accession number JACCGV010000000, and consists of
+            sequences JACCGV010000001-JACCGV010000068.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Method        :: SKESA v. 2.3
+            Genome Representation  :: Full
+            Expected Final Version :: No
+            Genome Coverage        :: 12x
+            Sequencing Technology  :: Illumina NextSeq
+            ##Genome-Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..68
+                     /organism="Escherichia coli"
+                     /mol_type="genomic DNA"
+                     /strain="GCPRC69C"
+                     /isolation_source="milk"
+                     /host="cattle"
+                     /db_xref="taxon:562"
+                     /lat_lon="20.9176 S 142.7028 E"
+                     /collection_date="11-May-2019"
+                     /collected_by="John Alawneh"
+WGS         JACCGV010000001-JACCGV010000068
+//
+
+LOCUS       JACCGU010000000           67 rc    DNA     linear   BCT 28-JUL-2020
+DEFINITION  Escherichia coli strain GCPRC21A, whole genome shotgun sequencing
+            project.
+ACCESSION   JACCGU000000000
+VERSION     JACCGU000000000.1
+DBLINK      BioProject: PRJNA644956
+            BioSample: SAMN15486730
+KEYWORDS    WGS.
+SOURCE      Escherichia coli
+  ORGANISM  Escherichia coli
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales;
+            Enterobacteriaceae; Escherichia.
+REFERENCE   1  (bases 1 to 67)
+  AUTHORS   Ramay,H.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JUL-2020) School of Veterianry Science, University of
+            queensland, Gatton, Gattin, QLD 4343, Australia
+COMMENT     The Escherichia coli whole genome shotgun (WGS) project has the
+            project accession JACCGU000000000.  This version of the project
+            (01) has the accession number JACCGU010000000, and consists of
+            sequences JACCGU010000001-JACCGU010000067.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Method        :: SKESA v. 2.3
+            Genome Representation  :: Full
+            Expected Final Version :: No
+            Genome Coverage        :: 12x
+            Sequencing Technology  :: Illumina NextSeq
+            ##Genome-Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..67
+                     /organism="Escherichia coli"
+                     /mol_type="genomic DNA"
+                     /strain="GCPRC21A"
+                     /isolation_source="milk"
+                     /host="cattle"
+                     /db_xref="taxon:562"
+                     /lat_lon="20.9176 S 142.7028 E"
+                     /collection_date="12-May-2019"
+                     /collected_by="John Alawneh"
+WGS         JACCGU010000001-JACCGU010000067
+//
+
+LOCUS       JACCGT010000000           65 rc    DNA     linear   BCT 28-JUL-2020
+DEFINITION  Escherichia coli strain GCPRC4, whole genome shotgun sequencing
+            project.
+ACCESSION   JACCGT000000000
+VERSION     JACCGT000000000.1
+DBLINK      BioProject: PRJNA644956
+            BioSample: SAMN15486731
+KEYWORDS    WGS.
+SOURCE      Escherichia coli
+  ORGANISM  Escherichia coli
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales;
+            Enterobacteriaceae; Escherichia.
+REFERENCE   1  (bases 1 to 65)
+  AUTHORS   Ramay,H.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JUL-2020) School of Veterianry Science, University of
+            queensland, Gatton, Gattin, QLD 4343, Australia
+COMMENT     The Escherichia coli whole genome shotgun (WGS) project has the
+            project accession JACCGT000000000.  This version of the project
+            (01) has the accession number JACCGT010000000, and consists of
+            sequences JACCGT010000001-JACCGT010000065.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Method        :: SKESA v. 2.3
+            Genome Representation  :: Full
+            Expected Final Version :: No
+            Genome Coverage        :: 12x
+            Sequencing Technology  :: Illumina NextSeq
+            ##Genome-Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..65
+                     /organism="Escherichia coli"
+                     /mol_type="genomic DNA"
+                     /strain="GCPRC4"
+                     /isolation_source="milk"
+                     /host="cattle"
+                     /db_xref="taxon:562"
+                     /lat_lon="20.9176 S 142.7028 E"
+                     /collection_date="13-May-2019"
+                     /collected_by="John Alawneh"
+WGS         JACCGT010000001-JACCGT010000065
+//
+
+LOCUS       JACCGR010000000           72 rc    DNA     linear   BCT 28-JUL-2020
+DEFINITION  Escherichia coli strain GCPRC111B, whole genome shotgun sequencing
+            project.
+ACCESSION   JACCGR000000000
+VERSION     JACCGR000000000.1
+DBLINK      BioProject: PRJNA644956
+            BioSample: SAMN15486733
+KEYWORDS    WGS.
+SOURCE      Escherichia coli
+  ORGANISM  Escherichia coli
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales;
+            Enterobacteriaceae; Escherichia.
+REFERENCE   1  (bases 1 to 72)
+  AUTHORS   Ramay,H.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JUL-2020) School of Veterianry Science, University of
+            queensland, Gatton, Gattin, QLD 4343, Australia
+COMMENT     The Escherichia coli whole genome shotgun (WGS) project has the
+            project accession JACCGR000000000.  This version of the project
+            (01) has the accession number JACCGR010000000, and consists of
+            sequences JACCGR010000001-JACCGR010000072.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Method        :: SKESA v. 2.3
+            Genome Representation  :: Full
+            Expected Final Version :: No
+            Genome Coverage        :: 12x
+            Sequencing Technology  :: Illumina NextSeq
+            ##Genome-Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..72
+                     /organism="Escherichia coli"
+                     /mol_type="genomic DNA"
+                     /strain="GCPRC111B"
+                     /isolation_source="milk"
+                     /host="cattle"
+                     /db_xref="taxon:562"
+                     /lat_lon="20.9176 S 142.7028 E"
+                     /collection_date="15-May-2019"
+                     /collected_by="John Alawneh"
+WGS         JACCGR010000001-JACCGR010000072
+//
+
+LOCUS       JACCGS010000000           72 rc    DNA     linear   BCT 28-JUL-2020
+DEFINITION  Escherichia coli strain GCPRC111A, whole genome shotgun sequencing
+            project.
+ACCESSION   JACCGS000000000
+VERSION     JACCGS000000000.1
+DBLINK      BioProject: PRJNA644956
+            BioSample: SAMN15486732
+KEYWORDS    WGS.
+SOURCE      Escherichia coli
+  ORGANISM  Escherichia coli
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales;
+            Enterobacteriaceae; Escherichia.
+REFERENCE   1  (bases 1 to 72)
+  AUTHORS   Ramay,H.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JUL-2020) School of Veterianry Science, University of
+            queensland, Gatton, Gattin, QLD 4343, Australia
+COMMENT     The Escherichia coli whole genome shotgun (WGS) project has the
+            project accession JACCGS000000000.  This version of the project
+            (01) has the accession number JACCGS010000000, and consists of
+            sequences JACCGS010000001-JACCGS010000072.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Method        :: SKESA v. 2.3
+            Genome Representation  :: Full
+            Expected Final Version :: No
+            Genome Coverage        :: 12x
+            Sequencing Technology  :: Illumina NextSeq
+            ##Genome-Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..72
+                     /organism="Escherichia coli"
+                     /mol_type="genomic DNA"
+                     /strain="GCPRC111A"
+                     /isolation_source="milk"
+                     /host="cattle"
+                     /db_xref="taxon:562"
+                     /lat_lon="20.9176 S 142.7028 E"
+                     /collection_date="14-May-2019"
+                     /collected_by="John Alawneh"
+WGS         JACCGS010000001-JACCGS010000072
+//
+
+LOCUS       JACCGQ010000000          291 rc    DNA     linear   BCT 28-JUL-2020
+DEFINITION  Escherichia coli strain GCPRC2, whole genome shotgun sequencing
+            project.
+ACCESSION   JACCGQ000000000
+VERSION     JACCGQ000000000.1
+DBLINK      BioProject: PRJNA644956
+            BioSample: SAMN15486734
+KEYWORDS    WGS.
+SOURCE      Escherichia coli
+  ORGANISM  Escherichia coli
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales;
+            Enterobacteriaceae; Escherichia.
+REFERENCE   1  (bases 1 to 291)
+  AUTHORS   Ramay,H.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JUL-2020) School of Veterianry Science, University of
+            queensland, Gatton, Gattin, QLD 4343, Australia
+COMMENT     The Escherichia coli whole genome shotgun (WGS) project has the
+            project accession JACCGQ000000000.  This version of the project
+            (01) has the accession number JACCGQ010000000, and consists of
+            sequences JACCGQ010000001-JACCGQ010000291.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Method        :: SKESA v. 2.3
+            Genome Representation  :: Full
+            Expected Final Version :: No
+            Genome Coverage        :: 12x
+            Sequencing Technology  :: Illumina NextSeq
+            ##Genome-Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..291
+                     /organism="Escherichia coli"
+                     /mol_type="genomic DNA"
+                     /strain="GCPRC2"
+                     /isolation_source="milk"
+                     /host="cattle"
+                     /db_xref="taxon:562"
+                     /lat_lon="20.9176 S 142.7028 E"
+                     /collection_date="16-May-2019"
+                     /collected_by="John Alawneh"
+WGS         JACCGQ010000001-JACCGQ010000291
+//
+
+LOCUS       JACCGP010000000           81 rc    DNA     linear   BCT 28-JUL-2020
+DEFINITION  Escherichia coli strain GCPRC19A, whole genome shotgun sequencing
+            project.
+ACCESSION   JACCGP000000000
+VERSION     JACCGP000000000.1
+DBLINK      BioProject: PRJNA644956
+            BioSample: SAMN15486735
+KEYWORDS    WGS.
+SOURCE      Escherichia coli
+  ORGANISM  Escherichia coli
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales;
+            Enterobacteriaceae; Escherichia.
+REFERENCE   1  (bases 1 to 81)
+  AUTHORS   Ramay,H.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JUL-2020) School of Veterianry Science, University of
+            queensland, Gatton, Gattin, QLD 4343, Australia
+COMMENT     The Escherichia coli whole genome shotgun (WGS) project has the
+            project accession JACCGP000000000.  This version of the project
+            (01) has the accession number JACCGP010000000, and consists of
+            sequences JACCGP010000001-JACCGP010000081.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Method        :: SKESA v. 2.3
+            Genome Representation  :: Full
+            Expected Final Version :: No
+            Genome Coverage        :: 12x
+            Sequencing Technology  :: Illumina NextSeq
+            ##Genome-Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..81
+                     /organism="Escherichia coli"
+                     /mol_type="genomic DNA"
+                     /strain="GCPRC19A"
+                     /isolation_source="milk"
+                     /host="cattle"
+                     /db_xref="taxon:562"
+                     /lat_lon="20.9176 S 142.7028 E"
+                     /collection_date="17-May-2019"
+                     /collected_by="John Alawneh"
+WGS         JACCGP010000001-JACCGP010000081
+//
+
+LOCUS       JACCGO010000000          109 rc    DNA     linear   BCT 28-JUL-2020
+DEFINITION  Escherichia coli strain GCPRC77C, whole genome shotgun sequencing
+            project.
+ACCESSION   JACCGO000000000
+VERSION     JACCGO000000000.1
+DBLINK      BioProject: PRJNA644956
+            BioSample: SAMN15486736
+KEYWORDS    WGS.
+SOURCE      Escherichia coli
+  ORGANISM  Escherichia coli
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales;
+            Enterobacteriaceae; Escherichia.
+REFERENCE   1  (bases 1 to 109)
+  AUTHORS   Ramay,H.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JUL-2020) School of Veterianry Science, University of
+            queensland, Gatton, Gattin, QLD 4343, Australia
+COMMENT     The Escherichia coli whole genome shotgun (WGS) project has the
+            project accession JACCGO000000000.  This version of the project
+            (01) has the accession number JACCGO010000000, and consists of
+            sequences JACCGO010000001-JACCGO010000109.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Method        :: SKESA v. 2.3
+            Genome Representation  :: Full
+            Expected Final Version :: No
+            Genome Coverage        :: 12x
+            Sequencing Technology  :: Illumina NextSeq
+            ##Genome-Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..109
+                     /organism="Escherichia coli"
+                     /mol_type="genomic DNA"
+                     /strain="GCPRC77C"
+                     /isolation_source="milk"
+                     /host="cattle"
+                     /db_xref="taxon:562"
+                     /lat_lon="20.9176 S 142.7028 E"
+                     /collection_date="18-May-2019"
+                     /collected_by="John Alawneh"
+WGS         JACCGO010000001-JACCGO010000109
+//
+
+LOCUS       JACCGM010000000           88 rc    DNA     linear   BCT 28-JUL-2020
+DEFINITION  Escherichia coli strain GCPRC46B, whole genome shotgun sequencing
+            project.
+ACCESSION   JACCGM000000000
+VERSION     JACCGM000000000.1
+DBLINK      BioProject: PRJNA644956
+            BioSample: SAMN15486738
+KEYWORDS    WGS.
+SOURCE      Escherichia coli
+  ORGANISM  Escherichia coli
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales;
+            Enterobacteriaceae; Escherichia.
+REFERENCE   1  (bases 1 to 88)
+  AUTHORS   Ramay,H.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JUL-2020) School of Veterianry Science, University of
+            queensland, Gatton, Gattin, QLD 4343, Australia
+COMMENT     The Escherichia coli whole genome shotgun (WGS) project has the
+            project accession JACCGM000000000.  This version of the project
+            (01) has the accession number JACCGM010000000, and consists of
+            sequences JACCGM010000001-JACCGM010000088.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Method        :: SKESA v. 2.3
+            Genome Representation  :: Full
+            Expected Final Version :: No
+            Genome Coverage        :: 12x
+            Sequencing Technology  :: Illumina NextSeq
+            ##Genome-Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..88
+                     /organism="Escherichia coli"
+                     /mol_type="genomic DNA"
+                     /strain="GCPRC46B"
+                     /isolation_source="milk"
+                     /host="cattle"
+                     /db_xref="taxon:562"
+                     /lat_lon="20.9176 S 142.7028 E"
+                     /collection_date="20-May-2019"
+                     /collected_by="John Alawneh"
+WGS         JACCGM010000001-JACCGM010000088
+//
+
+LOCUS       JACCGL010000000           50 rc    DNA     linear   BCT 28-JUL-2020
+DEFINITION  Escherichia coli strain GCPRC20B, whole genome shotgun sequencing
+            project.
+ACCESSION   JACCGL000000000
+VERSION     JACCGL000000000.1
+DBLINK      BioProject: PRJNA644956
+            BioSample: SAMN15486739
+KEYWORDS    WGS.
+SOURCE      Escherichia coli
+  ORGANISM  Escherichia coli
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales;
+            Enterobacteriaceae; Escherichia.
+REFERENCE   1  (bases 1 to 50)
+  AUTHORS   Ramay,H.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JUL-2020) School of Veterianry Science, University of
+            queensland, Gatton, Gattin, QLD 4343, Australia
+COMMENT     The Escherichia coli whole genome shotgun (WGS) project has the
+            project accession JACCGL000000000.  This version of the project
+            (01) has the accession number JACCGL010000000, and consists of
+            sequences JACCGL010000001-JACCGL010000050.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Method        :: SKESA v. 2.3
+            Genome Representation  :: Full
+            Expected Final Version :: No
+            Genome Coverage        :: 12x
+            Sequencing Technology  :: Illumina NextSeq
+            ##Genome-Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..50
+                     /organism="Escherichia coli"
+                     /mol_type="genomic DNA"
+                     /strain="GCPRC20B"
+                     /isolation_source="milk"
+                     /host="cattle"
+                     /db_xref="taxon:562"
+                     /lat_lon="20.9176 S 142.7028 E"
+                     /collection_date="29-May-2019"
+                     /collected_by="John Alawneh"
+WGS         JACCGL010000001-JACCGL010000050
+//
+
+LOCUS       JACCGX010000000           75 rc    DNA     linear   BCT 28-JUL-2020
+DEFINITION  Escherichia coli strain GCPRC55C, whole genome shotgun sequencing
+            project.
+ACCESSION   JACCGX000000000
+VERSION     JACCGX000000000.1
+DBLINK      BioProject: PRJNA644956
+            BioSample: SAMN15486727
+KEYWORDS    WGS.
+SOURCE      Escherichia coli
+  ORGANISM  Escherichia coli
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales;
+            Enterobacteriaceae; Escherichia.
+REFERENCE   1  (bases 1 to 75)
+  AUTHORS   Ramay,H.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JUL-2020) School of Veterianry Science, University of
+            queensland, Gatton, Gattin, QLD 4343, Australia
+COMMENT     The Escherichia coli whole genome shotgun (WGS) project has the
+            project accession JACCGX000000000.  This version of the project
+            (01) has the accession number JACCGX010000000, and consists of
+            sequences JACCGX010000001-JACCGX010000075.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Method        :: SKESA v. 2.3
+            Genome Representation  :: Full
+            Expected Final Version :: No
+            Genome Coverage        :: 12x
+            Sequencing Technology  :: Illumina NextSeq
+            ##Genome-Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..75
+                     /organism="Escherichia coli"
+                     /mol_type="genomic DNA"
+                     /strain="GCPRC55C"
+                     /isolation_source="milk"
+                     /host="cattle"
+                     /db_xref="taxon:562"
+                     /lat_lon="20.9176 S 142.7028 E"
+                     /collection_date="09-May-2019"
+                     /collected_by="John Alawneh"
+WGS         JACCGX010000001-JACCGX010000075
+//
+
+LOCUS       JACCHD010000000           88 rc    DNA     linear   BCT 28-JUL-2020
+DEFINITION  Escherichia coli strain GCPRC3, whole genome shotgun sequencing
+            project.
+ACCESSION   JACCHD000000000
+VERSION     JACCHD000000000.1
+DBLINK      BioProject: PRJNA644956
+            BioSample: SAMN15486721
+KEYWORDS    WGS.
+SOURCE      Escherichia coli
+  ORGANISM  Escherichia coli
+            Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacterales;
+            Enterobacteriaceae; Escherichia.
+REFERENCE   1  (bases 1 to 88)
+  AUTHORS   Ramay,H.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (08-JUL-2020) School of Veterianry Science, University of
+            queensland, Gatton, Gattin, QLD 4343, Australia
+COMMENT     The Escherichia coli whole genome shotgun (WGS) project has the
+            project accession JACCHD000000000.  This version of the project
+            (01) has the accession number JACCHD010000000, and consists of
+            sequences JACCHD010000001-JACCHD010000088.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Method        :: SKESA v. 2.3
+            Genome Representation  :: Full
+            Expected Final Version :: No
+            Genome Coverage        :: 12x
+            Sequencing Technology  :: Illumina NextSeq
+            ##Genome-Assembly-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..88
+                     /organism="Escherichia coli"
+                     /mol_type="genomic DNA"
+                     /strain="GCPRC3"
+                     /isolation_source="milk"
+                     /host="cattle"
+                     /db_xref="taxon:562"
+                     /lat_lon="20.9176 S 142.7028 E"
+                     /collection_date="03-May-2019"
+                     /collected_by="John Alawneh"
+WGS         JACCHD010000001-JACCHD010000088
+//
+
