@@ -5,7 +5,7 @@ import random
 # commensalAvianPrevalenceFileName = "genePrevalancesAcommensal.tsv"
 # APECPrevalenceFileName = "genePrevalancesAPEC.tsv"
 
-mastitisPrevalenceFileName = "mastitisCounts.tsv"
+mastitisPrevalenceFileName = "mastitisCountsTakeFour.tsv"
 commensalAvianPrevalenceFileName = "AvianCommensalCounts.tsv"
 APECPrevalenceFileName = "APECCounts.tsv"
 commensalBovinePrevalenceFileName = "CowCommensalCounts.tsv"
@@ -35,7 +35,7 @@ def findCoreGenome(prevalenceFileName): # extra are M6, M9, M11, M12,M50,M37,M10
             geneCount = int(cols[1])
             if geneCount/assumedNumberOfStrains >= 0.95:
                 genes99_100.append(geneName)
-            elif geneCount/assumedNumberOfStrains >= 0.50:
+            elif geneCount/assumedNumberOfStrains >= 0.80:
                 genes95_99.append(geneName)
             elif geneCount/assumedNumberOfStrains > 0.15:
                 genes15_95.append(geneName)
@@ -157,9 +157,9 @@ print(len(mastGenes))
 #
 # print("\n\n\n\n\n\n\n\n\n\n\n") # mast good and apec good, avian bad
 # print(avianGenes)
-c95 = ['pdeI', 'zinT', 'ygjI', 'yhdJ', 'ulaE_2', 'qorB', 'tauA', 'clsB', 'recF_1', 'dbpA_1', 'cbpA', 'fhlA', 'nrdE', 'pdeF', 'yjfF', 'pagP', 'rfaG', 'trg', 'maeA', 'marR', 'glmU_2', 'xerC_1', 'ygjK', 'yafP', 'bcsC', 'nagB_2', 'fbpC2', 'rhaR_2', 'rihC', 'fdrA_1', 'uidA', 'ahr', 'group_2417', 'ompC', 'ygfK', 'ybbY', 'lsrK_2', 'flhA_2', 'bioF_1', 'ymgD', 'caiA_2', 'ygcS_2', 'fimH_2', 'fixX_3', 'speF', 'ltnD', 'glcR', 'ecpR', 'fimG_2', 'caiT_1', 'fecA']
-c98 = ['ptrB', 'garP', 'agaC_2', 'yhdJ', 'qorB', 'tauA', 'hha', 'srlR_2', 'clsB', 'recF_1', 'rbsA_1', 'gsk', 'gadE', 'dbpA_1', 'cbpA', 'ycaO', 'fhlA', 'bhsA_3', 'gss', 'nrdE', 'chbF', 'rlmA', 'xseA', 'gadW', 'xylB', 'yjfF', 'phoE', 'aqpZ', 'torA', 'por_2', 'sutR', 'rtcA', 'leuO', 'dsbG', 'ltaE', 'efeB', 'yedK', 'creD', 'maeA', 'marR', 'fbaB', 'nudI', 'glmU_2', 'xerC_1', 'comEC', 'nagB_2', 'fbpC2', 'rfaC', 'rhaR_2', 'fdrA_1', 'fucI', 'uidA', 'yjfC', 'group_2417', 'ygfK', 'ghxQ', 'fliK', 'ybbY', 'mocA', 'bioF_1', 'ymgD']
-c100 = ['yjjQ', 'malZ', 'entA', 'dhaM', 'pmrD', 'yhdY', 'frmB', 'copA', 'glsA1', 'ybcI', 'rpsU', 'fur', 'cspD', 'ygdR_2', 'ygaM', 'entS', 'nagA', 'rsfS', 'exbB', 'narH', 'rlmM', 'glgB', 'clpA', 'entH', 'rnd', 'purU', 'gltK', 'corC', 'malK', 'cysB', 'hybO', 'recF_1', 'trpS', 'dnaG', 'rfaF', 'topA_2', 'rbsA_1', 'ftsP', 'exbD', 'uppP', 'ttdB', 'plsC', 'rlmB', 'rlmH', 'ycgM', 'yeiP', 'rffH', 'yccU', 'kdpB', 'matP', 'yegT', 'gltI', 'bdm', 'truD', 'holE', 'aas', 'yebV', 'recX', 'sbp', 'gshA', 'moeA', 'ydiB', 'eptC', 'cca', 'amiB', 'ybjG', 'bcsZ', 'serC', 'mzrA', 'chbF', 'ogt', 'cmoB', 'yfcF', 'allS', 'helD', 'ugpA', 'dgcM', 'rlmA', 'arnF', 'fepE', 'xseA', 'eamB', 'ygdG', 'fucK', 'loiP', 'ygiD', 'yiaB', 'phnO', 'yjfF', 'gcd', 'frmA', 'ybdL', 'lnt', 'chiQ', 'pflB', 'ycaL', 'torA', 'por_2', 'dauA', 'narJ', 'uspF', 'manY', 'yegS', 'mglA_1', 'inaA', 'srlB', 'lplT', 'dsbC', 'pepP', 'nupG', 'qseC', 'ygiF', 'yhjB', 'lldD', 'rffG', 'wecD', 'glnA', 'thiE', 'ulaA', 'prpC', 'ssuC_2', 'lrp', 'rpsA', 'mrdA', 'creD', 'ghrA', 'cvrA', 'hslJ', 'marA', 'yebF', 'fliS', 'mtfA', 'fbaB', 'arnE', 'flk', 'pdxK', 'amiA', 'endA', 'glmU_2', 'ttdA', 'argE_1', 'argC', 'ghxP', 'alsT', 'allR', 'citX', 'mntS', 'artQ', 'dmsB_1', 'msbA_2', 'ompA', 'chbG', 'cysH_1', 'astD', 'yfcG', 'tmcA', 'nagB_2', 'torD', 'tilS', 'purT', 'ypdF', 'ydjZ_1', 'fucI', 'gcvP']
+# c95 = ['pdeI', 'zinT', 'ygjI', 'yhdJ', 'ulaE_2', 'qorB', 'tauA', 'clsB', 'recF_1', 'dbpA_1', 'cbpA', 'fhlA', 'nrdE', 'pdeF', 'yjfF', 'pagP', 'rfaG', 'trg', 'maeA', 'marR', 'glmU_2', 'xerC_1', 'ygjK', 'yafP', 'bcsC', 'nagB_2', 'fbpC2', 'rhaR_2', 'rihC', 'fdrA_1', 'uidA', 'ahr', 'group_2417', 'ompC', 'ygfK', 'ybbY', 'lsrK_2', 'flhA_2', 'bioF_1', 'ymgD', 'caiA_2', 'ygcS_2', 'fimH_2', 'fixX_3', 'speF', 'ltnD', 'glcR', 'ecpR', 'fimG_2', 'caiT_1', 'fecA']
+# c98 = ['ptrB', 'garP', 'agaC_2', 'yhdJ', 'qorB', 'tauA', 'hha', 'srlR_2', 'clsB', 'recF_1', 'rbsA_1', 'gsk', 'gadE', 'dbpA_1', 'cbpA', 'ycaO', 'fhlA', 'bhsA_3', 'gss', 'nrdE', 'chbF', 'rlmA', 'xseA', 'gadW', 'xylB', 'yjfF', 'phoE', 'aqpZ', 'torA', 'por_2', 'sutR', 'rtcA', 'leuO', 'dsbG', 'ltaE', 'efeB', 'yedK', 'creD', 'maeA', 'marR', 'fbaB', 'nudI', 'glmU_2', 'xerC_1', 'comEC', 'nagB_2', 'fbpC2', 'rfaC', 'rhaR_2', 'fdrA_1', 'fucI', 'uidA', 'yjfC', 'group_2417', 'ygfK', 'ghxQ', 'fliK', 'ybbY', 'mocA', 'bioF_1', 'ymgD']
+# c100 = ['yjjQ', 'malZ', 'entA', 'dhaM', 'pmrD', 'yhdY', 'frmB', 'copA', 'glsA1', 'ybcI', 'rpsU', 'fur', 'cspD', 'ygdR_2', 'ygaM', 'entS', 'nagA', 'rsfS', 'exbB', 'narH', 'rlmM', 'glgB', 'clpA', 'entH', 'rnd', 'purU', 'gltK', 'corC', 'malK', 'cysB', 'hybO', 'recF_1', 'trpS', 'dnaG', 'rfaF', 'topA_2', 'rbsA_1', 'ftsP', 'exbD', 'uppP', 'ttdB', 'plsC', 'rlmB', 'rlmH', 'ycgM', 'yeiP', 'rffH', 'yccU', 'kdpB', 'matP', 'yegT', 'gltI', 'bdm', 'truD', 'holE', 'aas', 'yebV', 'recX', 'sbp', 'gshA', 'moeA', 'ydiB', 'eptC', 'cca', 'amiB', 'ybjG', 'bcsZ', 'serC', 'mzrA', 'chbF', 'ogt', 'cmoB', 'yfcF', 'allS', 'helD', 'ugpA', 'dgcM', 'rlmA', 'arnF', 'fepE', 'xseA', 'eamB', 'ygdG', 'fucK', 'loiP', 'ygiD', 'yiaB', 'phnO', 'yjfF', 'gcd', 'frmA', 'ybdL', 'lnt', 'chiQ', 'pflB', 'ycaL', 'torA', 'por_2', 'dauA', 'narJ', 'uspF', 'manY', 'yegS', 'mglA_1', 'inaA', 'srlB', 'lplT', 'dsbC', 'pepP', 'nupG', 'qseC', 'ygiF', 'yhjB', 'lldD', 'rffG', 'wecD', 'glnA', 'thiE', 'ulaA', 'prpC', 'ssuC_2', 'lrp', 'rpsA', 'mrdA', 'creD', 'ghrA', 'cvrA', 'hslJ', 'marA', 'yebF', 'fliS', 'mtfA', 'fbaB', 'arnE', 'flk', 'pdxK', 'amiA', 'endA', 'glmU_2', 'ttdA', 'argE_1', 'argC', 'ghxP', 'alsT', 'allR', 'citX', 'mntS', 'artQ', 'dmsB_1', 'msbA_2', 'ompA', 'chbG', 'cysH_1', 'astD', 'yfcG', 'tmcA', 'nagB_2', 'torD', 'tilS', 'purT', 'ypdF', 'ydjZ_1', 'fucI', 'gcvP']
 # large diff : 'ulaE_2', 'glmU_2'
 
 with open("genesShared.tsv", "w") as sharedGenesFile:

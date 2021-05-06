@@ -313,7 +313,11 @@ def filesContainTheSamInformation(fileName1, fileName2):
                 return False
     return True
 
-def separatingGenomesFromSingleFastaFile(filePath):
+def separateGenomesFromSingleFastaFile(filePath):
+    # the file needs to have >LOCUS_NAME other stuff for each contig
+    # LOCUS_Name needs to be one word
+    # sequences can span multiple lines
+    # other stuff needs to contain "complete genome" if it is a complete genome or "whole genome shotgun sequence"
     pathLocation = '/'.join(filePath.split("/")[:-1])
     with open(filePath) as fileToSort:
         onFirstLine = True
@@ -355,3 +359,20 @@ def separatingGenomesFromSingleFastaFile(filePath):
                 onFirstLine = False
             else:
                 lastContigSeq += line  # no strip to keep formatting
+
+def determiningIfaGeneIsAPartofAnotherGene(gene1, gene2, cutoff=0.8):
+    if len(gene2) > len(gene1):
+        largerGene = gene2
+        smallerGene = gene1
+    else:
+        largerGene = gene1
+        smallerGene = gene2
+
+    for startPosition in range(len(largerGene) - len(smallerGene)):
+        numSame = 0
+        for nucIndex in range(len(smallerGene)):
+            if smallerGene[nucIndex] == largerGene[startPosition + nucIndex]:
+                numSame += 1
+        if numSame/len(smallerGene) > cutoff:
+            return True
+    return False
