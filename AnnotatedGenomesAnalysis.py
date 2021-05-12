@@ -11,7 +11,7 @@ PTSfruc = "ATGAAAACGCTGCTGATTATTGACGCTAATCTCGGTCAGGCACGCGCCTATATGGCGAAGACCCTGCTG
 fileFolderPath = "./ourMastitisAnnotatedGenomes"
 GenomesFromNucleotidePath = "./DownloadingFilesFromNCBI/DownloadedFromSSB"
 significantMutationsFileName = "predictiveGeneVariantsAcrossPhylogroups.csv"
-outFileName = "SNPNonSNPratios.tsv" # "my cbtA seqs.fasta"
+outFileName = "SNPNonSNPratiosTEST.tsv" # "my cbtA seqs.fasta"
 sigSNPs = [] # list of list [name,SNP location, newNuc, oldNuc]
 SNPcounts = [] # snp number = index
 unSNPcounts = [] # for checking if I'm reading the right nucleotide
@@ -96,8 +96,8 @@ with open(outFileName,"w") as outFile:
     outFile.write("gene name" + "\t"+ "old nuc" + "\t"+ "new nuc" + "\t"+ "SNP percent" + "\t"+ "original nuc percent" + "\t"+ "frequeny of the gene\n")
     for snpIndex in range(len(sigSNPs)):
         # gene name, old nuc, new nuc, SNP percent, original nuc percent, frequeny of the gene
-        try:
-            outFile.write(sigSNPs[snpIndex][0] + "\t" + sigSNPs[snpIndex][3] + "\t" + sigSNPs[snpIndex][2] + "\t" +
+        try: # include a gene variant for each SNP
+            outFile.write(sigSNPs[snpIndex][0] + "\t" + sigSNPs[snpIndex][3] + "\t" + sigSNPs[snpIndex][2] + "\t" + # output other possible nucleotides at SNP position
                           str(SNPcounts[snpIndex]/timesGeneFound[snpIndex]) + "\t" +
                           str(unSNPcounts[snpIndex]/timesGeneFound[snpIndex]) + "\t"
                           + str(timesGeneFound[snpIndex]) + "\n")

@@ -5,9 +5,14 @@ import random
 # commensalAvianPrevalenceFileName = "genePrevalancesAcommensal.tsv"
 # APECPrevalenceFileName = "genePrevalancesAPEC.tsv"
 
+# mastitisPrevalenceFileName = "mastitisCountsTakeFour.tsv"
+# commensalAvianPrevalenceFileName = "AvianCommensalCounts.tsv"
+# APECPrevalenceFileName = "APECCounts.tsv"
+# commensalBovinePrevalenceFileName = "CowCommensalCounts.tsv"
+
 mastitisPrevalenceFileName = "mastitisCountsTakeFour.tsv"
-commensalAvianPrevalenceFileName = "AvianCommensalCounts.tsv"
-APECPrevalenceFileName = "APECCounts.tsv"
+commensalAvianPrevalenceFileName = "natureCommensalCountsTake2.tsv"
+APECPrevalenceFileName = "naturePathogenCountsTake2.tsv"
 commensalBovinePrevalenceFileName = "CowCommensalCounts.tsv"
 def findCoreGenome(prevalenceFileName): # extra are M6, M9, M11, M12,M50,M37,M109
     geneCounts = []
@@ -33,9 +38,9 @@ def findCoreGenome(prevalenceFileName): # extra are M6, M9, M11, M12,M50,M37,M10
             cols = line.split("\t")
             geneName = cols[0]
             geneCount = int(cols[1])
-            if geneCount/assumedNumberOfStrains >= 0.95:
+            if geneCount/assumedNumberOfStrains >= 0.98:
                 genes99_100.append(geneName)
-            elif geneCount/assumedNumberOfStrains >= 0.80:
+            elif geneCount/assumedNumberOfStrains >= 0.50:
                 genes95_99.append(geneName)
             elif geneCount/assumedNumberOfStrains > 0.15:
                 genes15_95.append(geneName)

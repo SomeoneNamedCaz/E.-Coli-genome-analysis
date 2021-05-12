@@ -1,15 +1,18 @@
 from functions import *
+import sys
 # read presence absence csv file
 
 # pathOfPresenceAbsenceFile = "./reannotatedMastitisGenomes/gene_presence_absence.Rtab"
-pathOfPresenceAbsenceFile = "./reannotatedMastitisGenomes/roary3NewVersion/gene_presence_absence.Rtab"
+# pathOfPresenceAbsenceFile = "./reannotatedMastitisGenomes/roary3NewVersion/gene_presence_absence.Rtab"
 # pathOfPresenceAbsenceFile = "./natureStuff/naturePathogenRoary/gene_presence_absence.Rtab"
 # nameOfOutFile = "AvianCommensalCounts.tsv"
 # pathOfPresenceAbsenceFile = "./bovineCommensalRoary/gene_presence_absence.Rtab"
 # nameOfOutFile = "APECCounts.tsv"
 # nameOfOutFile = "CowCommensalCounts.tsv"
 # nameOfOutFile = "mastitisCountsWith79Genomes.tsv"
-nameOfOutFile = "mastitisCountsTakeFour.tsv"
+# nameOfOutFile = "mastitisCountsTakeFour.tsv"
+pathOfPresenceAbsenceFile = sys.argv[1]
+nameOfOutFile = sys.argv[2]
 with open(pathOfPresenceAbsenceFile) as infile, open(nameOfOutFile,"w") as outFile:
     onFirstLine = True
     indexOfgenomesToExclude = []

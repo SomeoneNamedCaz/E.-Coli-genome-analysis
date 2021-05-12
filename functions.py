@@ -122,6 +122,8 @@ def getGenesOnContigs(fileName, contigs):
 def geneSimilarity(seq1, seq2):
     numSame = 0
     printedError = False
+    seq1 = seq1.upper()
+    seq2 = seq2.upper()
     for i in range(len(seq1)):
         try:
             if seq1[i] == seq2[i]:
@@ -130,7 +132,7 @@ def geneSimilarity(seq1, seq2):
             if not printedError:
                 print("different Gene lengths")
                 printedError = True
-    return numSame / min(len(seq1),len(seq2))
+    return numSame / max(len(seq1),len(seq2))
 
 def genesAreWithinPercentIdentical(seq1, seq2, cutoff= 0.8):
     numSame = 0
@@ -139,7 +141,7 @@ def genesAreWithinPercentIdentical(seq1, seq2, cutoff= 0.8):
     for i in range(max(len(seq1), len(seq2))):
         try:
             # if number of wrong nuc's is greater than the num possible to be within tolerance, it isn't
-            if i - numSame > len(seq1)*(1-cutoff):
+            if i - numSame > max(len(seq1), len(seq2))*(1-cutoff):
                 return False
             if seq1[i] == seq2[i]:
                 numSame += 1
@@ -360,7 +362,7 @@ def separateGenomesFromSingleFastaFile(filePath):
             else:
                 lastContigSeq += line  # no strip to keep formatting
 
-def determiningIfaGeneIsAPartofAnotherGene(gene1, gene2, cutoff=0.8):
+def aGeneIsAPartofAnotherGene(gene1, gene2, cutoff=0.8):
     if len(gene2) > len(gene1):
         largerGene = gene2
         smallerGene = gene1
