@@ -8,11 +8,15 @@ geneSeq2 = "ATGAGCACCGTGACTATTACCGATTTAGCGCGTGAAAACGTCCGCAACCTGACGCCGTATCAGTCAGC
 geneSeq3 = "ATGAGCACCGTGACTATTACCGATTTAGCGCGTGAAAACGTCCGCAACCTGACGCCGTATCAGTCGGCGCGTCGTCTGGGCGGTAACGGCGACGTCTGGCTGAACGCCAACGAATACCCCACAGCCGTGGAGTTTCAGCTTACTCAGCAAACGCTCAACCGCTACCCGGAATGTCAGCCGAAAGCGGTGATTGAAAATTACGCGCAGTATGCAAGCGTAAAACCGGAGCAGGTGCTGGTCAGCCGTGGCGCGGACGAAGGTATTGAACTACTGATTCGCGCTTTTTGCGAACCAGGTAAAGACGCCATCCTCTACTGCCCGCCAACGTACGGCATGTACAGCGTCAGCGCTGAAACCATTGGCGTCGAGTGCCGCACAGTGCCGACGCTGGACAACTGGCAACTGGACTTGCAGGGCATTTCCGACAAGCTGGACGGCGTAAAAGTGGTCTATGTTTGCAGCCCCAACAACCCGACCGGGCAACTGATCAATCCGCAGGATTTTCGCACTCTGCTGGAGCTAACCCGCGGAAAAGCCATTGTGGTTGCCGATGAAGCCTATATTGAGTTTTGCCCGCAGGCATCGCTGGCTGGCTGGCTGGCGGAATATCCGCACCTGGCTATTTTGCGCACACTGTCGAAAGCTTTTGCTCTGGCGGGCCTTCGTTGCGGATTTACGCTGGCAAACGAAGAAGTCATCAACCTGCTGATGAAAGTGATCGCCCCCTACCCGCTCTCGACGCCGGTCGCCGACATTGCGGCCCAGGCGTTAAGCCCGCAGGGGATCGTCGCCATGCGCGAACGGGTAGCGCAAATTATTGCAGAACGCGAATATCTGATTGCCGCATTGAAAGAAATCCCCTGTGTGGAGCAGGTTTTTGACTCTGAAACCAACTACATTCTGGCGCGCTTTAAAGCCTCCAGTGCAGTGTTTAAATCTTTGTGGGATCAGGGCATTATCTTACGTGATCAGAATAAACAACCCTCTTTAAGCGGCTGCCTGCGAATTACCGTCGGAACCCGTGAAGAAAGCCAGCGCGTCATTGACGCCTTACGTGCGGAGCAAGTTTAA"
 PTSfruc = "ATGAAAACGCTGCTGATTATTGACGCTAATCTCGGTCAGGCACGCGCCTATATGGCGAAGACCCTGCTGGGCGCGGCGGCGCGAAAAGCAAAACTGGAAATCATCGACAATCCGAACGACGCTGAAATGGCGATTGTTCTCGGTGATTCCATCCCGAACGACAGCGCGCTGAACGGTAAAAATGTCTGGCTGGGCGATATTTCCCGGGCAGTTGCGCACCCTGAGCTGTTCCTGAGTGAAGCCAAAGGCCATGCTAAACCTTACACTGCGCCGGTCGCTGCGACAGCACCGGTTGACGCCAGCGGCCCGAAACGCGTAGTTGCGGTGACTGCTTGCCCGACTGGCGTAGCACACACCTTTATGGCTGCTGAAGCCATTGAAACCGAAGCGAAAAAACGTGGCTGGTGGGTGAAAGTTGAAACCCGTGGTTCTGTTGGCGCGGGTAATGCAATCACTCCCGAAGAAGTCGCAGCAGCGGATCTGGTGATTGTGGCGGCAGATATCGAAGTGGATCTGGCGAAATTTGCTGGTAAACCGATGTATCGCACCTCTACCGGTCTGGCGCTGAAGAAAACCGCGCAGGAACTGGATAAAGCGGTTGCTGAAGCAACGCCGTATGAACCGGCGGGCAAAGCTCAAACGGCGACCACTGAAGGTAAGAAAGAGAGTGCGGGCGCTTACCGTCACTTGCTGACGGGCGTTTCTTACATGCTGCCGATGGTCGTTGCTGGTGGTCTGTGTATCGCGCTTTCTTTTGCTTTTGGTATCGAAGCGTTTAAAGAGCCGGGTACGTTGGCAGCGGCGCTGATGCAGATTGGCGGTGGTTCAGCCTTTGCGCTGATGGTGCCGGTACTGGCAGGTTATATTGCCTTCTCCATTGCCGATCGTCCGGGCCTCACGCCGGGTCTGATTGGCGGTATGCTGGCTGTCAGCACCGGTTCTGGCTTCATTGGCGGTATTATTGCGGGCTTCCTGGCTGGTTACATTGCGAAGTTAATCAGTACGCAACTGAAACTGCCACAGAGTATGGAGGCGCTGAAACCAATCCTGATCATTCCGCTAATTTCCAGTCTGGTGGTCGGTCTGGCGATGATCTACCTGATCGGTAAACCAGTTGCTGGCATTCTCGAAGGGTTGACTCACTGGCTGCAAACCATGGGGACTGCGAATGCGGTTCTGCTGGGGGCGATCCTCGGTGGCATGATGTGTACTGACATGGGCGGTCCGGTAAACAAAGCAGCGTACGCATTCGGTGTGGGTCTGCTGAGTACTCAAACCTATGGCCCGATGGCGGCGATTATGGCGGCAGGTATGGTGCCACCGCTGGCAATGGGTCTGGCAACAATGGTGGCGCGTCGCAAATTCGACAAAGCGCAGCAGGAAGGTGGCAAAGCCGCTCTGGTATTGGGACTGTGCTTCATTTCGGAAGGTGCAATTCCGTTTGCTGCTCGTGATCCGATGCGTGTGCTGCCGTGCTGTATCGTGGGTGGGGCGCTGACTGGCGCAATCTCAATGGCGATTGGTGCGAAACTGATGGCACCGCACGGTGGTCTGTTTGTTCTGCTGATCCCTGGCGCTATTACGCCGGTACTGGGTTACCTGGTAGCAATTATTGCCGGTACGCTGGTGGCGGGTTTGGCCTATGCCTTCCTGAAACGTCCGGAAGTGGACGCAGTAGCGAAAGCAGCGTAA"
 
-fileFolderPath = "./ourMastitisAnnotatedGenomes"
-GenomesFromNucleotidePath = "./DownloadingFilesFromNCBI/DownloadedFromSSB"
+# fileFolderPath = "./ourMastitisAnnotatedGenomes"
+# fileFolderPath = "./allAnnotatedMastitisGenomes/gbks/"
+fileFolderPath = "./bovineCommensalAnnotatedGenomes/gbks/"
+# GenomesFromNucleotidePath = "./DownloadingFilesFromNCBI/DownloadedFromSSB"
 significantMutationsFileName = "predictiveGeneVariantsAcrossPhylogroups.csv"
-outFileName = "SNPNonSNPratiosTEST.tsv" # "my cbtA seqs.fasta"
+outFileName = "SNPNonSNPratiosTESTBovine.tsv" # "my cbtA seqs.fasta"
 sigSNPs = [] # list of list [name,SNP location, newNuc, oldNuc]
+snpVariantIDs = []
+firstSeqAllGenes = {}
 SNPcounts = [] # snp number = index
 unSNPcounts = [] # for checking if I'm reading the right nucleotide
 timesGeneFound = []
@@ -27,6 +31,7 @@ with open(significantMutationsFileName) as sigMutations:
         geneSNPLocation = cols[4]
         geneProduct = cols[5].lower()
         if geneSNPLocation != "" and line[:2] != "##": # if it is a SNP and not a header line
+            snpVariantIDs.append(cols[0])
             geneSNPNuc = re.sub(r"-core", "", cols[0])[-1]
             oldNuc = re.sub(r"-core", "", cols[0])[-3]
             # print(oldNuc)
@@ -42,7 +47,7 @@ numHisC = 0
 with open(outFileName,"w") as outFile:
     # currently there are problems with the sequence data not being contained in the .gb files and gene locations with > or <
     # some files have sequence data and others have similar files with .1 af ter them with the data and no annotations, e.g. MOAH01000001.1
-    filesToIterateOver = glob(os.path.join(GenomesFromNucleotidePath, '*.gb')) + glob(os.path.join(fileFolderPath, '*.gbk'))
+    filesToIterateOver = glob(os.path.join(fileFolderPath, '*.gbk'))
     for fileName in filesToIterateOver:
         with open(fileName) as annotationFile:
             for line in annotationFile:
@@ -50,16 +55,32 @@ with open(outFileName,"w") as outFile:
                 if len(cols) >= 1 and cols[0] == "WGS":
                     numMasterFiles += 1
         numFiles += 1
-        if numFiles % 100 == 0:
+        if numFiles % 30 == 0:
             print("on file", numFiles, "of", len(filesToIterateOver))
         contigs = getContigs(fileName)
         genes = getGenesOnContigs(fileName, contigs)
+        if numFiles == 1:
+            firstSeqAllGenes = genes
         # this is for writing out gene sequences
         # for geneName in genes:
         #     if "cbtA" in geneName:  # account for duplications
         #         outFile.write(">" + fileName + "\n")
         #         outFile.write(genes[geneName][1] + "\n")
+        for geneName in genes.keys():
+            try:
+                sim = geneSimilarity(firstSeqAllGenes[geneName][1], genes[geneName][1])
+                print(sim)
+                if sim < 0.80:  # highlights any phase shifts
+                    print("very different")
+                    print(geneName)
+                    print(genes[geneName][1])
+                    print(firstSeqAllGenes[geneName][1])
+            except:
+                0
 
+        # add other genes
+        for key in genes:
+                firstSeqAllGenes[key] = genes[key]
         # looking at SNPs
         for SNPindex in range(len(sigSNPs)):
             SNPinfo = sigSNPs[SNPindex]
@@ -71,6 +92,13 @@ with open(outFileName,"w") as outFile:
             geneSeq = ""
             try:
                 geneSeq = genes[geneNameForSNP][1]
+                # sim = geneSimilarity(firstSeqAllGenes[geneNameForSNP][1], geneSeq)
+                # print(sim)
+                # if sim < 0.80: # highlights any phase shifts
+                #     print("very different")
+                #     print(geneNameForSNP)
+                #     print(geneSeq)
+                #     print(firstSeqAllGenes[geneNameForSNP][1])
             except KeyError:
                 try:
                     geneSeq = genes[geneProductForSNP][1]
@@ -93,11 +121,11 @@ with open(outFileName,"w") as outFile:
 
 
     # header line
-    outFile.write("gene name" + "\t"+ "old nuc" + "\t"+ "new nuc" + "\t"+ "SNP percent" + "\t"+ "original nuc percent" + "\t"+ "frequeny of the gene\n")
+    outFile.write("variant ID\tgene name\told nuc\tnew nuc\tSNP percent\toriginal nuc percent\tfrequeny of the gene\n")
     for snpIndex in range(len(sigSNPs)):
-        # gene name, old nuc, new nuc, SNP percent, original nuc percent, frequeny of the gene
+        # variant ID, gene name, old nuc, new nuc, SNP percent, original nuc percent, frequeny of the gene
         try: # include a gene variant for each SNP
-            outFile.write(sigSNPs[snpIndex][0] + "\t" + sigSNPs[snpIndex][3] + "\t" + sigSNPs[snpIndex][2] + "\t" + # output other possible nucleotides at SNP position
+            outFile.write(snpVariantIDs[snpIndex] + "\t"+ sigSNPs[snpIndex][0] + "\t" + sigSNPs[snpIndex][3] + "\t" + sigSNPs[snpIndex][2] + "\t" + # output other possible nucleotides at SNP position
                           str(SNPcounts[snpIndex]/timesGeneFound[snpIndex]) + "\t" +
                           str(unSNPcounts[snpIndex]/timesGeneFound[snpIndex]) + "\t"
                           + str(timesGeneFound[snpIndex]) + "\n")

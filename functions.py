@@ -3,6 +3,7 @@ import time
 import urllib.request
 import os
 from glob import glob
+import threading
 
 def reverseComplement(seq):
     reverseComplementSeq = ''  # string of complementary nucleotides
@@ -125,6 +126,7 @@ def geneSimilarity(seq1, seq2):
     seq1 = seq1.upper()
     seq2 = seq2.upper()
     for i in range(len(seq1)):
+
         try:
             if seq1[i] == seq2[i]:
                 numSame += 1
@@ -378,3 +380,54 @@ def aGeneIsAPartofAnotherGene(gene1, gene2, cutoff=0.8):
         if numSame/len(smallerGene) > cutoff:
             return True
     return False
+
+def aGeneIsAPartofAnotherGeneFast(gene1, gene2, cutoff=0.8):
+    if len(gene2) > len(gene1):
+        largerGene = gene2
+        smallerGene = gene1
+    else:
+        largerGene = gene1
+        smallerGene = gene2
+    listOfComparisons = []
+    returnFlag = False
+    class compareGeneThread(threading.Thread):
+        def __init__(self, genePart1, genePart2):
+            threading.Thread.__init__(self)
+            self.genePart1 = genePart1
+            self.genePart2 = genePart2
+        def run(self):
+            if (genesAreWithinPercentIdentical(self.genePart1, self.genePart2, cutoff=cutoff)):
+                listOfComparisons.append(True)
+    for startPosition in range(len(largerGene) - len(smallerGene)):
+        if startPosition % 100 == 0:
+            print(startPosition)
+        compareGeneThread(largerGene[startPosition:], smallerGene).start()
+        # numSame = 0
+        # if (genesAreWithinPercentIdentical(largerGene[startPosition:], smallerGene, cutoff=cutoff)):
+        #     return True
+
+    # geneThread.join()
+    # time.sleep(10) # for if one thread isn't finished later
+    # for comparison in listOfComparisons:
+    #     if comparison:
+    #         return True
+    return returnFlag
+
+def aGeneIsAPartofAnotherGeneFastST(gene1, gene2, cutoff=0.8):
+    if len(gene2) > len(gene1):
+        largerGene = gene2
+        smallerGene = gene1
+    else:
+        largerGene = gene1
+        smallerGene = gene2
+    listOfComparisons = []
+    for startPosition in range(len(largerGene) - len(smallerGene)):
+        if startPosition % 100 == 0:
+            print(startPosition)
+        if (genesAreWithinPercentIdentical(largerGene[startPosition:], smallerGene, cutoff=cutoff)):
+            return True
+    return False
+def insertAtIndex(stringToInsert, index, char):
+    """ returns the string that has the inserted index"""
+    stringToInsert = stringToInsert[:index] + char + stringToInsert[index:]
+    return stringToInsert
