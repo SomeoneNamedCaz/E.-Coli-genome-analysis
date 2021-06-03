@@ -9,7 +9,7 @@ multipleAlignment = [] # [[refSection1, qry1, qry2, qry3, ... ], ... ] in same o
 onFirstFile = True
 # with open(multipleGenomeAlignmentFilePath, "w") as multipleAlignFile:
 fileNumber = 1
-numFilesToAlign = 3
+numFilesToAlign = 300
 
 # O(n^3) I think
 
@@ -206,6 +206,7 @@ for path in glob(gsAlignPaths):
 
 numSeg = 0
 lensOfSegs = []
+totalBP = 0
 for a in multipleAlignment:
     print("_______")
     if a != []:
@@ -214,8 +215,11 @@ for a in multipleAlignment:
     for s in a:
         # time.sleep(0.1)
         print(s)
+        totalBP += len(s)
 
 print("num aligned segments",numSeg)
 print("avg lens of segs", sum(lensOfSegs)/len(lensOfSegs))
 print("min", min(lensOfSegs))
 print("max", max(lensOfSegs))
+print("longest", max(lensOfSegs, lambda a: a[0]))
+print(totalBP)

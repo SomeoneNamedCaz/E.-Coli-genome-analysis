@@ -38,9 +38,9 @@ def findCoreGenome(prevalenceFileName): # extra are M6, M9, M11, M12,M50,M37,M10
             cols = line.split("\t")
             geneName = cols[0]
             geneCount = int(cols[1])
-            if geneCount/assumedNumberOfStrains >= 0.98:
+            if geneCount/assumedNumberOfStrains >= 0.95:
                 genes99_100.append(geneName)
-            elif geneCount/assumedNumberOfStrains >= 0.50:
+            elif geneCount/assumedNumberOfStrains >= 0.80:
                 genes95_99.append(geneName)
             elif geneCount/assumedNumberOfStrains > 0.15:
                 genes15_95.append(geneName)
@@ -167,7 +167,7 @@ print(len(mastGenes))
 # c100 = ['yjjQ', 'malZ', 'entA', 'dhaM', 'pmrD', 'yhdY', 'frmB', 'copA', 'glsA1', 'ybcI', 'rpsU', 'fur', 'cspD', 'ygdR_2', 'ygaM', 'entS', 'nagA', 'rsfS', 'exbB', 'narH', 'rlmM', 'glgB', 'clpA', 'entH', 'rnd', 'purU', 'gltK', 'corC', 'malK', 'cysB', 'hybO', 'recF_1', 'trpS', 'dnaG', 'rfaF', 'topA_2', 'rbsA_1', 'ftsP', 'exbD', 'uppP', 'ttdB', 'plsC', 'rlmB', 'rlmH', 'ycgM', 'yeiP', 'rffH', 'yccU', 'kdpB', 'matP', 'yegT', 'gltI', 'bdm', 'truD', 'holE', 'aas', 'yebV', 'recX', 'sbp', 'gshA', 'moeA', 'ydiB', 'eptC', 'cca', 'amiB', 'ybjG', 'bcsZ', 'serC', 'mzrA', 'chbF', 'ogt', 'cmoB', 'yfcF', 'allS', 'helD', 'ugpA', 'dgcM', 'rlmA', 'arnF', 'fepE', 'xseA', 'eamB', 'ygdG', 'fucK', 'loiP', 'ygiD', 'yiaB', 'phnO', 'yjfF', 'gcd', 'frmA', 'ybdL', 'lnt', 'chiQ', 'pflB', 'ycaL', 'torA', 'por_2', 'dauA', 'narJ', 'uspF', 'manY', 'yegS', 'mglA_1', 'inaA', 'srlB', 'lplT', 'dsbC', 'pepP', 'nupG', 'qseC', 'ygiF', 'yhjB', 'lldD', 'rffG', 'wecD', 'glnA', 'thiE', 'ulaA', 'prpC', 'ssuC_2', 'lrp', 'rpsA', 'mrdA', 'creD', 'ghrA', 'cvrA', 'hslJ', 'marA', 'yebF', 'fliS', 'mtfA', 'fbaB', 'arnE', 'flk', 'pdxK', 'amiA', 'endA', 'glmU_2', 'ttdA', 'argE_1', 'argC', 'ghxP', 'alsT', 'allR', 'citX', 'mntS', 'artQ', 'dmsB_1', 'msbA_2', 'ompA', 'chbG', 'cysH_1', 'astD', 'yfcG', 'tmcA', 'nagB_2', 'torD', 'tilS', 'purT', 'ypdF', 'ydjZ_1', 'fucI', 'gcvP']
 # large diff : 'ulaE_2', 'glmU_2'
 
-with open("genesShared.tsv", "w") as sharedGenesFile:
+with open("genesSharedNewMastitisAnnotation95-80.tsv", "w") as sharedGenesFile:
 
 
     def writeOutSharedGeneList(sharedGeneList):
