@@ -1,12 +1,16 @@
 """
 NOTE: this isn't working yet
 """
-
-from functions import *
-gsAlignPaths = "./allMastitisAssemblies/ragtagOutputs/longestScaffoldFiles/gsAlignOutputs/*.vcf"
-snps = [] # list of elements like this: [fileName, location, oldNuc, NewNuc]
-snpPositions = set()
-print(snpPositions)
+from glob import glob
+import time
+# from functions import *
+# def profileFunction():
+    # gsAlignPaths = "./mastitisMultipleAlignmentStuff/ragtagOutputs/longestScaffoldFiles/gsAlignOutputs/*.vcf"
+gsAlignPaths = "./allGsAlignOutputs/*.vcf"
+# NamesOfMastitisFiles = []
+snps = [] # list of elements like this: [fileName, location, oldNuc, NewNuc, type]
+# snpPositions = set()
+# print(snpPositions)
 numFiles = 0
 for filePath in glob(gsAlignPaths):
     numFiles += 1
@@ -16,43 +20,101 @@ for filePath in glob(gsAlignPaths):
             cols = line.split("\t")
             if line == "" or line[0] == "#":
                 continue
-            snps.append([filePath, cols[1], cols[3], cols[4]])
-            snpPositions.add(cols[1])
+            snps.append([filePath, int(cols[1]), cols[3], cols[4], cols[7][5:]])
+            # if numFiles == 1:
+            #     print([filePath, cols[1], cols[3], cols[4], cols[7][5:]])
+            # snpPositions.add(cols[1])
 
 # for snp in snps:
 #     print(snp)
-print(len(snpPositions))
-
+# print(len(snpPositions))
 snps.sort(key=lambda a: a[1])
-indexOfLastCheckedThing = 0
-combinedSnps = {} # position -> [list of snp entries]
-for position in snpPositions:
-
-    for snp in snps[indexOfLastCheckedThing:]:
-        if snp[1] == position:
-            if position in combinedSnps.keys():
-                combinedSnps[position].append(snp)
-                combinedSnps[position].sort(key= lambda a: a[0])
-            else:
-                combinedSnps[position] = [snp]
-        elif snp[1] > position:
-            break
-        indexOfLastCheckedThing += 1
+# with open("./SNPsList.tsv", "w") as file:
+#     for snp in snps:
+#         for val in snp:
+#             file.write(val + "\t")
+#         file.write("\n")
 
 
-for key in combinedSnps.keys():
-    value = combinedSnps[key]
-    oldNuc = value[0][2]
-    for filePath in glob(gsAlignPaths):
-        foundRecord = False
-        for snpRecord in value:
-            if snpRecord[0] == filePath:
-                foundRecord = True
-                break
-            if snpRecord[0] > filePath:
-                break
-        if not foundRecord:
-            combinedSnps[key].append([filePath, key, oldNuc, oldNuc])
-            combinedSnps[key].sort(key=lambda a: a[0])
 
-print(combinedSnps)
+
+# del snpPositions
+filesWithoutSNP = glob(gsAlignPaths)
+# print(filesWithoutSNP)
+currPos = snps[0][1]
+outFilePathPrefix = "./substSNPCombinedGenomes/SNPMultipleAlignPos"
+# currFile = open(outFilePathPrefix + snps[0][1] + ".afa", "w")
+oldNucAtCurrentPos = snps[0][2]
+# longestNucLength = determineIfVariantIncludesNumOfNucleotideChange(currPos, 0) # -1 is a flag for no insertions or deletions
+snpIndex = 0
+dataToWrite = {} # {fileName:SNPlist}
+print(len(snps))
+snpsLength = len(snps) #* len(filesWithoutSNP)
+for file in filesWithoutSNP: # load the list with dicts with empty strings
+    dataToWrite[file] = ""
+t1 = time.time()
+numerrors = 0
+numSkipped = 0
+
+lastIndex = 0
+# for snp in snps:
+#     snpPos = snp[1]
+#     if currPos < snpPos:
+#         print("snpIndex",snpIndex)
+#         print("size of snps portions", snpIndex - lastIndex)
+#         lastIndex = snpIndex
+#         currPos = snpPos
+#     snpIndex += 1
+#
+# exit(0)
+snpIndex = -1
+for snp in snps:# list of elements like this: [fileName, location, oldNuc, NewNuc, type]
+    snpIndex += 1
+    snpPos = snp[1]
+    if snp[4] != "SUBSTITUTE":
+        # numSkipped += 1
+        # if (numSkipped % 100 == 0):
+        #     print("numskipped",numSkipped)
+        continue
+    if currPos < snpPos: # if ran out of SNPs at the position
+        try:
+            if snpPos < snps[snpIndex + 1][1]: # if only 1 snp at current position
+                continue
+        except:
+            0
+        # add the oldNuc for that SNP
+        for fileWithMissingSNP in filesWithoutSNP:
+            dataToWrite[fileWithMissingSNP] += oldNucAtCurrentPos
+            # snpIndex += 1
+            # if snpIndex % 10_000_000 == 0:
+            #     print(time.time() - t1)
+            #     t1 = time.time()
+            #     print("index", snpIndex)
+            #     print(snpIndex / snpsLength)
+        # reset everything for next snp
+        currPos = snpPos
+        filesWithoutSNP = glob(gsAlignPaths)
+        oldNucAtCurrentPos = snp[2]
+    # fileName = snp[0]
+    # if filesWithoutSNP.count(fileName) == 1:
+    try:
+        filesWithoutSNP.remove(snp[0]) # throws error if trying to add duplicate snp
+        dataToWrite[snp[0]] += snp[3] # add snp to entry for file
+    except:
+        0
+    #     numerrors += 1
+    #     print("numerrors", numerrors)
+    if snpIndex % 100_000 == 0:
+        print("time", time.time()-t1)
+        t1 = time.time()
+        print("progress",snpIndex / snpsLength)
+
+print("done with snps loop, now writing")
+with open("./substSNPcombinedGenomes/allSubstSNPs.afa", "w") as outFile:
+    for key in dataToWrite.keys():
+        val = dataToWrite[key]
+        outFile.write(">" + key.split("/")[-1] + "\n")
+        outFile.write(val + "\n")
+
+# import cProfile
+# cProfile.run(profileFunction)

@@ -11,8 +11,20 @@ import sys
 # nameOfOutFile = "CowCommensalCounts.tsv"
 # nameOfOutFile = "mastitisCountsWith79Genomes.tsv"
 # nameOfOutFile = "mastitisCountsTakeFour.tsv"
-pathOfPresenceAbsenceFile = sys.argv[1]
-nameOfOutFile = sys.argv[2]
+# pathOfPresenceAbsenceFile = sys.argv[1]
+# nameOfOutFile = sys.argv[2]
+
+# pathOfPresenceAbsenceFile = "/Users/cazcullimore/Documents/ericksonLabCode/AllAssemblies/allMastitisAssemblies/ProkkaOut/gffs/roaryOutputs/gene_presence_absence.Rtab"
+
+pathOfPresenceAbsenceFile = "/Users/cazcullimore/Documents/ericksonLabCode/AllAssemblies/AllCommensalBovineAssemblies/ProkkaOut/gffs/roaryOutputs/gene_presence_absence.Rtab"
+# pathOfPresenceAbsenceFile = "/Users/cazcullimore/Documents/ericksonLabCode/AllAssemblies/APEC_assemblies/ProkkaOut/gffs/roaryOutputs/gene_presence_absence.Rtab"
+# pathOfPresenceAbsenceFile = "/Users/cazcullimore/Documents/ericksonLabCode/AllAssemblies/Avian_commensal/ProkkaOut/gffs/roaryOutputs/gene_presence_absence.Rtab"
+# pathOfPresenceAbsenceFile = ""
+
+nameOfOutFile = pathOfPresenceAbsenceFile.split("/")[6] + "ReannotatedGeneCiounts.tsv"
+
+
+
 with open(pathOfPresenceAbsenceFile) as infile, open(nameOfOutFile,"w") as outFile:
     onFirstLine = True
     indexOfgenomesToExclude = []

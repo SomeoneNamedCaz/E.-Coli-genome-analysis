@@ -49,3 +49,6 @@
 /reannotatedMastitisGenomes/
 /refGenomes/
 /test_assemblies/
+/SNPgenomes/
+/SNPInsertAndDeleteGenomes/
+/substSNPcombinedGenomes/
