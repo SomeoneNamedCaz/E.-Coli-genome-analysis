@@ -11,6 +11,8 @@ import sys
 # from functions import *
 # def profileFunction():
     # gsAlignPaths = "./mastitisMultipleAlignmentStuff/ragtagOutputs/longestScaffoldFiles/gsAlignOutputs/*.vcf"
+
+
 def getCharsForOneFile(data):
     file = data[0]
     snpSet = data[1]

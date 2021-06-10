@@ -3,6 +3,10 @@ NOTE: this isn't working yet
 """
 from glob import glob
 import time
+import copy
+import cProfile
+prof = cProfile.Profile()
+prof.enable()
 # from functions import *
 # def profileFunction():
     # gsAlignPaths = "./mastitisMultipleAlignmentStuff/ragtagOutputs/longestScaffoldFiles/gsAlignOutputs/*.vcf"
@@ -14,13 +18,15 @@ snps = [] # list of elements like this: [fileName, location, oldNuc, NewNuc, typ
 numFiles = 0
 for filePath in glob(gsAlignPaths):
     numFiles += 1
+    # if numFiles == 4:
+    #     break
     with open(filePath) as file:
         for line in file:
             line = line.strip()
             cols = line.split("\t")
             if line == "" or line[0] == "#":
                 continue
-            snps.append([filePath, int(cols[1]), cols[3], cols[4], cols[7][5:]])
+            snps.append([filePath.split("/")[-1], int(cols[1]), cols[3], cols[4], cols[7][5:]])
             # if numFiles == 1:
             #     print([filePath, cols[1], cols[3], cols[4], cols[7][5:]])
             # snpPositions.add(cols[1])
@@ -40,6 +46,10 @@ snps.sort(key=lambda a: a[1])
 
 # del snpPositions
 filesWithoutSNP = glob(gsAlignPaths)
+indexesWithoutSNPs = range(len(filesWithoutSNP))
+for file in filesWithoutSNP:
+    file = file.split("/")[-1]
+filesWithoutSNPBackUp = copy.deepcopy(filesWithoutSNP)
 # print(filesWithoutSNP)
 currPos = snps[0][1]
 outFilePathPrefix = "./substSNPCombinedGenomes/SNPMultipleAlignPos"
@@ -71,17 +81,15 @@ snpIndex = -1
 for snp in snps:# list of elements like this: [fileName, location, oldNuc, NewNuc, type]
     snpIndex += 1
     snpPos = snp[1]
+    # if snpIndex % 100 == 0:
+    #     print(snpIndex)
     if snp[4] != "SUBSTITUTE":
         # numSkipped += 1
         # if (numSkipped % 100 == 0):
         #     print("numskipped",numSkipped)
         continue
     if currPos < snpPos: # if ran out of SNPs at the position
-        try:
-            if snpPos < snps[snpIndex + 1][1]: # if only 1 snp at current position
-                continue
-        except:
-            0
+        # print(snpPos-currPos)
         # add the oldNuc for that SNP
         for fileWithMissingSNP in filesWithoutSNP:
             dataToWrite[fileWithMissingSNP] += oldNucAtCurrentPos
@@ -93,8 +101,13 @@ for snp in snps:# list of elements like this: [fileName, location, oldNuc, NewNu
             #     print(snpIndex / snpsLength)
         # reset everything for next snp
         currPos = snpPos
-        filesWithoutSNP = glob(gsAlignPaths)
+        filesWithoutSNP = copy.deepcopy(filesWithoutSNPBackUp)
         oldNucAtCurrentPos = snp[2]
+        try:
+            if snpPos < snps[snpIndex + 9][1]: # if less than 10 snp at current position
+                continue
+        except:
+            0
     # fileName = snp[0]
     # if filesWithoutSNP.count(fileName) == 1:
     try:
@@ -104,17 +117,29 @@ for snp in snps:# list of elements like this: [fileName, location, oldNuc, NewNu
         0
     #     numerrors += 1
     #     print("numerrors", numerrors)
-    if snpIndex % 100_000 == 0:
+    if snpIndex % 100_000 == 0 and snpIndex != 0:
         print("time", time.time()-t1)
+        print("index", snpIndex)
         t1 = time.time()
         print("progress",snpIndex / snpsLength)
-
+        # break
+print("printing dataToRight")
+print(dataToWrite)
 print("done with snps loop, now writing")
-with open("./substSNPcombinedGenomes/allSubstSNPs.afa", "w") as outFile:
+with open("./substSNPcombinedGenomes/allSubstSNPsMoreThan9FastestMethod.afa", "w") as outFile:
     for key in dataToWrite.keys():
         val = dataToWrite[key]
         outFile.write(">" + key.split("/")[-1] + "\n")
         outFile.write(val + "\n")
+#
+prof.disable()
+prof.create_stats()
+print(prof.print_stats())
 
-# import cProfile
-# cProfile.run(profileFunction)
+import pstats, io
+# from pstats import SortKey
+s = io.StringIO()
+# sortby = SortKey.CUMULATIVE
+ps = pstats.Stats(prof, stream=s)#.sort_stats(sortby)
+ps.print_stats()
+print(s.getvalue())
