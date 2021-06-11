@@ -115,7 +115,7 @@ if __name__ == '__main__':
         print("mapped")
         # pool.join()
     print("ran")
-    with open("allSubstSNPs.afa", "w") as outFile:
+    with open("allSubstSNPsParallel.afa", "w") as outFile:
         for index in range(len(outputs)):
             outFile.write(">" + globedPath[index].split("/")[-1] + "\n")
             outFile.write(outputs[index] + "\n")
