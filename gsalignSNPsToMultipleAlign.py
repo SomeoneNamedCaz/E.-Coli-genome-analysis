@@ -18,8 +18,6 @@ snps = [] # list of elements like this: [fileName, location, oldNuc, NewNuc, typ
 numFiles = 0
 for filePath in glob(gsAlignPaths):
     numFiles += 1
-    # if numFiles == 300:
-    #     break
     # print("opened one")
     with open(filePath) as file:
         for line in file:
@@ -54,7 +52,6 @@ filesWithoutSNPBackUp = copy.deepcopy(filesWithoutSNP)
 removedFiles = []
 # print(filesWithoutSNP)
 currPos = snps[0][1]
-outFilePathPrefix = "./substSNPCombinedGenomes/SNPMultipleAlignPos"
 # currFile = open(outFilePathPrefix + snps[0][1] + ".afa", "w")
 oldNucAtCurrentPos = snps[0][2]
 # longestNucLength = determineIfVariantIncludesNumOfNucleotideChange(currPos, 0) # -1 is a flag for no insertions or deletions
@@ -73,54 +70,65 @@ lastIndex = 0
 snpIndex = -1
 needToSkip = False
 print(snps[:100])
-for snp in snps:# list of elements like this: [fileName, location, oldNuc, NewNuc, type]
-    snpIndex += 1
-    if snp[4] != "SUBSTITUTE":
-        continue
-    snpPos = snp[1]
-    if currPos < snpPos: # if ran out of SNPs at the position
-        # add the oldNuc for that SNP
-        if not needToSkip:
-            for fileWithMissingSNP in filesWithoutSNP:
-                dataToWrite[fileWithMissingSNP] += oldNucAtCurrentPos
+outFilePath = "./substSNPcombinedGenomes/allSubstSNPsMoreThan9ActuallyWorkingMethod.afa" # needs three leter extention
+pathForSNPsIncludedIndexes = outFilePath[:-4] + "IndexesTest.txt"
+print("genomes", len(filesWithoutSNPBackUp))
 
+with open(pathForSNPsIncludedIndexes, "w") as indexFile:
+    for snp in snps:# list of elements like this: [fileName, location, oldNuc, NewNuc, type]
+        snpIndex += 1
+        if snp[4] != "SUBSTITUTE":
+            continue
+        snpPos = snp[1]
+        if currPos < snpPos: # if ran out of SNPs at the position
+            # add the oldNuc for that SNP
+            if not needToSkip:
+                # for fileWithMissingSNP in filesWithoutSNP:
+                #     dataToWrite[fileWithMissingSNP] += oldNucAtCurrentPos
+                if snp[4] != "SUBSTITUTE":
+                    print("OOPS")
+                indexFile.write(str(currPos) + "\n")
 
-        try:
-            if snpPos < snps[snpIndex + 9][1]: # if less than 10 snp at current position
-                needToSkip = True
-                continue
-        except:
-            0
-        # reset everything for next snp
-        currPos = snpPos
-        filesWithoutSNP += removedFiles  # add back removed files
-        removedFiles = []
-        oldNucAtCurrentPos = snp[2]
-    needToSkip = False
-    try:
-        filesWithoutSNP.remove(snp[0]) # throws error if trying to add duplicate snp
-        removedFiles.append(snp[0])
-        dataToWrite[snp[0]] += snp[3] # add snp to entry for file
-    except:
-        0
-    if snpIndex % 100_000 == 0 and snpIndex != 0:
-        print("time", time.time()-t1)
-        print("index", snpIndex)
-        t1 = time.time()
-        print("progress",snpIndex / snpsLength)
-        # break
+            try:
+                if snpPos < snps[snpIndex + 9][1]: # if less than 10 snp at current position
+                    needToSkip = True
+                    continue
+            except:
+                0
+            # reset everything for next snp
+            currPos = snpPos
+            filesWithoutSNP += removedFiles  # add back removed files
+            removedFiles = []
+            oldNucAtCurrentPos = snp[2]
+        needToSkip = False
+        # try:
+        #     filesWithoutSNP.remove(snp[0]) # throws error if trying to add duplicate snp
+        #     removedFiles.append(snp[0])
+        #     dataToWrite[snp[0]] += snp[3] # add snp to entry for file
+        # except:
+        #     0
+        if snpIndex % 100_000 == 0 and snpIndex != 0:
+            print("time", time.time()-t1)
+            print("index", snpIndex)
+            t1 = time.time()
+            print("progress",snpIndex / snpsLength)
+            # break
+    indexFile.write(str(snpPos) + "\n")
 
+exit(0)
 # cover for last case
 for fileWithMissingSNP in filesWithoutSNP:
     dataToWrite[fileWithMissingSNP] += oldNucAtCurrentPos
+
 print("printing dataToRight")
+
 # print(dataToWrite)
-print("done with snps loop, now writing")
-with open("./substSNPcombinedGenomes/allSubstSNPsMoreThan9ActuallyWorkingMethod.afa", "w") as outFile:
-    for key in dataToWrite.keys():
-        val = dataToWrite[key]
-        outFile.write(">" + key.split("/")[-1] + "\n")
-        outFile.write(val + "\n")
+# print("done with snps loop, now writing")
+# with open(outFilePath, "w") as outFile:
+#     for key in dataToWrite.keys():
+#         val = dataToWrite[key]
+#         outFile.write(">" + key.split("/")[-1] + "\n")
+#         outFile.write(val + "\n")
 #
 # prof.disable()
 # prof.create_stats()
