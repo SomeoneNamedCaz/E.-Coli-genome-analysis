@@ -120,6 +120,99 @@ def getGenesOnContigs(fileName, contigs):
                         geneProducts.append(re.sub('/product="', "", line)[:-1])
     return genes
 
+class Gene:
+    def __init__(self, startPos, stopPos, sequence, name, product):
+        self.startPos = startPos
+        self.stopPos = stopPos
+        self.sequence = sequence
+        self.name = name
+        self.product = product
+        self.counter = 0
+
+def getGenesOnContigsByPosition(fileName, contigs):
+    """":returns list of gene info ordered by position elements are of the gene class"""
+    genes = []
+    with open(fileName) as file:
+        contig = ""
+        inContig = False
+        inFeatures = False
+        inCDS = False
+        geneStartPoses = []
+        geneStopPoses = []
+        geneIsForward = []
+        geneNames = []
+        geneProducts = []
+        geneSeq = ""
+        contigIndex = -1
+        numHypotheticalProteins = 0
+        for line in file:
+            line = line.strip()
+            cols = line.split()
+            if len(cols) == 0:
+                continue
+            if cols[0] == "FEATURES":
+                inFeatures = True
+            elif line == 'ORIGIN':
+                contigIndex += 1
+                inContig = True
+                inCDS = False
+                # if geneStartPoses == [] or geneStopPoses == []:
+                #     raise Exception("ERROR: found contig before annotations")
+            elif line == "//":
+                contig = ""
+                inContig = False
+            if inContig: # if in contig
+                # print("Startpos",len(geneStartPoses))
+                for geneIndex in range(len(geneStartPoses)):  # for each gene
+                    # print("index", geneIndex)
+                    geneStartPos = geneStartPoses[geneIndex]
+                    geneStopPos = geneStopPoses[geneIndex]
+                    geneSeq = contigs[contigIndex][geneStartPos - 1:geneStopPos]
+                    geneSeq = geneSeq.upper()
+                    if not geneIsForward[geneIndex]:
+                        geneSeq = reverseComplement(geneSeq)
+                    try:
+                        genes.append(Gene(geneStartPos, geneStopPos, geneSeq, geneNames[geneIndex], geneProducts[geneIndex]))
+                        if geneProducts[geneIndex] == "hypothetical protein":
+                            numHypotheticalProteins += 1
+                    except IndexError:
+
+                        print("noname or product")
+                geneStartPoses = []
+                geneStopPoses = []
+                geneIsForward = []
+                geneNames = []
+                geneProducts = []
+            elif inFeatures: # if in annotations
+                if cols[0] == "CDS": # when in gene line
+                    geneNames.append("unnamed")
+                    geneProducts.append("no product")
+                    inCDS = True
+                    nums = re.sub(r"complement", "", cols[1])
+                    if nums != cols[1]:
+                        geneIsForward.append(False)
+                    else:
+                        geneIsForward.append(True)
+                    shortenEndOfGenomeBy = 0
+                    if ">" in nums:
+                        shortenEndOfGenomeBy = 1
+                    nums = re.sub(r"[A-Za-z\(\)<>]+", "", nums) # remove perentheses
+                    # if "," in nums: # if of form join(this..this, this..this)
+
+                    nums = nums.split("..")
+                    geneStartPoses.append(int(nums[0]))
+                    geneStopPoses.append(int(nums[-1])-shortenEndOfGenomeBy)
+                elif cols[0] == "gene":
+                    inCDS = False
+                elif inCDS:
+                    if line[:7] == '/gene="':
+                        geneNames[-1] = re.sub('/gene="', "", line)[:-1]
+                    elif line[:10] == '/product="':
+                        geneProducts[-1] = re.sub('/product="', "", line)[:-1]
+    genes.sort(key=lambda a: a.startPos)
+    print(len(genes))
+    return genes
+
 def geneSimilarity(seq1, seq2):
     numSame = 0
     printedError = False

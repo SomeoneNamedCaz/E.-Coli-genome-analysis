@@ -73,7 +73,7 @@ print(snps[:100])
 outFilePath = "./substSNPcombinedGenomes/allSubstSNPsMoreThan9ActuallyWorkingMethod.afa" # needs three leter extention
 pathForSNPsIncludedIndexes = outFilePath[:-4] + "IndexesTest.txt"
 print("genomes", len(filesWithoutSNPBackUp))
-
+exit(0)
 with open(pathForSNPsIncludedIndexes, "w") as indexFile:
     for snp in snps:# list of elements like this: [fileName, location, oldNuc, NewNuc, type]
         snpIndex += 1
