@@ -4,6 +4,7 @@ gets significant SNPs and maps them to the reference genome
 NEEDS: path of all results
        path of a file with the indexes of the SNPS (each index on each line)
        numberOfLines in snpStatPath
+       numPvaluesForEachMetadataCatagory
 """
 
 annotatedRefGenomePath = "./AllAssemblies/refGenomeAnnotationsEdited.gb"
@@ -12,12 +13,11 @@ snpLocationPath = "./substSNPcombinedGenomes/allSubstSNPsMoreThan9ActuallyWorkin
 snpsFileWithCorrectPosPath = "./sigSNPsByPosOnRefGenome.txt" # created and then read
 snpsWithinGenesPath = "./snpsWithinGenes.txt" # created
 numGenesToInclude = 100
+numPvaluesForEachMetadataCatagory = [417_115, 417_115] #TODO:not working properly (just uses first cut off and assumes that they are all the same
 
-numPvalues = 535_413
 
-
-significanceLevel = 0.05/numPvalues # can change initial P-value cutoff if wanted
-snpLocations = [] # [snplocation, ...]
+significanceLevel = 0.05/numPvaluesForEachMetadataCatagory[0] # can change initial P-value cutoff if wanted
+snpLocations = [] # [snplocation1, ...]
 with open(snpLocationPath) as file:
     for line in file:
         line = line.strip()
@@ -48,14 +48,15 @@ def outputFunction(listOfGenes, outFileName):
     with open(outFileName, "w") as outFile:
         # header line
         outFile.write("""Name\tProduct\tPercentOfNucleotidesAreSignificantSNPs\tgeneSequence\t
-        PercentNucleotidesThatCanBeSignificantNonSynonymousMutations""")
+        PercentNucleotidesThatCanBeSignificantNonSynonymousMutations\n""")
         # data
         for i in range(min(numGenesToInclude, len(listOfGenes))):
-            outFile.write(listOfGenes[i].name + "\t" + listOfGenes[i].product + "\t" + str(listOfGenes[i].counter) + "\t" + listOfGenes[i].sequence)
+            outFile.write(listOfGenes[i].name + "\t" + listOfGenes[i].product + "\t" + str(listOfGenes[i].counter/len(listOfGenes[i].sequence)) + "\t" + listOfGenes[i].sequence + "\n")
 
-lastSNPpos = 0
+lastMetaDataColName = ""
 with open(snpsFileWithCorrectPosPath) as snpsFileWithCorrectPos:
     indexOfLastGene = 0
+    lastSNPpos = 0
 
     for line in snpsFileWithCorrectPos:
         line = line.strip()
@@ -65,15 +66,23 @@ with open(snpsFileWithCorrectPosPath) as snpsFileWithCorrectPos:
         pval = float(cols[2])
         comparisonGroup = cols[-1].split("-")[0]
         positionInGenome = int(cols[0])
+        nucInfo = cols[5]
+        # nucInfo = re.split("[(,_)]", nucInfo)
+        # oldNuc = nucInfo[2]
+        # newNuc = nucInfo[4]
+
 
         if positionInGenome < lastSNPpos:
-            genes.sort(key=lambda gene: gene.counter)
-            genes.reverse()
-            outputFunction(genes)
+            print("outputting first metadata category")
+            genes.sort(key=lambda gene: 1 - gene.counter/len(gene.sequence))
+            # genes.reverse()
+            outputFunction(genes, lastMetaDataColName)
             # reset counts
             for gene in genes:
                 gene.counter = 0
-
+                gene.snps = []
+        lastMetaDataColName = comparisonGroup
+        lastSNPpos = positionInGenome
         index = -1
         for gene in genes[indexOfLastGene:]:
             # print(gene.startPos, gene.stopPos)
@@ -81,11 +90,12 @@ with open(snpsFileWithCorrectPosPath) as snpsFileWithCorrectPos:
             # if in right gene
             if gene.stopPos > positionInGenome and gene.startPos < positionInGenome:
                 # print("added")
-                gene.counter += 1/len(gene.sequence)
+                gene.counter += 1
+                # gene.snps.append(SNP(positionInGenome - gene.startPos, oldNuc, newNuc))
                 indexOfLastGene = index
                 break
 
 
-genes.sort(key=lambda gene: gene.counter)
-genes.reverse()
-outputFunction(genes)
+genes.sort(key=lambda gene: 1 - gene.counter/len(gene.sequence))
+# genes.reverse()
+outputFunction(genes, lastMetaDataColName)
