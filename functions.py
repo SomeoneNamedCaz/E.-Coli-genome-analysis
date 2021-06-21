@@ -119,6 +119,11 @@ def getGenesOnContigs(fileName, contigs):
                     elif line[:10] == '/product="':
                         geneProducts.append(re.sub('/product="', "", line)[:-1])
     return genes
+class SNP:
+    def __init__(self, location, oldNuc, newNuc):
+        self.location = location
+        self.oldNuc = oldNuc
+        self.newNuc = newNuc
 
 class Gene:
     def __init__(self, startPos, stopPos, sequence, name, product):
@@ -127,6 +132,7 @@ class Gene:
         self.sequence = sequence
         self.name = name
         self.product = product
+        self.snps = [] # list of SNP objects
         self.counter = 0
 
 def getGenesOnContigsByPosition(fileName, contigs):
