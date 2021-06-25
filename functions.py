@@ -38,7 +38,7 @@ def getContigs(fileName):
                 contig += "".join(cols[1:]) # everything but numbers
     return contigs
 
-def getGenesOnContigs(fileName, contigs):
+def getGenesOnContigs(fileName, contigs): #TODO: doesn't do such a good job on <,>, or num..num,num..num
     genes = {} # dictionary keys gene_name values = products and seqs
     with open(fileName) as file:
         contig = ""
@@ -202,6 +202,7 @@ def getGenesOnContigsByPosition(fileName, contigs):
                     shortenEndOfGenomeBy = 0
                     if ">" in nums:
                         shortenEndOfGenomeBy = 1
+                    # TODO: include if the gene is a partial CDS (has a < or >)
                     nums = re.sub(r"[A-Za-z\(\)<>]+", "", nums) # remove perentheses
                     # if "," in nums: # if of form join(this..this, this..this)
 
@@ -216,7 +217,6 @@ def getGenesOnContigsByPosition(fileName, contigs):
                     elif line[:10] == '/product="':
                         geneProducts[-1] = re.sub('/product="', "", line)[:-1]
     genes.sort(key=lambda a: a.startPos)
-    print(len(genes))
     return genes
 
 def geneSimilarity(seq1, seq2):
@@ -294,7 +294,7 @@ def convertHypotheticalProteinsIntoTempNames(hypotheticalProteinSeqs, cutoff=0.8
             if genesAreWithinPercentIdentical(hypotheticalProteinSeqs[i], seqOfGeneAlreadyNamed, cutoff=cutoff):
                 inList = True
         if not inList:
-            nameAndSequence.append(["HP" + i, hypotheticalProteinSeqs[i]])
+            nameAndSequence.append(["HP" + str(i), hypotheticalProteinSeqs[i]])
     return nameAndSequence
 def hypotheticalProteinsAreTheSame(seq1, seq2, cutoff=0.8):
     return genesAreWithinPercentIdentical(seq1, seq2, cutoff=0.8)
@@ -404,7 +404,7 @@ def compareGenesByAAGroup(seq1, seq2, cutoff=0.8):
         return True
     return False
 
-def filesContainTheSamInformation(fileName1, fileName2):
+def filesContainTheSameInformation(fileName1, fileName2):
     with open(fileName1) as f1:
         for l1 in f1:
             foundLine = False

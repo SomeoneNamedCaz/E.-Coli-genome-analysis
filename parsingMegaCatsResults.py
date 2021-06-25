@@ -15,9 +15,9 @@ snpsWithinGenesPath = "./snpsWithinGenes.txt" # created
 numGenesToInclude = 1000
 numPvaluesForEachMetadataCatagory = [417_115, 417_115] #TODO:not working properly (just uses first cut off and assumes that they are all the same
 
-import cProfile
-prof = cProfile.Profile()
-prof.enable()
+# import cProfile
+# prof = cProfile.Profile()
+# prof.enable()
 
 significanceLevel = 0.05/numPvaluesForEachMetadataCatagory[0] # can change initial P-value cutoff if wanted
 snpLocations = [] # [snplocation1, ...]
@@ -52,13 +52,14 @@ print(time.time()-t1)
 def outputFunction(listOfGenes, outFileName):
     with open(outFileName, "w") as outFile:
         # header line
-        outFile.write("""Name\tProduct\tPercent Of Nucleotides That Are Significant SNPs\tgene Sequence\tPercent Nucleotides That Can Be Significant NonSynonymous Mutations\tNon-synonymous snp Positions\tsynonymous snp Positions\n""")
+        outFile.write("""Name\tProduct\tPercent Of Nucleotides That Are Significant SNPs\tgene Sequence\tPercent Nucleotides That Can Be Significant NonSynonymous Mutations\tNon-synonymous SNP Indexes\tSynonymous SNP Indexes\tgeneStartPositionInGenome\n""")
         # data
         for i in range(min(numGenesToInclude, len(listOfGenes))):
             gene = listOfGenes[i]
             numNonSyn = 0
             nonSynSnpPositions = []
             synSnpPositions = []
+            # print(gene.snps)
             for snp in gene.snps:
 
                 # print("positionInGenome - gene.startPos", snp.location)
@@ -78,8 +79,8 @@ def outputFunction(listOfGenes, outFileName):
                 else:
                     synSnpPositions.append(str(snp.location))
             # print(gene.counter, len(gene.snps))
-            outFile.write(gene.name + "\t" + gene.product + "\t" + str(len(gene.snps)/len(gene.sequence)) + "\t" + gene.sequence
-                + "\t" + str(numNonSyn/len(gene.sequence)) + "\t" + " ".join(nonSynSnpPositions) + "\t" + " ".join(synSnpPositions) + "\n")
+            outFile.write(gene.name + "\t" + gene.product + "\t" + str(gene.counter/len(gene.sequence)) + "\t" + gene.sequence
+                + "\t" + str(numNonSyn/len(gene.sequence)) + "\t" + " ".join(nonSynSnpPositions) + "\t" + " ".join(synSnpPositions) + "\t" + str(gene.startPos) + "\n")
 
 lastMetaDataColName = ""
 with open(snpsFileWithCorrectPosPath) as snpsFileWithCorrectPos:
@@ -98,6 +99,7 @@ with open(snpsFileWithCorrectPosPath) as snpsFileWithCorrectPos:
         comparisonGroup = cols[-1].split("-")[0]
         positionInGenome = int(cols[0])
         nucInfo = cols[5]
+        # nucInfo = nucInfo.strip()
         # nucInfo = nucInfo.split("|")
         highestNum = 0
         highestNuc = ""
@@ -126,9 +128,28 @@ with open(snpsFileWithCorrectPosPath) as snpsFileWithCorrectPos:
         # oldNuc = nucInfo[2]
         # newNuc = nucInfo[4]
 
-
+        # side = ""  # longest side
+        # for currSide in nucInfo.split("|"):  # get longest side
+        #     if len(currSide) > len(side):  # just > gives 0.2685111989459816
+        #         side = currSide
+        # # problem found I think group1(1_A)|group2(336_A,_75_G,_49_T)|group3(367_A,_18_G,_98_T)
+        # nucAndNums = re.split("[(,)]", side)[1:-1]  # cut off groups outside of perentheses
+        # # print(nucAndNums)
+        # for nucAndNum in nucAndNums:
+        #     nucAndNum = re.sub("_", "", nucAndNum)
+        #     nuc = nucAndNum[-1]
+        #     num = int(nucAndNum[:-1])
+        #     if num > highestNum:
+        #         secondHighestNuc = highestNuc
+        #         secondHighestNum = highestNum
+        #         highestNum = num
+        #         highestNuc = nuc
+        #     elif num > secondHighestNum:
+        #         secondHighestNum = num
+        #         secondHighestNuc = nuc
         if positionInGenome < lastSNPpos:
             print("outputting first metadata category")
+            indexOfLastGene = 0
             genes.sort(key=lambda gene: 1 - gene.counter/len(gene.sequence))
             # genes.reverse()
             outputFunction(genes, lastMetaDataColName)
@@ -136,27 +157,35 @@ with open(snpsFileWithCorrectPosPath) as snpsFileWithCorrectPos:
             for gene in genes:
                 gene.counter = 0
                 gene.snps = []
-            indexOfLastGene = 0
+
         lastMetaDataColName = comparisonGroup
         lastSNPpos = positionInGenome
-        index = -1
-        for gene in genes[indexOfLastGene:]:
-            # print(gene.startPos, gene.stopPos)
+        index = indexOfLastGene-1
+        for gene in genes:#[indexOfLastGene:]:
             index += 1
+
+            # print(index)
             # if in right gene
             if gene.stopPos > positionInGenome and gene.startPos < positionInGenome:
                 # print("added")
                 gene.counter += 1
+                #   this doesn't necessarily capture the case where group1(336_A,_75_G,_49_T)|group2(367_A,_18_G,_98_T)
+                if contigs[0][positionInGenome] == secondHighestNuc:
+                    print(contigs[0][positionInGenome], "snp here found", positionInGenome)
+                elif contigs[0][positionInGenome] == highestNuc:
+                    print("no snp here found", positionInGenome)
+                else:
+                    print("something else")
                 gene.snps.append(SNP(positionInGenome - gene.startPos, highestNuc, secondHighestNuc))
-                # print(highestNuc)
-                # print(secondHighestNuc)
-                # indexOfLastGene += index - 1
-                # print("broken")
+                # if index >= 5: # saftey so does go to -1
+                #
+                #     indexOfLastGene = index - 5
+                    # print(indexOfLastGene)
                 break
 
 
 genes.sort(key=lambda gene: 1 - gene.counter/len(gene.sequence)) # to sort by assending proportion
 outputFunction(genes, lastMetaDataColName)
 
-prof.disable()
-prof.print_stats(sort=1)
+# prof.disable()
+# prof.print_stats(sort=1)
