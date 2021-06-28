@@ -15,6 +15,7 @@ snpsWithinGenesPath = "./snpsWithinGenes.txt" # created
 numGenesToInclude = 1000
 numPvaluesForEachMetadataCatagory = [417_115, 417_115] #TODO:not working properly (just uses first cut off and assumes that they are all the same
 
+percentSNPsCutOffForPercentSNPs = 0.02
 # import cProfile
 # prof = cProfile.Profile()
 # prof.enable()
@@ -52,7 +53,21 @@ print(time.time()-t1)
 def outputFunction(listOfGenes, outFileName):
     with open(outFileName, "w") as outFile:
         # header line
-        outFile.write("""Name\tProduct\tPercent Of Nucleotides That Are Significant SNPs\tgene Sequence\tPercent Nucleotides That Can Be Significant NonSynonymous Mutations\tNon-synonymous SNP Indexes\tSynonymous SNP Indexes\tgeneStartPositionInGenome\n""")
+        outFile.write("""Name\tProduct\tPercent Of Nucleotides That Are Significant SNPs\tgene Sequence\tPercent Nucleotides That Can Be Significant NonSynonymous Mutations\tNon-synonymous SNP Indexes\tSynonymous SNP Indexes\tgeneStartPositionInGenome\tfraction of genes in pathway with high number of snps\n""")
+        # find out if there are other genes in the pathway
+        geneNameToNumInPathway = {}
+        geneNameToNumSignificantlySnpedInPathway = {}
+        for gene in genes:
+
+            if not gene.name[:3] in geneNameToNumInPathway.keys():
+                geneNameToNumInPathway[gene.name[:3]] = 1
+            else:
+                geneNameToNumInPathway[gene.name[:3]] += 1
+            if len(gene.snps)/len(gene.sequence) > percentSNPsCutOffForPercentSNPs:
+                if not gene.name[:3] in geneNameToNumSignificantlySnpedInPathway.keys():
+                    geneNameToNumSignificantlySnpedInPathway[gene.name[:3]] = 1
+                else:
+                    geneNameToNumSignificantlySnpedInPathway[gene.name[:3]] += 1
         # data
         for i in range(min(numGenesToInclude, len(listOfGenes))):
             gene = listOfGenes[i]
@@ -79,8 +94,11 @@ def outputFunction(listOfGenes, outFileName):
                 else:
                     synSnpPositions.append(str(snp.location))
             # print(gene.counter, len(gene.snps))
-            outFile.write(gene.name + "\t" + gene.product + "\t" + str(gene.counter/len(gene.sequence)) + "\t" + gene.sequence
-                + "\t" + str(numNonSyn/len(gene.sequence)) + "\t" + " ".join(nonSynSnpPositions) + "\t" + " ".join(synSnpPositions) + "\t" + str(gene.startPos) + "\n")
+            try:
+                outFile.write(gene.name + "\t" + gene.product + "\t" + str(gene.counter/len(gene.sequence)) + "\t" + gene.sequence
+                + "\t" + str(numNonSyn/len(gene.sequence)) + "\t" + " ".join(nonSynSnpPositions) + "\t" + " ".join(synSnpPositions) + "\t" + str(gene.startPos) + "\t" + str(geneNameToNumSignificantlySnpedInPathway[gene.name[:3]]) + "/" + str(geneNameToNumInPathway[gene.name[:3]])+ "\n")
+            except:
+                pass
 
 lastMetaDataColName = ""
 with open(snpsFileWithCorrectPosPath) as snpsFileWithCorrectPos:
@@ -167,20 +185,12 @@ with open(snpsFileWithCorrectPosPath) as snpsFileWithCorrectPos:
             # print(index)
             # if in right gene
             if gene.stopPos > positionInGenome and gene.startPos < positionInGenome:
-                # print("added")
                 gene.counter += 1
                 #   this doesn't necessarily capture the case where group1(336_A,_75_G,_49_T)|group2(367_A,_18_G,_98_T)
-                if contigs[0][positionInGenome] == secondHighestNuc:
-                    print(contigs[0][positionInGenome], "snp here found", positionInGenome)
-                elif contigs[0][positionInGenome] == highestNuc:
-                    print("no snp here found", positionInGenome)
-                else:
-                    print("something else")
                 gene.snps.append(SNP(positionInGenome - gene.startPos, highestNuc, secondHighestNuc))
                 # if index >= 5: # saftey so does go to -1
                 #
                 #     indexOfLastGene = index - 5
-                    # print(indexOfLastGene)
                 break
 
 
