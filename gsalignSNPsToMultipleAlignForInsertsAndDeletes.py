@@ -6,8 +6,8 @@ import time
 import copy
 import os
 import cProfile
-prof = cProfile.Profile()
-prof.enable()
+# prof = cProfile.Profile()
+# prof.enable()
 # from functions import *
 # def profileFunction():
     # gsAlignPaths = "./mastitisMultipleAlignmentStuff/ragtagOutputs/longestScaffoldFiles/gsAlignOutputs/*.vcf"
@@ -19,6 +19,8 @@ snps = [] # list of elements like this: [fileName, location, oldNuc, NewNuc, typ
 numFiles = 0
 for filePath in glob(gsAlignPaths):
     numFiles += 1
+    # if numFiles > 200:
+    #     break
     # print("opened one")
     with open(filePath) as file:
         for line in file:
@@ -50,6 +52,7 @@ allFiles = glob(gsAlignPaths)
 for index in range(len(allFiles)):
     allFiles[index] = allFiles[index].split("/")[-1]
 filesWithoutSNP = copy.deepcopy(allFiles)
+
 removedFiles = []
 # print(filesWithoutSNP)
 currPos = snps[0][1]
@@ -72,7 +75,7 @@ lastIndex = 0
 maxLenOfSnpGenome = -1
 snpIndex = -1
 needToSkip = False
-print(snps[:100])
+snpIndexPrintedToFile = False
 outFilePath = "./InsertAndDeleteCombinedGenomes/" # folder
 if not os.path.exists(outFilePath):
     os.mkdir(outFilePath)
@@ -82,8 +85,8 @@ outFilePath += "insertAndDelete.afa" # needs three letter extension
 pathForSNPsIncludedIndexes = outFilePath[:-4] + "Indexes.txt"
 
 print("start loop")
-with open(pathForSNPsIncludedIndexes, "w") as indexFile:
-    for snp in snps:# list of elements like this: [fileName, location, oldNuc, NewNuc, type]
+with open(pathForSNPsIncludedIndexes, "w") as indexFile, open(pathForSNPsIncludedIndexes[:-4]+"FrameShifted.txt", "w") as frameShiftIndexFile:
+    for snp in snps: # list of elements like this: [fileName, location, oldNuc, NewNuc, type]
         snpIndex += 1
         if snp[4] != "INSERT" and snp[4] != "DELETE":
             continue
@@ -92,13 +95,16 @@ with open(pathForSNPsIncludedIndexes, "w") as indexFile:
         if currPos < snpPos: # if ran out of SNPs at the position
             # add the oldNuc for that SNP
             if not needToSkip:
+
                 for fileWithMissingSNP in filesWithoutSNP:
                     dataToWrite[fileWithMissingSNP] += oldNucAtCurrentPos
                     maxLenOfSnpGenome = max(maxLenOfSnpGenome, len(dataToWrite[fileWithMissingSNP]))
                 for file in allFiles:
                     dataToWrite[file] += "-" * (maxLenOfSnpGenome - len(dataToWrite[file]))
                 indexFile.write(str(currPos) + "\n")
-
+                # # TODO: add this data. Could be first instead of last
+                # if abs(len(oldNucAtCurrentPos) - len(dataToWrite[file])) % 3 != 0: # != 0
+                #     frameShiftIndexFile.write(str(currPos) + "\n")
             try:
                 if snpPos < snps[snpIndex + 9][1]: # if less than 10 snp at current position
                     needToSkip = True
@@ -110,24 +116,28 @@ with open(pathForSNPsIncludedIndexes, "w") as indexFile:
             filesWithoutSNP += removedFiles  # add back removed files
             removedFiles = []
             oldNucAtCurrentPos = snp[2]
+            snpIndexPrintedToFile = False
         needToSkip = False
         try:
             filesWithoutSNP.remove(snp[0]) # throws error if trying to add duplicate snp
             removedFiles.append(snp[0])
-            if snp[2] > len(oldNucAtCurrentPos):
+            if len(snp[2]) > len(oldNucAtCurrentPos):
                 oldNucAtCurrentPos = snp[2]
             maxLenOfSnpGenome = max(maxLenOfSnpGenome, len(dataToWrite[snp[0]]) + len(snp[2]))
+            if not snpIndexPrintedToFile and len(snp[3]) - len(snp[2]) % 3 != 0:  # != 0
+                frameShiftIndexFile.write(str(currPos) + "\n")
+                snpIndexPrintedToFile = True
             dataToWrite[snp[0]] += snp[3] # add snp to entry for file
+            # print("added this",snp[3])
             maxLenOfSnpGenome = max(maxLenOfSnpGenome, len(dataToWrite[snp[0]]))
-        except:
+        except ValueError:
             pass
         if snpIndex % 100_000 == 0 and snpIndex != 0:
-            print(snp, oldNucAtCurrentPos)
             print("time", time.time()-t1)
             print("index", snpIndex)
             t1 = time.time()
             print("progress",snpIndex / snpsLength)
-
+    # cover for last case
     indexFile.write(str(snpPos) + "\n")
 
 
@@ -137,7 +147,7 @@ for fileWithMissingSNP in filesWithoutSNP:
 
 print("printing dataToRight")
 
-print(dataToWrite)
+# print(dataToWrite)
 print("done with snps loop, now writing")
 with open(outFilePath, "w") as outFile:
     for key in dataToWrite.keys():
@@ -145,9 +155,9 @@ with open(outFilePath, "w") as outFile:
         outFile.write(">" + key.split("/")[-1] + "\n")
         outFile.write(val + "\n")
 #
-prof.disable()
-prof.create_stats()
-prof.print_stats()
+# prof.disable()
+# prof.create_stats()
+# prof.print_stats()
 
 # import pstats, io
 # # from pstats import SortKey
