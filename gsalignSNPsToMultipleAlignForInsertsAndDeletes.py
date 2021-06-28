@@ -124,9 +124,11 @@ with open(pathForSNPsIncludedIndexes, "w") as indexFile, open(pathForSNPsInclude
             if len(snp[2]) > len(oldNucAtCurrentPos):
                 oldNucAtCurrentPos = snp[2]
             maxLenOfSnpGenome = max(maxLenOfSnpGenome, len(dataToWrite[snp[0]]) + len(snp[2]))
-            if not snpIndexPrintedToFile and len(snp[3]) - len(snp[2]) % 3 != 0:  # != 0
+            if not snpIndexPrintedToFile and (len(snp[3]) - len(snp[2])) % 3 != 0:  # != 0
                 frameShiftIndexFile.write(str(currPos) + "\n")
                 snpIndexPrintedToFile = True
+
+            # add the snp nucs
             dataToWrite[snp[0]] += snp[3] # add snp to entry for file
             # print("added this",snp[3])
             maxLenOfSnpGenome = max(maxLenOfSnpGenome, len(dataToWrite[snp[0]]))
