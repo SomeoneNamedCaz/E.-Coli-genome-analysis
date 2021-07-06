@@ -13,17 +13,20 @@ snpsFileWithCorrectPosPath = "./sigSNPsByPosOnRefGenomeInsertAndDelete.txt" # cr
 snpsWithinGenesPath = "./snpsWithinGenesInsertAndDelete.txt" # created
 snpsSortedBySignificancePath = "./snpsSortedBySignificanceWithGenesContainingThemInsertAndDelete.tsv" # created
 """
-if len(sys.argv) < 4:
-    print("please give arguments: combined megaCats file, indexes of the snpsFile, the suffix you want for output files")
+if len(sys.argv) < 5:
+    print("please give arguments: combined megaCats file, indexes of the snpsFile, the suffix you want for output files, num comparisons")
 
 # args
 snpStatPath = sys.argv[1]#"./megaCATS-main/firstMegaCatsRunOnData/1AA_Summary_Results_ALL-metaDataForMetaCatsPathFixed.tsv.txt" #TODO: send fixed stuff to doctor Erickson
 snpIndexesPath = sys.argv[2]#"./InsertAndDeleteCombinedGenomes/insertAndDeleteIndexes.txt"
 suffix = sys.argv[3]
+numPvaluesForEachMetadataCatagory = sys.argv[4]#[21_378]#[417_115, 417_115] #TODO:not working properly (just uses first cut off and assumes that they are all the same
+
 # arg less likely to change
 annotatedRefGenomePath = "./AllAssemblies/refGenomeAnnotationsEdited.gb"
 numGenesToInclude = 1000
 numSnpsToIncludeForMostSigSnps = 10_000
+
 
 # outputs
 snpsFileWithCorrectPosPath = "./sigSNPsByPosOnRefGenome" + suffix + ".txt" # created and then read
@@ -32,7 +35,6 @@ numSnpsWithinGenesPath = "./numSnpsWithinGenes"
 weightedSNPsFile = "./weightedSNPS.tsv"
 
 
-numPvaluesForEachMetadataCatagory = [417_115]#[21_378]#[417_115, 417_115] #TODO:not working properly (just uses first cut off and assumes that they are all the same
 
 """TODO: I need to figure out how I kept the pathogenicity file (I might have just regexed it on)"""
 
