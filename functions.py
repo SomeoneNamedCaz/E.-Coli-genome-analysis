@@ -4,6 +4,7 @@ import urllib.request
 import os
 from glob import glob
 import threading
+import sys
 
 def reverseComplement(seq):
     reverseComplementSeq = ''  # string of complementary nucleotides

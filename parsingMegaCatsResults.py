@@ -13,23 +13,31 @@ snpsFileWithCorrectPosPath = "./sigSNPsByPosOnRefGenomeInsertAndDelete.txt" # cr
 snpsWithinGenesPath = "./snpsWithinGenesInsertAndDelete.txt" # created
 snpsSortedBySignificancePath = "./snpsSortedBySignificanceWithGenesContainingThemInsertAndDelete.tsv" # created
 """
+if len(sys.argv) < 4:
+    print("please give arguments: combined megaCats file, indexes of the snpsFile, the suffix you want for output files")
 
+# args
+snpStatPath = sys.argv[1]#"./megaCATS-main/firstMegaCatsRunOnData/1AA_Summary_Results_ALL-metaDataForMetaCatsPathFixed.tsv.txt" #TODO: send fixed stuff to doctor Erickson
+snpIndexesPath = sys.argv[2]#"./InsertAndDeleteCombinedGenomes/insertAndDeleteIndexes.txt"
+suffix = sys.argv[3]
+# arg less likely to change
 annotatedRefGenomePath = "./AllAssemblies/refGenomeAnnotationsEdited.gb"
-snpStatPath = "./megaCATS-main/firstMegaCatsRunOnData/1AA_Summary_Results_ALL-metaDataForMetaCatsPathFixed.tsv.txt" #TODO: send fixed stuff to doctor Erickson
-snpLocationPath = "./substSNPcombinedGenomes/allSubstSNPsMoreThan9ActuallyWorkingMethodIndexes.txt"
-snpsFileWithCorrectPosPath = "./sigSNPsByPosOnRefGenome.txt" # created and then read
-snpsWithinGenesPath = "./snpsWithinGenes.txt" # created
-snpIndexesPath = "./substSNPcombinedGenomes/allSubstSNPsMoreThan9ActuallyWorkingMethodIndexes.txt"
-snpsSortedBySignificancePath = "./snpsSortedBySignificanceWithGenesContainingThem.tsv" # created
-weightedSNPsFile = "./weightedSNPS.tsv"
 numGenesToInclude = 1000
+numSnpsToIncludeForMostSigSnps = 10_000
+
+# outputs
+snpsFileWithCorrectPosPath = "./sigSNPsByPosOnRefGenome" + suffix + ".txt" # created and then read
+snpsSortedBySignificancePath = "./snpsSortedBySignificanceWithGenesContainingThem" + suffix # created (extension added later)
+numSnpsWithinGenesPath = "./numSnpsWithinGenes"
+weightedSNPsFile = "./weightedSNPS.tsv"
+
 
 numPvaluesForEachMetadataCatagory = [417_115]#[21_378]#[417_115, 417_115] #TODO:not working properly (just uses first cut off and assumes that they are all the same
 
 """TODO: I need to figure out how I kept the pathogenicity file (I might have just regexed it on)"""
 
 
-percentSNPsCutOffForPercentSNPs = 0.02
+percentSNPsCutOffForPercentSNPs = 0.02 # for pathway analysis
 # import cProfile
 # prof = cProfile.Profile()
 # prof.enable()
@@ -66,8 +74,8 @@ t1 = time.time()
 contigs = getContigs(annotatedRefGenomePath)
 genes = getGenesOnContigsByPosition(annotatedRefGenomePath, contigs)
 print(time.time()-t1)
-def outputFunction(listOfGenes, outFileName):
-    with open(outFileName, "w") as outFile:
+def outputFunction(listOfGenes, metadataCategory):
+    with open(numSnpsWithinGenesPath + metadataCategory[0].upper() + metadataCategory[1:] + suffix + ".tsv", "w") as outFile:
         # header line
         outFile.write("""Name\tProduct\tPercent Of Nucleotides That Are Significant SNPs\tgene Sequence\tPercent Nucleotides That Can Be Significant NonSynonymous Mutations\tNon-synonymous SNP Indexes\tSynonymous SNP Indexes\tgeneStartPositionInGenome\tfraction of genes in pathway with high number of snps\n""")
         # find out if there are other genes in the pathway
@@ -120,6 +128,20 @@ def outputFunction(listOfGenes, outFileName):
                 + "\t" + str(numNonSyn/len(gene.sequence)) + "\t" + " ".join(nonSynSnpPositions) + "\t" + " ".join(synSnpPositions) + "\t" + str(gene.startPos) + "\t" + str(geneNameToNumSignificantlySnpedInPathway[gene.name[:3]]) + "/" + str(geneNameToNumInPathway[gene.name[:3]])+ "\n")
             except KeyError: # if no sig snps in pathway
                 pass
+
+    """ This segment looks at the most significant snps and the genes that contain them
+    """
+    mostSignificantSnps = []  # sorted, most significance first
+    for gene in listOfGenes:
+        for snp in gene.snps:
+            mostSignificantSnps.append((snp, gene))
+    mostSignificantSnps.sort(key=lambda snpAndGene: snpAndGene[0].pValue)
+    with open(snpsSortedBySignificancePath + metadataCategory[0].upper() + metadataCategory[1:] + ".tsv", "w") as outFile:
+        outFile.write("SNP pValue\tSNPlocation\tgeneName\tgeneSequence\n")  # add category and move to the output function
+        for snpAndGene in mostSignificantSnps[:numSnpsToIncludeForMostSigSnps]:
+            outFile.write(
+                str(snpAndGene[0].pValue) + "\t" + str(snpAndGene[0].location) + "\t" + snpAndGene[1].name + "\t"
+                + snpAndGene[1].sequence + "\n")
 
 lastMetaDataColName = ""
 with open(snpsFileWithCorrectPosPath) as snpsFileWithCorrectPos:
@@ -183,7 +205,7 @@ with open(snpsFileWithCorrectPosPath) as snpsFileWithCorrectPos:
         lastMetaDataColName = comparisonGroup
         lastSNPpos = positionInGenome
         index = indexOfLastGene-1
-        for gene in genes:#[indexOfLastGene:]:
+        for gene in genes:#
             index += 1
 
             # print(index)
@@ -192,9 +214,6 @@ with open(snpsFileWithCorrectPosPath) as snpsFileWithCorrectPos:
                 gene.counter += 1
                 #   this doesn't necessarily capture the case where group1(336_A,_75_G,_49_T)|group2(367_A,_18_G,_98_T)
                 gene.snps.append(SNP(positionInGenome - gene.startPos, highestNuc, secondHighestNuc, pval))
-                # if index >= 5: # saftey so does go to -1
-                #
-                #     indexOfLastGene = index - 5
                 break
 
 
@@ -202,18 +221,7 @@ genes.sort(key=lambda gene: 1 - gene.counter/len(gene.sequence)) # to sort by as
 outputFunction(genes, lastMetaDataColName)
 
 
-""" This segment looks at the most significant snps and the genes that contain them
-"""
-mostSignificantSnps = [] # sorted, most significance first
-for gene in genes:
-    for snp in gene.snps:
-        mostSignificantSnps.append((snp, gene))
-mostSignificantSnps.sort(key=lambda snpAndGene: snpAndGene[0].pValue)
-with open(snpsSortedBySignificancePath, "w") as outFile:
-    outFile.write("SNP pValue\tSNPlocation\tgeneName\tgeneSequence") # add category and move to the output function
-    for snpAndGene in mostSignificantSnps:
-        outFile.write(str(snpAndGene[0].pValue) + "\t" + str(snpAndGene[0].location) + "\t" + snpAndGene[1].name + "\t"
-                      + snpAndGene[1].sequence)
+
 
 
 # prof.disable()

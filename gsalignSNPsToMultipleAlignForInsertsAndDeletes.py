@@ -26,8 +26,9 @@ for filePath in glob(gsAlignPaths):
         for line in file:
             line = line.strip()
             cols = line.split("\t")
-            if line == "" or line[0] == "#":
+            if line == "" or line[0] == "#": # or cols[7][5:] == "SUBSTITUTE":
                 continue
+            #               0                       1           2           3           4
             snps.append([filePath.split("/")[-1], int(cols[1]), cols[3], cols[4], cols[7][5:]])
             # if numFiles == 1:
             #     print([filePath, cols[1], cols[3], cols[4], cols[7][5:]])
@@ -36,16 +37,22 @@ for filePath in glob(gsAlignPaths):
 # for snp in snps:
 #     print(snp)
 # print(len(snpPositions))
-snps.sort(key=lambda a: a[1])
+
 # with open("./SNPsList.tsv", "w") as file:
 #     for snp in snps:
 #         for val in snp:
 #             file.write(val + "\t")
 #         file.write("\n")
 
+#FIXME:I don't thing this works since the added positions doesn't have a real position in the genome since they are inserts or deletes
+# snpsWithInserstAsSingleNucs = []
+# for snp in snps:
+#     if snp[4] == "INSERT":
+#         for nuc in snp[2]:
+#             snpsWithInserstAsSingleNucs.append([])
+#     if snp[4] == "DELETE":
 
-
-
+snps.sort(key=lambda a: a[1])
 # del snpPositions
 allFiles = glob(gsAlignPaths)
 
@@ -55,7 +62,7 @@ filesWithoutSNP = copy.deepcopy(allFiles)
 
 removedFiles = []
 # print(filesWithoutSNP)
-currPos = snps[0][1]
+lastPos = snps[0][1]
 # currFile = open(outFilePathPrefix + snps[0][1] + ".afa", "w")
 oldNucAtCurrentPos = snps[0][2]
 # longestNucLength = determineIfVariantIncludesNumOfNucleotideChange(currPos, 0) # -1 is a flag for no insertions or deletions
@@ -71,7 +78,7 @@ numSkipped = 0
 
 lastIndex = 0
 
-
+# maxLenOfCurrSnp = 0 # max length of the snp that is currently in index to be added (i.e. first nucleotide has come and the last one hasn't)
 maxLenOfSnpGenome = -1
 snpIndex = -1
 needToSkip = False
@@ -91,17 +98,23 @@ with open(pathForSNPsIncludedIndexes, "w") as indexFile, open(pathForSNPsInclude
         if snp[4] != "INSERT" and snp[4] != "DELETE":
             continue
         snpPos = snp[1]
-
-        if currPos < snpPos: # if ran out of SNPs at the position
+        if snp[4] == "SUBSTITUTE":
+            print("OOPs\n\n\n\n\n\n")
+        if lastPos < snpPos: # if ran out of SNPs at the position
             # add the oldNuc for that SNP
             if not needToSkip:
-
+                lenBefore = len(dataToWrite[filesWithoutSNP[0]]) # all should have same length
                 for fileWithMissingSNP in filesWithoutSNP:
                     dataToWrite[fileWithMissingSNP] += oldNucAtCurrentPos
-                    maxLenOfSnpGenome = max(maxLenOfSnpGenome, len(dataToWrite[fileWithMissingSNP]))
+
+                # prob only need to do for the last one #TODO:check
+                maxLenOfSnpGenome = max(maxLenOfSnpGenome, len(dataToWrite[fileWithMissingSNP]))
+
                 for file in allFiles:
                     dataToWrite[file] += "-" * (maxLenOfSnpGenome - len(dataToWrite[file]))
-                indexFile.write(str(currPos) + "\n")
+                for i in range(maxLenOfSnpGenome - lenBefore):
+                    indexFile.write(str(lastPos + i) + "\n")
+
                 # # TODO: add this data. Could be first instead of last
                 # if abs(len(oldNucAtCurrentPos) - len(dataToWrite[file])) % 3 != 0: # != 0
                 #     frameShiftIndexFile.write(str(currPos) + "\n")
@@ -112,7 +125,7 @@ with open(pathForSNPsIncludedIndexes, "w") as indexFile, open(pathForSNPsInclude
             except:
                 pass
             # reset everything for next snp
-            currPos = snpPos
+            lastPos = snpPos
             filesWithoutSNP += removedFiles  # add back removed files
             removedFiles = []
             oldNucAtCurrentPos = snp[2]
@@ -125,7 +138,7 @@ with open(pathForSNPsIncludedIndexes, "w") as indexFile, open(pathForSNPsInclude
                 oldNucAtCurrentPos = snp[2]
             maxLenOfSnpGenome = max(maxLenOfSnpGenome, len(dataToWrite[snp[0]]) + len(snp[2]))
             if not snpIndexPrintedToFile and (len(snp[3]) - len(snp[2])) % 3 != 0:  # != 0
-                frameShiftIndexFile.write(str(currPos) + "\n")
+                frameShiftIndexFile.write(str(snpPos) + "\n")
                 snpIndexPrintedToFile = True
 
             # add the snp nucs
@@ -141,11 +154,12 @@ with open(pathForSNPsIncludedIndexes, "w") as indexFile, open(pathForSNPsInclude
             print("progress",snpIndex / snpsLength)
     # cover for last case
     indexFile.write(str(snpPos) + "\n")
+    for fileWithMissingSNP in filesWithoutSNP:
+        dataToWrite[fileWithMissingSNP] += oldNucAtCurrentPos
+        maxLenOfSnpGenome = max(maxLenOfSnpGenome, len(dataToWrite[fileWithMissingSNP]))
+    for file in allFiles:
+        dataToWrite[file] += "-" * (maxLenOfSnpGenome - len(dataToWrite[file]))
 
-
-# cover for last case
-for fileWithMissingSNP in filesWithoutSNP:
-    dataToWrite[fileWithMissingSNP] += oldNucAtCurrentPos
 
 print("printing dataToRight")
 
