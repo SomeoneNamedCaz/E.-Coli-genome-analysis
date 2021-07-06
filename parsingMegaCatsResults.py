@@ -5,6 +5,13 @@ NEEDS: path of all results
        path of a file with the indexes of the SNPS (each index on each line)
        numberOfLines in snpStatPath
        numPvaluesForEachMetadataCatagory
+       
+       
+       BACKUP:
+       snpIndexesPath = "./InsertAndDeleteCombinedGenomes/insertAndDeleteIndexes.txt"
+snpsFileWithCorrectPosPath = "./sigSNPsByPosOnRefGenomeInsertAndDelete.txt" # created and then read
+snpsWithinGenesPath = "./snpsWithinGenesInsertAndDelete.txt" # created
+snpsSortedBySignificancePath = "./snpsSortedBySignificanceWithGenesContainingThemInsertAndDelete.tsv" # created
 """
 
 annotatedRefGenomePath = "./AllAssemblies/refGenomeAnnotationsEdited.gb"
@@ -12,8 +19,15 @@ snpStatPath = "./megaCATS-main/firstMegaCatsRunOnData/1AA_Summary_Results_ALL-me
 snpLocationPath = "./substSNPcombinedGenomes/allSubstSNPsMoreThan9ActuallyWorkingMethodIndexes.txt"
 snpsFileWithCorrectPosPath = "./sigSNPsByPosOnRefGenome.txt" # created and then read
 snpsWithinGenesPath = "./snpsWithinGenes.txt" # created
+snpIndexesPath = "./substSNPcombinedGenomes/allSubstSNPsMoreThan9ActuallyWorkingMethodIndexes.txt"
+snpsSortedBySignificancePath = "./snpsSortedBySignificanceWithGenesContainingThem.tsv" # created
+weightedSNPsFile = "./weightedSNPS.tsv"
 numGenesToInclude = 1000
-numPvaluesForEachMetadataCatagory = [417_115, 417_115] #TODO:not working properly (just uses first cut off and assumes that they are all the same
+
+numPvaluesForEachMetadataCatagory = [417_115]#[21_378]#[417_115, 417_115] #TODO:not working properly (just uses first cut off and assumes that they are all the same
+
+"""TODO: I need to figure out how I kept the pathogenicity file (I might have just regexed it on)"""
+
 
 percentSNPsCutOffForPercentSNPs = 0.02
 # import cProfile
@@ -22,7 +36,9 @@ percentSNPsCutOffForPercentSNPs = 0.02
 
 significanceLevel = 0.05/numPvaluesForEachMetadataCatagory[0] # can change initial P-value cutoff if wanted
 snpLocations = [] # [snplocation1, ...]
-with open(snpLocationPath) as file:
+
+
+with open(snpIndexesPath) as file:
     for line in file:
         line = line.strip()
         if line == "":
@@ -88,16 +104,21 @@ def outputFunction(listOfGenes, outFileName):
                 seqWithoutSNP[snp.location % 3] = snp.oldNuc # in case if ref has the snp too
                 seqWithoutSNP = "".join(seqWithoutSNP)  # because strings are immutable
 
-                if translate(seqWithSNP) != translate(seqWithoutSNP):
-                    numNonSyn += 1
-                    nonSynSnpPositions.append(str(snp.location))
-                else:
-                    synSnpPositions.append(str(snp.location))
+
+                # I actually can't do a nuc by nuc analysis of inserts and deletes to check for nonsynonymous mutations
+                try:
+                    if translate(seqWithSNP) != translate(seqWithoutSNP):
+                        numNonSyn += 1
+                        nonSynSnpPositions.append(str(snp.location))
+                    else:
+                        synSnpPositions.append(str(snp.location))
+                except KeyError:
+                    pass
             # print(gene.counter, len(gene.snps))
             try:
                 outFile.write(gene.name + "\t" + gene.product + "\t" + str(gene.counter/len(gene.sequence)) + "\t" + gene.sequence
                 + "\t" + str(numNonSyn/len(gene.sequence)) + "\t" + " ".join(nonSynSnpPositions) + "\t" + " ".join(synSnpPositions) + "\t" + str(gene.startPos) + "\t" + str(geneNameToNumSignificantlySnpedInPathway[gene.name[:3]]) + "/" + str(geneNameToNumInPathway[gene.name[:3]])+ "\n")
-            except:
+            except KeyError: # if no sig snps in pathway
                 pass
 
 lastMetaDataColName = ""
@@ -143,30 +164,13 @@ with open(snpsFileWithCorrectPosPath) as snpsFileWithCorrectPos:
                     secondHighestNuc = nuc
             if len(nucAndNums) > 1:
                 break # so we don't say the non variant is the second and first most common nuc
-        # oldNuc = nucInfo[2]
-        # newNuc = nucInfo[4]
 
-        # side = ""  # longest side
-        # for currSide in nucInfo.split("|"):  # get longest side
-        #     if len(currSide) > len(side):  # just > gives 0.2685111989459816
-        #         side = currSide
-        # # problem found I think group1(1_A)|group2(336_A,_75_G,_49_T)|group3(367_A,_18_G,_98_T)
-        # nucAndNums = re.split("[(,)]", side)[1:-1]  # cut off groups outside of perentheses
-        # # print(nucAndNums)
-        # for nucAndNum in nucAndNums:
-        #     nucAndNum = re.sub("_", "", nucAndNum)
-        #     nuc = nucAndNum[-1]
-        #     num = int(nucAndNum[:-1])
-        #     if num > highestNum:
-        #         secondHighestNuc = highestNuc
-        #         secondHighestNum = highestNum
-        #         highestNum = num
-        #         highestNuc = nuc
-        #     elif num > secondHighestNum:
-        #         secondHighestNum = num
-        #         secondHighestNuc = nuc
-        if positionInGenome < lastSNPpos:
+
+        if positionInGenome + 3000 < lastSNPpos: # if it went backwards by a lot then we know we are starting a new metadata category
             print("outputting first metadata category")
+            print(positionInSnpGenome, lastSNPpos)
+            print(lastMetaDataColName)
+            print("_-----")
             indexOfLastGene = 0
             genes.sort(key=lambda gene: 1 - gene.counter/len(gene.sequence))
             # genes.reverse()
@@ -187,7 +191,7 @@ with open(snpsFileWithCorrectPosPath) as snpsFileWithCorrectPos:
             if gene.stopPos > positionInGenome and gene.startPos < positionInGenome:
                 gene.counter += 1
                 #   this doesn't necessarily capture the case where group1(336_A,_75_G,_49_T)|group2(367_A,_18_G,_98_T)
-                gene.snps.append(SNP(positionInGenome - gene.startPos, highestNuc, secondHighestNuc))
+                gene.snps.append(SNP(positionInGenome - gene.startPos, highestNuc, secondHighestNuc, pval))
                 # if index >= 5: # saftey so does go to -1
                 #
                 #     indexOfLastGene = index - 5
@@ -196,6 +200,21 @@ with open(snpsFileWithCorrectPosPath) as snpsFileWithCorrectPos:
 
 genes.sort(key=lambda gene: 1 - gene.counter/len(gene.sequence)) # to sort by assending proportion
 outputFunction(genes, lastMetaDataColName)
+
+
+""" This segment looks at the most significant snps and the genes that contain them
+"""
+mostSignificantSnps = [] # sorted, most significance first
+for gene in genes:
+    for snp in gene.snps:
+        mostSignificantSnps.append((snp, gene))
+mostSignificantSnps.sort(key=lambda snpAndGene: snpAndGene[0].pValue)
+with open(snpsSortedBySignificancePath, "w") as outFile:
+    outFile.write("SNP pValue\tSNPlocation\tgeneName\tgeneSequence") # add category and move to the output function
+    for snpAndGene in mostSignificantSnps:
+        outFile.write(str(snpAndGene[0].pValue) + "\t" + str(snpAndGene[0].location) + "\t" + snpAndGene[1].name + "\t"
+                      + snpAndGene[1].sequence)
+
 
 # prof.disable()
 # prof.print_stats(sort=1)

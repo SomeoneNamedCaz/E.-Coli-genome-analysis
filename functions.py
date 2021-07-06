@@ -120,10 +120,11 @@ def getGenesOnContigs(fileName, contigs): #TODO: doesn't do such a good job on <
                         geneProducts.append(re.sub('/product="', "", line)[:-1])
     return genes
 class SNP:
-    def __init__(self, location, oldNuc, newNuc):
+    def __init__(self, location, oldNuc, newNuc, pValue):
         self.location = location
         self.oldNuc = oldNuc
         self.newNuc = newNuc
+        self.pValue = pValue
 
 class Gene:
     def __init__(self, startPos, stopPos, sequence, name, product):
@@ -134,6 +135,7 @@ class Gene:
         self.product = product
         self.snps = [] # list of SNP objects
         self.counter = 0
+
 
 def getGenesOnContigsByPosition(fileName, contigs):
     """":returns list of gene info ordered by position elements are of the gene class"""
