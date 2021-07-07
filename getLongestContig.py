@@ -1,5 +1,5 @@
 from functions import *
-pathBeginning = "./AllAssemblies/AllCommensalBovineAssemblies"
+pathBeginning = sys.argv[1]#"./AllAssemblies/AllCommensalBovineAssemblies"
 
 if (not os.path.exists(pathBeginning + "/ragtagOutputs/longestScaffoldFiles/")):
     os.mkdir(pathBeginning + "/ragtagOutputs/longestScaffoldFiles/")

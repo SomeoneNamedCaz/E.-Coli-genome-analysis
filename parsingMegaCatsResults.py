@@ -36,7 +36,6 @@ weightedSNPsFile = "./weightedSNPS.tsv"
 
 
 
-"""TODO: I need to figure out how I kept the pathogenicity file (I might have just regexed it on)"""
 
 
 percentSNPsCutOffForPercentSNPs = 0.02 # for pathway analysis
