@@ -262,7 +262,7 @@ def SNPLocations(seq1, seq2):
         except IndexError:
             print("different Gene lengths")
     return locationsOfDifferences
-
+# codonsToAminoAcids = {}
 def translate(validSeq):
     codonsToAminoAcids = makeCodonDictionary()
     RNASeq = re.sub("T", "U", validSeq)
