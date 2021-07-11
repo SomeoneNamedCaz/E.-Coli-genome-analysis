@@ -13,8 +13,8 @@ snpsFileWithCorrectPosPath = "./sigSNPsByPosOnRefGenomeInsertAndDelete.txt" # cr
 snpsWithinGenesPath = "./snpsWithinGenesInsertAndDelete.txt" # created
 snpsSortedBySignificancePath = "./snpsSortedBySignificanceWithGenesContainingThemInsertAndDelete.tsv" # created
 """
-if len(sys.argv) < 5:
-    print("please give arguments: combined megaCats file, indexes of the snpsFile, the suffix you want for output files, num comparisons")
+if len(sys.argv) < 4:
+    print("please give arguments: combined megaCats file, indexes of the snpsFile, the suffix you want for output files")
     exit(1)
 
 # args
@@ -25,7 +25,6 @@ snpIndexesPath = sys.argv[2]#"./InsertAndDeleteCombinedGenomes/insertAndDeleteIn
 snpIndexesFrameShiftedPath = ".".join(snpIndexesPath.split(".")[:-2] + [snpIndexesPath.split(".")[-2]+"FrameShifted"] + [snpIndexesPath.split(".")[-1]])
 
 suffix = sys.argv[3]
-numPvaluesForEachMetadataCatagory = sys.argv[4]#[21_378]#[417_115, 417_115] #TODO:not working properly (just uses first cut off and assumes that they are all the same
 
 # arg less likely to change
 annotatedRefGenomePath = "./AllAssemblies/refGenomeAnnotationsEdited.gb"
@@ -37,7 +36,6 @@ numSnpsToIncludeForMostSigSnps = 10_000
 snpsFileWithCorrectPosPath = "./sigSNPsByPosOnRefGenome" + suffix + ".txt" # created and then read
 snpsSortedBySignificancePath = "./snpsSortedBySignificanceWithGenesContainingThem" + suffix # created (extension added later)
 numSnpsWithinGenesPath = "./numSnpsWithinGenes"
-weightedSNPsFile = "./weightedSnps" + suffix
 
 
 
@@ -90,10 +88,10 @@ t1 = time.time()
 contigs = getContigs(annotatedRefGenomePath)
 genes = getGenesOnContigsByPosition(annotatedRefGenomePath, contigs)
 print(time.time()-t1)
-def outputFunction(listOfGenes, metadataCategory):
+def outputFunction(listOfGenes, metadataCategory, weights):
     with open(numSnpsWithinGenesPath + metadataCategory[0].upper() + metadataCategory[1:] + suffix + ".tsv", "w") as outFile:
         # header line
-        outFile.write("""Name\tProduct\tPercent Of Nucleotides That Are Significant SNPs\tgene Sequence\tPercent Nucleotides That Can Be Significant NonSynonymous Mutations\tNon-synonymous SNP Indexes\tSynonymous SNP Indexes\tgeneStartPositionInGenome\tfraction of genes in pathway with high number of snps\tnum frame shifted\tframshift location\n""")
+        outFile.write("""Name\tProduct\tweight\tPercent Of Nucleotides That Are Significant SNPs\tgene Sequence\tPercent Nucleotides That Can Be Significant NonSynonymous Mutations\tNon-synonymous SNP Indexes\tSynonymous SNP Indexes\tgeneStartPositionInGenome\tfraction of genes in pathway with high number of snps\tnum frame shifted\tframshift location\n""")
         # find out if there are other genes in the pathway
         geneNameToNumInPathway = {}
         geneNameToNumSignificantlySnpedInPathway = {}
@@ -142,7 +140,8 @@ def outputFunction(listOfGenes, metadataCategory):
                 except KeyError:
                     pass
             # print(gene.counter, len(gene.snps))
-            outFile.write(gene.name + "\t" + gene.product + "\t" + str(gene.counter / len(gene.sequence)) + "\t" +
+            outFile.write(gene.name + "\t" + gene.product + "\t" + str(weights[gene]) + "\t" + str(gene.counter /
+                          len(gene.sequence)) + "\t" +
                           gene.sequence + "\t" + str(numNonSyn / len(gene.sequence)) + "\t" +
                           " ".join(nonSynSnpPositions) + "\t" + " ".join(synSnpPositions) +
                           "\t" + str(gene.startPos) + "\t")
@@ -150,7 +149,7 @@ def outputFunction(listOfGenes, metadataCategory):
                 outFile.write(str(geneNameToNumSignificantlySnpedInPathway[gene.name[:3]])
                               + "/" + str(geneNameToNumInPathway[gene.name[:3]]) + "\t")
             except KeyError: # if no sig snps in pathway
-                outFile.write("0/" + str(geneNameToNumInPathway[gene.name[:3]]))
+                outFile.write("0/" + str(geneNameToNumInPathway[gene.name[:3]]) + "\t")
             outFile.write(str(len(frameShiftPositions) / len(gene.sequence)) + "\t" +
                           " ".join(frameShiftPositions) + "\n")
 
@@ -171,6 +170,9 @@ def outputFunction(listOfGenes, metadataCategory):
                 str(snpAndGene[0].pValue) + "\t" + str(snpAndGene[0].location) + "\t" + snpAndGene[1].name + "\t"
                 + snp.newNuc + "\t" + snp.oldNuc + "\t" + str((not indexesOfFrameShiftSnps.isdisjoint({int(snp.location)
                 + int(gene.startPos)}))) + "\t" + snpAndGene[1].sequence + "\n")
+    # with open(weightedSNPsFile + metadataCategory[0].upper() + metadataCategory[1:] + ".tsv", "w") as outFile:
+    #     outFile.write("\t\t\tgeneSequence\n")  # add category and move to the output function
+
 
 lastMetaDataColName = ""
 indexOfLastGene = 0
@@ -222,9 +224,18 @@ for line in snpsFileWithCorrectPosData:
         print(lastMetaDataColName)
         print("_-----")
         indexOfLastGene = 0
-        genes.sort(key=lambda gene: 1 - gene.counter/len(gene.sequence))
+        # genes.sort(key=lambda gene: 1 - gene.counter/len(gene.sequence))
+        weights = {}
+        for gene in genes:
+            weight = 0
+            for snp in gene.snps:
+                weight += math.frexp(snp.pValue)[1]
+            weights[gene] = weight / len(gene.sequence)
+        def sortFunc(geneArg):
+            return weights[geneArg]
+        genes.sort(key=sortFunc)
         # genes.reverse()
-        outputFunction(genes, lastMetaDataColName)
+        outputFunction(genes, lastMetaDataColName,weights)
         # reset counts
         for gene in genes:
             gene.counter = 0
@@ -244,9 +255,17 @@ for line in snpsFileWithCorrectPosData:
             gene.snps.append(SNP(positionInGenome - gene.startPos, highestNuc, secondHighestNuc, pval))
             break
 
-
-genes.sort(key=lambda gene: 1 - gene.counter/len(gene.sequence)) # to sort by assending proportion
-outputFunction(genes, lastMetaDataColName)
+weights = {}
+for gene in genes:
+    weight = 0
+    for snp in gene.snps:
+        weight += math.frexp(snp.pValue)[1]
+    weights[gene] = weight / len(gene.sequence)
+def sortFunc(geneArg):
+    return weights[geneArg]
+genes.sort(key=sortFunc)
+# genes.sort(key=lambda gene: 1 - gene.counter/len(gene.sequence)) # to sort by assending proportion
+outputFunction(genes, lastMetaDataColName, weights)
 
 
 

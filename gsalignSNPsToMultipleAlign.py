@@ -8,7 +8,7 @@ import os
 import sys
 import cProfile
 if len(sys.argv) < 3: # when you do args need ""
-    print("requires a path to all of the vcf files like *.vcf and a output file name/path")
+    print("requires a path to all of the vcf files like *.vcf and a output file name with path")
     exit(1)
 
 prof = cProfile.Profile()
@@ -34,13 +34,13 @@ for filePath in glob(gsAlignPaths):
             if line == "" or line[0] == "#": # or cols[7][5:] == "SUBSTITUTE":
                 continue
             #               0                       1           2           3           4
-            snps.append([filePath, int(cols[1]), cols[3], cols[4], cols[7][5:]])
+            snps.append([filePath.split("/")[-1], int(cols[1]), cols[3], cols[4], cols[7][5:]])
             # if numFiles == 1:
             #     print([filePath, cols[1], cols[3], cols[4], cols[7][5:]])
             # snpPositions.add(cols[1])
 
-for snp in snps:
-    snp[0] = snp[0].split("/")[-1]
+# for snp in snps:
+#     snp[0] = snp[0].split("/")[-1]
 
 #     print(snp)
 # print(len(snpPositions))
@@ -130,7 +130,7 @@ with open(pathForSNPsIncludedIndexes, "w") as indexFile, open(pathForSNPsInclude
                 pass
             # reset everything for next snp
             lastPos = snpPos
-            filesWithoutSNP.union(removedFiles)  # add back removed files
+            filesWithoutSNP = filesWithoutSNP.union(removedFiles)  # add back removed files
             removedFiles = set()
             oldNucAtCurrentPos = snp[2]
             snpIndexPrintedToFile = False
