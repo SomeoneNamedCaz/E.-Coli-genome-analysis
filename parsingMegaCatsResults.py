@@ -2,17 +2,14 @@ from functions import *
 """
 gets significant SNPs and maps them to the reference genome
 NEEDS: path of all results
-       path of a file with the indexes of the SNPS (each index on each line)
+       path of a file with the indexes of the SNPS (one index on each line, in order)
        numberOfLines in snpStatPath
        numPvaluesForEachMetadataCatagory
        
-       
-       BACKUP:
-       snpIndexesPath = "./InsertAndDeleteCombinedGenomes/insertAndDeleteIndexes.txt"
-snpsFileWithCorrectPosPath = "./sigSNPsByPosOnRefGenomeInsertAndDelete.txt" # created and then read
-snpsWithinGenesPath = "./snpsWithinGenesInsertAndDelete.txt" # created
-snpsSortedBySignificancePath = "./snpsSortedBySignificanceWithGenesContainingThemInsertAndDelete.tsv" # created
 """
+
+codonsToAminoAcids = makeCodonDictionary()
+
 if len(sys.argv) < 4:
     print("please give arguments: combined megaCats file, indexes of the snpsFile, the suffix you want for output files")
     exit(1)
@@ -27,9 +24,9 @@ snpIndexesFrameShiftedPath = ".".join(snpIndexesPath.split(".")[:-2] + [snpIndex
 suffix = sys.argv[3]
 
 # arg less likely to change
-annotatedRefGenomePath = "./AllAssemblies/refGenomeAnnotationsEdited.gb"
-numGenesToInclude = 1000
-numSnpsToIncludeForMostSigSnps = 10_000
+annotatedRefGenomePath = "./refGenomes/k-12.gbff"#"./AllAssemblies/refGenomeAnnotationsEdited.gb"
+numGenesToInclude = 10000
+numSnpsToIncludeForMostSigSnps = 100_000
 
 
 # outputs
@@ -42,29 +39,27 @@ numSnpsWithinGenesPath = "./numSnpsWithinGenes"
 
 
 percentSNPsCutOffForPercentSNPs = 0.02 # for pathway analysis
-import cProfile
-prof = cProfile.Profile()
-prof.enable()
-
 
 snpLocations = [] # [snplocation1, ...]
 
 
 with open(snpIndexesPath) as file:
-    for line in file:
-        line = line.strip()
-        if line == "":
-            continue
-        snpLocations.append(int(line))
+    for line in file:  # special stuff here to adjust for float method that was added
+        line = float(line.strip())
+        line = round((line - int(line)) * 1000 + int(line))
+        snpLocations.append(line)
+
+
+
 
 print(len(snpLocations))
-significanceLevel = 0.05/len(snpLocations) #numPvaluesForEachMetadataCatagory[0]  # can change initial P-value cutoff if wanted
+significanceLevel = 0.05/len(snpLocations)  # can change initial P-value cutoff if wanted
 snpsFileWithCorrectPosData = []
 with open(snpStatPath) as file, open(snpsFileWithCorrectPosPath, "w") as outFile:
     for line in file:
         line = line.strip()
         cols = line.split("\t")
-        if line == "" or cols[0] == "Position":
+        if line == "" or cols[0] == "Position" or line[0] == '"':
             continue
         pval = float(cols[2])
         comparisonGroup = cols[-1].split("-")[0]
@@ -128,17 +123,25 @@ def outputFunction(listOfGenes, metadataCategory, weights):
                 seqWithoutSNP = "".join(seqWithoutSNP)  # because strings are immutable
 
                 if not indexesOfFrameShiftSnps.isdisjoint({snp.location + gene.startPos}):
+                    snp.mutationType = SNP.mutationType.frameShift
                     frameShiftPositions.append(str(snp.location))
-
-                # I actually can't do a nuc by nuc analysis of inserts and deletes to check for nonsynonymous mutations
-                try:
-                    if translate(seqWithSNP) != translate(seqWithoutSNP):
-                        numNonSyn += 1
-                        nonSynSnpPositions.append(str(snp.location))
-                    else:
-                        synSnpPositions.append(str(snp.location))
-                except KeyError:
-                    pass
+                else:
+                    # I actually can't do a nuc by nuc analysis of inserts and deletes to check for nonsynonymous mutations
+                    try:
+                        newAA = translate(seqWithSNP, codonsToAminoAcids)
+                        if newAA != translate(seqWithoutSNP, codonsToAminoAcids):
+                            if newAA == "*":
+                                snp.mutationType = SNP.mutationType.earlyStop
+                            else:
+                                snp.mutationType = SNP.mutationType.missSense
+                            numNonSyn += 1
+                            nonSynSnpPositions.append(str(snp.location))
+                        else:
+                            snp.mutationType = SNP.mutationType.silent
+                            synSnpPositions.append(str(snp.location))
+                    except KeyError:
+                        snp.mutationType = SNP.mutationType.insertMissSense # all indels are missense or frameshift
+                        pass
             # print(gene.counter, len(gene.snps))
             outFile.write(gene.name + "\t" + gene.product + "\t" + str(weights[gene]) + "\t" + str(gene.counter /
                           len(gene.sequence)) + "\t" +
@@ -162,16 +165,21 @@ def outputFunction(listOfGenes, metadataCategory, weights):
             mostSignificantSnps.append((snp, gene))
     mostSignificantSnps.sort(key=lambda snpAndGene: snpAndGene[0].pValue)
     with open(snpsSortedBySignificancePath + metadataCategory[0].upper() + metadataCategory[1:] + ".tsv", "w") as outFile:
-        outFile.write("SNP pValue\tSNPlocation\tgeneName\tnewNuc\toldNuc\tisAFrameShift(onlyAccurateOnFirstNucOfInDel)\tgeneSequence\n")  # add category and move to the output function
+        outFile.write("SNP pValue\tSNPlocation\tgeneName\tnewNuc\toldNuc\tmutationType(frameShiftRecordedOnlyOnFirstNucOfIndel)\tgeneSequence\n")  # add category and move to the output function
         for snpAndGene in mostSignificantSnps[:numSnpsToIncludeForMostSigSnps]:
             snp = snpAndGene[0]
             gene = snpAndGene[1]
             outFile.write(
                 str(snpAndGene[0].pValue) + "\t" + str(snpAndGene[0].location) + "\t" + snpAndGene[1].name + "\t"
-                + snp.newNuc + "\t" + snp.oldNuc + "\t" + str((not indexesOfFrameShiftSnps.isdisjoint({int(snp.location)
-                + int(gene.startPos)}))) + "\t" + snpAndGene[1].sequence + "\n")
-    # with open(weightedSNPsFile + metadataCategory[0].upper() + metadataCategory[1:] + ".tsv", "w") as outFile:
-    #     outFile.write("\t\t\tgeneSequence\n")  # add category and move to the output function
+                + snp.newNuc + "\t" + snp.oldNuc + "\t" + str(snp.mutationType.name) + "\t" + snpAndGene[1].sequence + "\n")
+
+
+
+
+import cProfile
+prof = cProfile.Profile()
+prof.enable()
+
 
 
 lastMetaDataColName = ""
@@ -247,7 +255,6 @@ for line in snpsFileWithCorrectPosData:
     for gene in genes:#
         index += 1
 
-        # print(index)
         # if in right gene
         if gene.stopPos > positionInGenome and gene.startPos < positionInGenome:
             gene.counter += 1
@@ -261,13 +268,11 @@ for gene in genes:
     for snp in gene.snps:
         weight += math.frexp(snp.pValue)[1]
     weights[gene] = weight / len(gene.sequence)
-def sortFunc(geneArg):
-    return weights[geneArg]
-genes.sort(key=sortFunc)
-# genes.sort(key=lambda gene: 1 - gene.counter/len(gene.sequence)) # to sort by assending proportion
+# def sortFunc(geneArg):
+#     return weights[geneArg]
+# genes.sort(key=sortFunc)
+genes.sort(key=lambda gene: 1 - gene.counter/len(gene.sequence)) # to sort by assending proportion
 outputFunction(genes, lastMetaDataColName, weights)
-
-
 
 
 

@@ -1,10 +1,12 @@
 import re
 import time
 import urllib.request
+import math
 import os
 from glob import glob
 import threading
 import sys
+from enum import Enum
 
 def reverseComplement(seq):
     reverseComplementSeq = ''  # string of complementary nucleotides
@@ -121,11 +123,20 @@ def getGenesOnContigs(fileName, contigs): #TODO: doesn't do such a good job on <
                         geneProducts.append(re.sub('/product="', "", line)[:-1])
     return genes
 class SNP:
-    def __init__(self, location, oldNuc, newNuc, pValue):
+    class mutationType(Enum):
+        missSense = 0
+        silent = 1
+        frameShift = 2 # nonSense
+        earlyStop = 3
+        insertMissSense = 4
+
+    def __init__(self, location, oldNuc, newNuc, pValue, typeOfMutation=mutationType.silent):
         self.location = location
         self.oldNuc = oldNuc
         self.newNuc = newNuc
         self.pValue = pValue
+        self.typeOfMutation = typeOfMutation
+
 
 class Gene:
     def __init__(self, startPos, stopPos, sequence, name, product):
@@ -262,9 +273,8 @@ def SNPLocations(seq1, seq2):
         except IndexError:
             print("different Gene lengths")
     return locationsOfDifferences
-# codonsToAminoAcids = {}
-def translate(validSeq):
-    codonsToAminoAcids = makeCodonDictionary()
+
+def translate(validSeq, codonsToAminoAcids):
     RNASeq = re.sub("T", "U", validSeq)
     currCodon = ''
     aminoAcidSeq = ''
@@ -533,3 +543,25 @@ def insertAtIndex(stringToInsert, index, char):
     """ returns the string that has the inserted index"""
     stringToInsert = stringToInsert[:index] + char + stringToInsert[index:]
     return stringToInsert
+
+def getLengthOfFirstDataLine(fastaFileName):
+    with open(fastaFileName) as file:
+        for line in file:
+            if line[0] != ">":
+                return len(line.strip())
+
+
+def sortByMultipleCriteria(arrayToSort, criteria): # earlier criteria are more important, not done
+    # criteria is a list of lambdas
+    # recursive attempt
+    firstHalf = arrayToSort[:int(len(arrayToSort)/2)]
+    secondHalf = arrayToSort[int(len(arrayToSort)/2):]
+    if len(criteria) != 0:
+        criterion = criteria[0]
+        firstHalf.sort(key=criterion)
+        secondHalf.sort(key=criterion)
+        while criterion(firstHalf[-1]) == criterion(secondHalf[0]):
+            firstHalf.append(secondHalf[0])
+            del secondHalf[0]
+        sortByMultipleCriteria(arrayToSort[len(firstHalf):], criteria[1:])
+    arrayToSort = firstHalf + secondHalf
