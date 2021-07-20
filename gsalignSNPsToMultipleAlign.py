@@ -8,7 +8,12 @@ import os
 import sys
 import cProfile
 if len(sys.argv) < 3: # when you do args need ""
-    print("requires a path to all of the vcf files like *.vcf and a output file name with path")
+    print("requires a path to all of the vcf files like *.vcf and a output file name with path !use quotes!\n"
+          "you may add a list of the types of snps to skip")
+    exit(1)
+
+if len(sys.argv) > 10:
+    print("remember quotes")
     exit(1)
 
 prof = cProfile.Profile()
@@ -18,6 +23,12 @@ gsAlignPaths = sys.argv[1]#"./allGsAlignOutputs/*.vcf"
 
 outFilePath = "/".join(sys.argv[2].split("/")[:-1]) + "/" #"./InsertAndDeleteCombinedGenomes/" # folder
 outFileName = sys.argv[2].split("/")[-1]
+thingsToSkip = []
+try:
+    thingsToSkip = sys.argv[3].split(",")
+except:
+    IndexError
+
 
 snps = [] # list of elements like this: [fileName, location, oldNuc, NewNuc, type]
 
@@ -26,7 +37,7 @@ for filePath in glob(gsAlignPaths):
     numFiles += 1
     # if numFiles > 200:
     #     break
-    # print("opened one")
+    print("opened one")
     with open(filePath) as file:
         for line in file:
             line = line.strip()
@@ -51,15 +62,9 @@ for filePath in glob(gsAlignPaths):
 #             file.write(val + "\t")
 #         file.write("\n")
 
-#FIXME:I don't thing this works since the added positions doesn't have a real position in the genome since they are inserts or deletes
-# snpsWithInserstAsSingleNucs = []
-# for snp in snps:
-#     if snp[4] == "INSERT":
-#         for nuc in snp[2]:
-#             snpsWithInserstAsSingleNucs.append([])
-#     if snp[4] == "DELETE":
 
 snps.sort(key=lambda a: a[1])
+print(snps[:100000]) #to test
 # del snpPositions
 allFiles = glob(gsAlignPaths)
 
@@ -76,7 +81,6 @@ oldNucAtCurrentPos = snps[0][2]
 snpIndex = 0
 dataToWrite = {} # {fileName:SNPlist}
 print(len(snps))
-print(snps[:1000])
 snpsLength = len(snps) #* len(filesWithoutSNP)
 for file in allFiles: # load the list with dicts with empty strings
     dataToWrite[file] = ""
@@ -103,6 +107,9 @@ print("start loop")
 with open(pathForSNPsIncludedIndexes, "w") as indexFile, open(pathForSNPsIncludedIndexes[:-4]+"FrameShifted.txt", "w") as frameShiftIndexFile:
     for snp in snps: # list of elements like this: [fileName, location, oldNuc, NewNuc, type]
         snpIndex += 1
+        if snp[4] in thingsToSkip:
+            print(snp[4])
+            continue
         snpPos = snp[1]
         if lastPos < snpPos: # if ran out of SNPs at the position
             # add the oldNuc for that SNP
@@ -112,7 +119,8 @@ with open(pathForSNPsIncludedIndexes, "w") as indexFile, open(pathForSNPsInclude
                     dataToWrite[fileWithMissingSNP] += oldNucAtCurrentPos
 
                 # prob only need to do for the last one #TODO:check
-                maxLenOfSnpGenome = max(maxLenOfSnpGenome, len(dataToWrite[fileWithMissingSNP]))
+                if len(filesWithoutSNP) != 0:
+                    maxLenOfSnpGenome = max(maxLenOfSnpGenome, len(dataToWrite[fileWithMissingSNP]))
 
                 for file in allFiles:
                     dataToWrite[file] += "-" * (maxLenOfSnpGenome - len(dataToWrite[file]))
@@ -162,12 +170,13 @@ with open(pathForSNPsIncludedIndexes, "w") as indexFile, open(pathForSNPsInclude
             print("progress",snpIndex / snpsLength)
 
     # cover for last case
-    indexFile.write(str(snpPos) + "\n")
     for fileWithMissingSNP in filesWithoutSNP:
         dataToWrite[fileWithMissingSNP] += oldNucAtCurrentPos
         maxLenOfSnpGenome = max(maxLenOfSnpGenome, len(dataToWrite[fileWithMissingSNP]))
     for file in allFiles:
         dataToWrite[file] += "-" * (maxLenOfSnpGenome - len(dataToWrite[file]))
+    for i in range(maxLenOfSnpGenome - lenBefore):
+        indexFile.write(str(lastPos + i / 1000) + "\n")
 
 
 print("printing dataToRight")

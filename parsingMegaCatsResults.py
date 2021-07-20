@@ -10,8 +10,9 @@ NEEDS: path of all results
 
 codonsToAminoAcids = makeCodonDictionary()
 
-if len(sys.argv) < 4:
-    print("please give arguments: combined megaCats file, indexes of the snpsFile, the suffix you want for output files")
+if len(sys.argv) < 5:
+    print("""please give arguments: combined megaCats file, indexes of the snpsFile, the suffix you want for output files,
+          the reference genome file""")
     exit(1)
 
 # args
@@ -24,7 +25,7 @@ snpIndexesFrameShiftedPath = ".".join(snpIndexesPath.split(".")[:-2] + [snpIndex
 suffix = sys.argv[3]
 
 # arg less likely to change
-annotatedRefGenomePath = "./refGenomes/k-12.gbff"#"./AllAssemblies/refGenomeAnnotationsEdited.gb"
+annotatedRefGenomePath = sys.argv[4]#"./refGenomes/k-12.gbff"#"./AllAssemblies/refGenomeAnnotationsEdited.gb"
 numGenesToInclude = 10000
 numSnpsToIncludeForMostSigSnps = 100_000
 
@@ -139,8 +140,8 @@ def outputFunction(listOfGenes, metadataCategory, weights):
                         else:
                             snp.mutationType = SNP.mutationType.silent
                             synSnpPositions.append(str(snp.location))
-                    except KeyError:
-                        snp.mutationType = SNP.mutationType.insertMissSense # all indels are missense or frameshift
+                    except KeyError: # i.e. if it's an indel
+                        snp.mutationType = SNP.mutationType.missSense # all indels are missense or frameshift
                         pass
             # print(gene.counter, len(gene.snps))
             outFile.write(gene.name + "\t" + gene.product + "\t" + str(weights[gene]) + "\t" + str(gene.counter /
@@ -272,7 +273,7 @@ for gene in genes:
 #     return weights[geneArg]
 # genes.sort(key=sortFunc)
 genes.sort(key=lambda gene: 1 - gene.counter/len(gene.sequence)) # to sort by assending proportion
-outputFunction(genes, lastMetaDataColName, weights)
+outputFunction(genes, lastMetaDataColName, weights) # "Animal"
 
 
 

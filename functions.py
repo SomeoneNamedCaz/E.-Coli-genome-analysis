@@ -287,6 +287,8 @@ def translate(validSeq, codonsToAminoAcids):
                 break
             else:
                 aminoAcidSeq += aminoAcid
+    if aminoAcidSeq == '': # if only a stop codon include that
+        aminoAcidSeq += '*'
     return aminoAcidSeq
 
 def makeCodonDictionary():
@@ -552,6 +554,7 @@ def getLengthOfFirstDataLine(fastaFileName):
 
 
 def sortByMultipleCriteria(arrayToSort, criteria): # earlier criteria are more important, not done
+    print("doesn't work yet")
     # criteria is a list of lambdas
     # recursive attempt
     firstHalf = arrayToSort[:int(len(arrayToSort)/2)]
