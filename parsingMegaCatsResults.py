@@ -6,13 +6,20 @@ NEEDS: path of all results
        numberOfLines in snpStatPath
        numPvaluesForEachMetadataCatagory
        
+       
+       
+       
+       
+       
+       path command:
+       time python parsingMegaCatsResults.py ./megaCATS-main/k-12/deadliness-rMsaInput.txt-rResultChisqTestFixed.txt ./megaCATS-main/k-12/allSnpsIndexes.txt K-12Ref ./refGenomes/k-12.gbff 
 """
 
 codonsToAminoAcids = makeCodonDictionary()
 
 if len(sys.argv) < 5:
     print("""please give arguments: combined megaCats file, indexes of the snpsFile, the suffix you want for output files,
-          the reference genome file""")
+          the reference genome file, optional: whether or not you want to remove the sparce entries""")
     exit(1)
 
 # args
@@ -24,8 +31,13 @@ snpIndexesFrameShiftedPath = ".".join(snpIndexesPath.split(".")[:-2] + [snpIndex
 
 suffix = sys.argv[3]
 
-# arg less likely to change
 annotatedRefGenomePath = sys.argv[4]#"./refGenomes/k-12.gbff"#"./AllAssemblies/refGenomeAnnotationsEdited.gb"
+removeSparce = False
+try:
+    removeSparce = sys.argv[5]
+except IndexError:
+    pass
+
 numGenesToInclude = 10000
 numSnpsToIncludeForMostSigSnps = 100_000
 
@@ -63,7 +75,7 @@ with open(snpStatPath) as file, open(snpsFileWithCorrectPosPath, "w") as outFile
         if line == "" or cols[0] == "Position" or line[0] == '"':
             continue
         pval = float(cols[2])
-        comparisonGroup = cols[-1].split("-")[0]
+        currMetaDataColName = cols[-1].split("-")[0]
         positionInSnpGenome = int(cols[0])
         posInRefGenome = snpLocations[positionInSnpGenome - 1]
         if pval < significanceLevel:
@@ -78,6 +90,7 @@ try:
         for line in frameShiftFile:
             indexesOfFrameShiftSnps.add(int(line))
 except FileNotFoundError:
+    print("no frame shifted index file found. Frame shifts won't be analyzed")
     pass
 
 t1 = time.time()
@@ -166,12 +179,12 @@ def outputFunction(listOfGenes, metadataCategory, weights):
             mostSignificantSnps.append((snp, gene))
     mostSignificantSnps.sort(key=lambda snpAndGene: snpAndGene[0].pValue)
     with open(snpsSortedBySignificancePath + metadataCategory[0].upper() + metadataCategory[1:] + ".tsv", "w") as outFile:
-        outFile.write("SNP pValue\tSNPlocation\tgeneName\tnewNuc\toldNuc\tmutationType(frameShiftRecordedOnlyOnFirstNucOfIndel)\tgeneSequence\n")  # add category and move to the output function
+        outFile.write("SNP pValue\tGroupEnrichedInSNP\tSNPlocation\tgeneName\tnewNuc\toldNuc\tmutationType(frameShiftRecordedOnlyOnFirstNucOfIndel)\tgeneSequence\n")  # add category and move to the output function
         for snpAndGene in mostSignificantSnps[:numSnpsToIncludeForMostSigSnps]:
             snp = snpAndGene[0]
             gene = snpAndGene[1]
             outFile.write(
-                str(snpAndGene[0].pValue) + "\t" + str(snpAndGene[0].location) + "\t" + snpAndGene[1].name + "\t"
+                str(snpAndGene[0].pValue) + "\t" + snp.nameOfGroupMoreLikelyToHaveSNP + "\t" + str(snpAndGene[0].location) + "\t" + snpAndGene[1].name + "\t"
                 + snp.newNuc + "\t" + snp.oldNuc + "\t" + str(snp.mutationType.name) + "\t" + snpAndGene[1].sequence + "\n")
 
 
@@ -186,6 +199,8 @@ prof.enable()
 lastMetaDataColName = ""
 indexOfLastGene = 0
 lastSNPpos = 0
+namesOfGroups = {'animal':{1:'chicken', 0: 'cow'},'pathogenicity':{1: 'commensal', 2:"pathogen"}}
+
 x = 0
 for line in snpsFileWithCorrectPosData:
     if x % 10000 == 0:
@@ -196,7 +211,7 @@ for line in snpsFileWithCorrectPosData:
     if line == "" or cols[0] == "Position" or line[0] == '"':
         continue
     pval = float(cols[2])
-    comparisonGroup = cols[-1].split("-")[0]
+    currMetaDataColName = cols[-1].split("-")[0]
     positionInGenome = int(cols[0])
     nucInfo = cols[5]
     # nucInfo = nucInfo.strip()
@@ -206,26 +221,12 @@ for line in snpsFileWithCorrectPosData:
     secondHighestNum = 0
     secondHighestNuc = ""
 
+    groups = nucInfo.split("|")
+    highestNuc, secondHighestNuc, indexOfMostSnpedGroup = getSnpInfo(nucInfo)
 
-    for side in nucInfo.split("|"):
 
-        nucAndNums = re.split("[(,)]", side)[1:-1] # cut off perentheses
-        # print(nucAndNums)
-        for nucAndNum in nucAndNums:
-            nucAndNum = re.sub("_","",nucAndNum)
-            nuc = nucAndNum[-1]
-            num = int(nucAndNum[:-1])
-            if num > highestNum:
-                secondHighestNuc = highestNuc
-                secondHighestNum = highestNum
-                highestNum = num
-                highestNuc = nuc
-            elif num > secondHighestNum:
-                secondHighestNum = num
-                secondHighestNuc = nuc
-        if len(nucAndNums) > 1:
-            break # so we don't say the wild type is the second and first most common nuc
 
+    # group index is the index of the higher group with the snps
 
     if positionInGenome + 3000 < lastSNPpos: # if it went backwards by a lot then we know we are starting a new metadata category
         print("outputting first metadata category")
@@ -250,7 +251,7 @@ for line in snpsFileWithCorrectPosData:
             gene.counter = 0
             gene.snps = []
 
-    lastMetaDataColName = comparisonGroup
+    lastMetaDataColName = currMetaDataColName
     lastSNPpos = positionInGenome
     index = indexOfLastGene-1
     for gene in genes:#
@@ -260,7 +261,9 @@ for line in snpsFileWithCorrectPosData:
         if gene.stopPos > positionInGenome and gene.startPos < positionInGenome:
             gene.counter += 1
             #   this doesn't necessarily capture the case where group1(336_A,_75_G,_49_T)|group2(367_A,_18_G,_98_T)
-            gene.snps.append(SNP(positionInGenome - gene.startPos, highestNuc, secondHighestNuc, pval))
+            snpGroup = namesOfGroups[currMetaDataColName][indexOfMostSnpedGroup]
+
+            gene.snps.append(SNP(positionInGenome - gene.startPos, highestNuc, secondHighestNuc, pval, snpGroup))
             break
 
 weights = {}
@@ -269,12 +272,11 @@ for gene in genes:
     for snp in gene.snps:
         weight += math.frexp(snp.pValue)[1]
     weights[gene] = weight / len(gene.sequence)
-# def sortFunc(geneArg):
-#     return weights[geneArg]
-# genes.sort(key=sortFunc)
-genes.sort(key=lambda gene: 1 - gene.counter/len(gene.sequence)) # to sort by assending proportion
+def sortFunc(geneArg):
+    return weights[geneArg]
+genes.sort(key=sortFunc)
+# genes.sort(key=lambda gene: 1 - gene.counter/len(gene.sequence)) # to sort by assending proportion
 outputFunction(genes, lastMetaDataColName, weights) # "Animal"
-
 
 
 prof.disable()

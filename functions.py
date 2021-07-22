@@ -130,13 +130,13 @@ class SNP:
         earlyStop = 3
         insertMissSense = 4
 
-    def __init__(self, location, oldNuc, newNuc, pValue, typeOfMutation=mutationType.silent):
+    def __init__(self, location, oldNuc, newNuc, pValue, nameOfGroupMoreLikelyToHaveSNP, typeOfMutation=mutationType.silent):
         self.location = location
         self.oldNuc = oldNuc
         self.newNuc = newNuc
         self.pValue = pValue
         self.typeOfMutation = typeOfMutation
-
+        self.nameOfGroupMoreLikelyToHaveSNP = nameOfGroupMoreLikelyToHaveSNP
 
 class Gene:
     def __init__(self, startPos, stopPos, sequence, name, product):
@@ -546,11 +546,11 @@ def insertAtIndex(stringToInsert, index, char):
     stringToInsert = stringToInsert[:index] + char + stringToInsert[index:]
     return stringToInsert
 
-def getLengthOfFirstDataLine(fastaFileName):
+def getFirstDataLine(fastaFileName):
     with open(fastaFileName) as file:
         for line in file:
             if line[0] != ">":
-                return len(line.strip())
+                return line
 
 
 def sortByMultipleCriteria(arrayToSort, criteria): # earlier criteria are more important, not done
@@ -568,3 +568,72 @@ def sortByMultipleCriteria(arrayToSort, criteria): # earlier criteria are more i
             del secondHalf[0]
         sortByMultipleCriteria(arrayToSort[len(firstHalf):], criteria[1:])
     arrayToSort = firstHalf + secondHalf
+
+def argmax(array):
+    maxVal = array[0]
+    indexOfMax = 0
+    index = 1
+    for groupCount in array[1:]:
+        if groupCount > maxVal:
+            maxCount = groupCount
+            indexOfMax = index
+        index += 1
+    return indexOfMax
+
+def getNumsOfNucs(nucInfo):
+    groups = nucInfo.split("|")
+    nucsOfGroups = []  # of {nuc:num}
+    for side in groups:
+
+        nucAndNums = re.split("[(,)]", side)[1:-1]  # cut off perentheses
+        # print(nucAndNums)
+        nucsToNum = {}
+        for nucAndNum in nucAndNums:
+            nucAndNum = re.sub("_", "", nucAndNum)
+            nuc = nucAndNum[-1]
+            num = int(nucAndNum[:-1])
+            nucsToNum[nuc] = num
+        nucsOfGroups.append(nucsToNum)
+    return nucsOfGroups
+
+def getSnpInfo(nucInfo):
+    """
+
+    :param nucInfo: col[5] of megacats file
+    :return: oldnuc, newnuc, bool
+    """
+    # nucInfo = nucInfo.strip()
+    # nucInfo = nucInfo.split("|")
+    highestNum = 0
+    highestNuc = ""
+    secondHighestNum = 0
+    secondHighestNuc = ""
+
+    nucsOfGroups = getNumsOfNucs(nucInfo)
+    indexOfGroupWithMostSnp = 0
+
+    for nucsToNum in nucsOfGroups:
+        for nuc in nucsToNum.keys():
+            num = nucsToNum[nuc]
+            if num > highestNum:
+                secondHighestNuc = highestNuc
+                secondHighestNum = highestNum
+                highestNum = num
+                highestNuc = nuc
+            elif num > secondHighestNum:
+                secondHighestNum = num
+                secondHighestNuc = nuc
+        if len(nucsToNum) > 1:
+            break # so we don't say the wild type is the second and first most common nuc
+        else:
+            indexOfGroupWithMostSnp += 1
+    groupIndex = 0
+    for nucsToNum in nucsOfGroups:
+        for nuc in nucsToNum.keys():
+            num = nucsToNum[nuc]
+            if nuc == secondHighestNuc and num > secondHighestNum: # second group is higher
+                #this group is has more snp
+                indexOfGroupWithMostSnp = groupIndex
+                break
+        groupIndex += 1
+    return highestNuc, secondHighestNuc,indexOfGroupWithMostSnp
