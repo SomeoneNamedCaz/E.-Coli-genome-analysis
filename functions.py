@@ -7,6 +7,7 @@ from glob import glob
 import threading
 import sys
 from enum import Enum
+from copy import deepcopy
 
 def reverseComplement(seq):
     reverseComplementSeq = ''  # string of complementary nucleotides
@@ -569,16 +570,36 @@ def sortByMultipleCriteria(arrayToSort, criteria): # earlier criteria are more i
         sortByMultipleCriteria(arrayToSort[len(firstHalf):], criteria[1:])
     arrayToSort = firstHalf + secondHalf
 
-def argmax(array):
+def argmax(array, key=lambda a:a):
     maxVal = array[0]
     indexOfMax = 0
     index = 1
-    for groupCount in array[1:]:
-        if groupCount > maxVal:
-            maxCount = groupCount
+    for curVal in array[1:]:
+        if key(curVal) > key(maxVal):
+            maxVal = curVal
             indexOfMax = index
         index += 1
     return indexOfMax
+
+def keymax(dictionaryArg):
+    dictionary = deepcopy(dictionaryArg)
+    key, val = dictionary.popitem()
+    maxVal = val
+    indexOfMax = key
+    for key, val in dictionary.items():
+        if val > maxVal:
+            maxVal = val
+            indexOfMax = key
+    return indexOfMax
+
+def valmax(dictionaryArg):
+    dictionary = deepcopy(dictionaryArg)
+    _, val = dictionary.popitem()
+    maxVal = val
+    for _, val in dictionary.items():
+        if val > maxVal:
+            maxVal = val
+    return maxVal
 
 def getNumsOfNucs(nucInfo):
     groups = nucInfo.split("|")
@@ -596,12 +617,16 @@ def getNumsOfNucs(nucInfo):
         nucsOfGroups.append(nucsToNum)
     return nucsOfGroups
 
-def getSnpInfo(nucInfo):
+def getSnpInfo(nucInfo, numRequiredGenomesForGroupToBeConsidered=10):
     """
+    needs a binary metadata category with possible errors (like with path)
 
-    :param nucInfo: col[5] of megacats file
+
+    :param nucInfo: string col[5] of megacats file
+    :param numRequiredGenomesForGroupToBeConsidered: int to fix the pathogenicity error that has a 3 group for some reason
     :return: oldnuc, newnuc, bool
     """
+
     # nucInfo = nucInfo.strip()
     # nucInfo = nucInfo.split("|")
     highestNum = 0
@@ -610,30 +635,26 @@ def getSnpInfo(nucInfo):
     secondHighestNuc = ""
 
     nucsOfGroups = getNumsOfNucs(nucInfo)
-    indexOfGroupWithMostSnp = 0
+    numGroupsDeleted = 0
+    for numofNucsIndex in range(len(nucsOfGroups) - 1, -1, -1):
+        if sum(nucsOfGroups[numofNucsIndex].values()) < numRequiredGenomesForGroupToBeConsidered:
+            numGroupsDeleted += 1
+            del nucsOfGroups[numofNucsIndex]
 
-    for nucsToNum in nucsOfGroups:
-        for nuc in nucsToNum.keys():
-            num = nucsToNum[nuc]
-            if num > highestNum:
-                secondHighestNuc = highestNuc
-                secondHighestNum = highestNum
-                highestNum = num
-                highestNuc = nuc
-            elif num > secondHighestNum:
-                secondHighestNum = num
-                secondHighestNuc = nuc
-        if len(nucsToNum) > 1:
-            break # so we don't say the wild type is the second and first most common nuc
-        else:
-            indexOfGroupWithMostSnp += 1
-    groupIndex = 0
-    for nucsToNum in nucsOfGroups:
-        for nuc in nucsToNum.keys():
-            num = nucsToNum[nuc]
-            if nuc == secondHighestNuc and num > secondHighestNum: # second group is higher
-                #this group is has more snp
-                indexOfGroupWithMostSnp = groupIndex
-                break
-        groupIndex += 1
-    return highestNuc, secondHighestNuc,indexOfGroupWithMostSnp
+    indexOfHighestProportionOfANuc = argmax(nucsOfGroups, key=lambda a: valmax(a)/sum(a.values()))
+    # for nucsToNum in nucsOfGroups:
+    #     maxNuc = argmax(nucsToNum)
+    #     numGenomesInGroup = sum(nucsToNum.values())
+    #     if maxNum / numGenomesInGroup and numGenomesInGroup > numRequiredGenomesForGroupToBeConsidered:
+    #         highestProportionOfANuc = maxNum / numGenomesInGroup
+
+    # groupIndex = 0
+    # for nucsToNum in nucsOfGroups:
+    #     for nuc in nucsToNum.keys():
+    #         num = nucsToNum[nuc]
+    #         if nuc == secondHighestNuc and num > secondHighestNum: # second group is higher
+    #             #this group is has more snp
+    #             indexOfGroupWithMostSnp = groupIndex
+    #             break
+    #     groupIndex += 1
+    return highestNuc, secondHighestNuc, 1 - indexOfHighestProportionOfANuc + numGroupsDeleted

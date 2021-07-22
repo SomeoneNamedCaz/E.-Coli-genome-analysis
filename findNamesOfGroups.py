@@ -15,7 +15,7 @@ def determineWhichGroupsTheGenomeIsIn(genomeSeq, PathToFileToLookAt):
         for line in file:
             line = line.strip()
             cols = line.split("\t")
-            if line == '' or line[0] == '"':
+            if line == '' or line[0] == '"' or cols[5] == "NA":
                 continue
 
             if len(groupGenomeIsInForEachSnp) == 0:
