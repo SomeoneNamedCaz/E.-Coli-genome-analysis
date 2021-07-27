@@ -9,15 +9,16 @@ def determineWhichGroupsTheGenomeIsIn(genomeSeq, PathToFileToLookAt):
     :return: index of group that the genome is in (0,1,2...)
     """
     groupIndices = []
+    groupProbability = [] # prob part of group 0, prob part of group 1, ...
     groupGenomeIsInForEachSnp = [] #[0] * linesOfFileToLookAt[0].split("\t")[5].count("|")
     with open(PathToFileToLookAt) as file:
         lastSnpIndex = -1
         for line in file:
             line = line.strip()
             cols = line.split("\t")
-            if line == '' or line[0] == '"' or cols[5] == "NA":
+            if line == '' or line[0] == '"' or cols[5] == "NA":# or float(cols[2]) > 0.05/500_000:
                 continue
-
+            # print(float(cols[1]))
             if len(groupGenomeIsInForEachSnp) == 0:
                 groupGenomeIsInForEachSnp = [0] * (cols[5].count("|") + 1)
             snpIndex = int(cols[0])
@@ -25,29 +26,40 @@ def determineWhichGroupsTheGenomeIsIn(genomeSeq, PathToFileToLookAt):
                 groupIndices.append(argmax(groupGenomeIsInForEachSnp))
                 groupGenomeIsInForEachSnp = []
             nucTheGenomeHas = genomeSeq[snpIndex - 1]
-            oldNuc, newNuc, groupSnpIsIn = getSnpInfo(cols[5])
+            oldNuc, newNuc, groupSnpIsIn, proportion = getSnpInfo(cols[5])
+            # if proportion > 0.8:
+            #     continue
+            # print(line)
+            numsOfNucs = getNumsOfNucs(cols[5])
+            index = -1
+            for group in groupGenomeIsInForEachSnp:
+                index += 1
+                try:
+                    numsOfNucs[index][nucTheGenomeHas]
+                except KeyError:
+                    print(numsOfNucs, nucTheGenomeHas)
+                    groupGenomeIsInForEachSnp[1-index] += 1e6
+            # if nucTheGenomeHas == oldNuc: # if doesn't has snp
+            #     pass#groupGenomeIsInForEachSnp[groupSnpIsIn] += (1 - proportion)
+            # else:
 
-            if nucTheGenomeHas == newNuc: # if has snp]
-                groupGenomeIsInForEachSnp[groupSnpIsIn] += 1
-
+    print("all group counts",groupGenomeIsInForEachSnp)
     return groupIndices + [argmax(groupGenomeIsInForEachSnp)]
 
 
 
 
 if len(sys.argv) < 4:
-    print("""please give arguments: combined megaCats file (sig snps by pos), the file with all the snp genomes, and the metadata file""")
+    print("""please give arguments: combined megaCats file, the file with all the snp genomes, and the metadata file""")
     exit(1)
 
 sigSNPsByPosPath = sys.argv[1]
 genomePath = sys.argv[2]
 metadataPath = sys.argv[3]
-genomeSeq = getFirstDataLine(genomePath)
-genomeFile = open(genomePath)
-for line in genomeFile:
-    genomeName = line[1:-1]
-    break
-genomeFile.close()
+indexOfGenomeToGet = 400 # 400 is cow
+genomeSeq = open(genomePath).readlines()[1+indexOfGenomeToGet*2]#getFirstDataLine(genomePath)
+genomeName = open(genomePath).readlines()[indexOfGenomeToGet*2][1:-1]
+# genomeFile.close()
 
 groupIndexes = determineWhichGroupsTheGenomeIsIn(genomeSeq, sigSNPsByPosPath)
 genomeMetadata = []
@@ -61,10 +73,15 @@ with open(metadataPath) as metadataFile:
 groupToName = {}
 print(groupIndexes)
 print(genomeMetadata)
-for index in range(len(groupToName)): # output not completely working but can do by hand
+for index in range(len(groupIndexes)): # output not completely working but can do by hand
     groupToName[groupIndexes[index]] = genomeMetadata[index]
 print(groupToName)
 
 
 groupToNameMetadata1 = {1:'chicken', 0: 'cow'}
 groupToNameMetadata2 = {1: 'commensal', 2:"pathogen"}
+
+#NOTE: first genoem is in group 2 (index 1) for animal
+
+# need to balance proportion by which snp it has
+

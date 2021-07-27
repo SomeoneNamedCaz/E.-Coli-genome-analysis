@@ -636,25 +636,37 @@ def getSnpInfo(nucInfo, numRequiredGenomesForGroupToBeConsidered=10):
 
     nucsOfGroups = getNumsOfNucs(nucInfo)
     numGroupsDeleted = 0
-    for numofNucsIndex in range(len(nucsOfGroups) - 1, -1, -1):
-        if sum(nucsOfGroups[numofNucsIndex].values()) < numRequiredGenomesForGroupToBeConsidered:
-            numGroupsDeleted += 1
-            del nucsOfGroups[numofNucsIndex]
+    # for numofNucsIndex in range(len(nucsOfGroups) - 1, -1, -1):
+    #     if sum(nucsOfGroups[numofNucsIndex].values()) < numRequiredGenomesForGroupToBeConsidered:
+    #         numGroupsDeleted += 1
+    #         del nucsOfGroups[numofNucsIndex]
+    #     else:
+    #         maxvalsKey = keymax(nucsOfGroups[numofNucsIndex])
+    #         maxVal = nucsOfGroups[numofNucsIndex][maxvalsKey]
+    #         if maxVal > highestNum:
+    #             secondHighestNum = highestNum
+    #             secondHighestNuc = highestNuc
+    #             highestNum = maxVal
+    #             highestNuc = maxvalsKey
+    #         elif maxVal > secondHighestNum:
+    #             secondHighestNum = maxVal
+    #             secondHighestNuc = maxvalsKey
 
+    # print(nucsOfGroups)
     indexOfHighestProportionOfANuc = argmax(nucsOfGroups, key=lambda a: valmax(a)/sum(a.values()))
-    # for nucsToNum in nucsOfGroups:
-    #     maxNuc = argmax(nucsToNum)
-    #     numGenomesInGroup = sum(nucsToNum.values())
-    #     if maxNum / numGenomesInGroup and numGenomesInGroup > numRequiredGenomesForGroupToBeConsidered:
-    #         highestProportionOfANuc = maxNum / numGenomesInGroup
 
-    # groupIndex = 0
-    # for nucsToNum in nucsOfGroups:
-    #     for nuc in nucsToNum.keys():
-    #         num = nucsToNum[nuc]
-    #         if nuc == secondHighestNuc and num > secondHighestNum: # second group is higher
-    #             #this group is has more snp
-    #             indexOfGroupWithMostSnp = groupIndex
-    #             break
-    #     groupIndex += 1
-    return highestNuc, secondHighestNuc, 1 - indexOfHighestProportionOfANuc + numGroupsDeleted
+    indexOfNonSnpGroup = indexOfHighestProportionOfANuc + numGroupsDeleted
+    indexOfSnpGroup = 1 - indexOfNonSnpGroup
+    oldNuc = keymax(nucsOfGroups[indexOfNonSnpGroup])
+    try:
+        nucsOfGroups[indexOfSnpGroup].pop(oldNuc)
+    except KeyError:
+        print("didn't find old nuc in other group, check things")
+    newNuc = keymax(nucsOfGroups[indexOfSnpGroup])
+
+    snpProportion = nucsOfGroups[indexOfSnpGroup][newNuc] / nucsOfGroups[indexOfNonSnpGroup][oldNuc]
+
+    # print("indexOfSnpGroup", indexOfSnpGroup, "indexOfNonSnpGroup", indexOfNonSnpGroup)
+    # print("highest nuc", oldNuc, "secondHighestNuc", newNuc, "prop", snpProportion)
+    # print("_________")
+    return highestNuc, secondHighestNuc, indexOfSnpGroup, snpProportion
