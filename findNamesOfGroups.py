@@ -26,19 +26,22 @@ def determineWhichGroupsTheGenomeIsIn(genomeSeq, PathToFileToLookAt):
                 groupIndices.append(argmax(groupGenomeIsInForEachSnp))
                 groupGenomeIsInForEachSnp = []
             nucTheGenomeHas = genomeSeq[snpIndex - 1]
+            # print(cols[0])
             oldNuc, newNuc, groupSnpIsIn, proportion = getSnpInfo(cols[5])
             # if proportion > 0.8:
             #     continue
             # print(line)
             numsOfNucs = getNumsOfNucs(cols[5])
-            index = -1
-            for group in groupGenomeIsInForEachSnp:
-                index += 1
+            for index in range(len(groupGenomeIsInForEachSnp) - 2, len(groupGenomeIsInForEachSnp)):
+                # print("i",index)
+                otherGroupIndex = len(groupGenomeIsInForEachSnp) - 1 -index
                 try:
-                    numsOfNucs[index][nucTheGenomeHas]
+                    numsOfNucs[index][nucTheGenomeHas] # groupGenomeIsInForEachSnp[index] +=
                 except KeyError:
+                    pass
                     print(numsOfNucs, nucTheGenomeHas)
-                    groupGenomeIsInForEachSnp[1-index] += 1e6
+                    print("other",otherGroupIndex)
+                    groupGenomeIsInForEachSnp[otherGroupIndex] += 1e6
             # if nucTheGenomeHas == oldNuc: # if doesn't has snp
             #     pass#groupGenomeIsInForEachSnp[groupSnpIsIn] += (1 - proportion)
             # else:
@@ -75,13 +78,14 @@ print(groupIndexes)
 print(genomeMetadata)
 for index in range(len(groupIndexes)): # output not completely working but can do by hand
     groupToName[groupIndexes[index]] = genomeMetadata[index]
-print(groupToName)
+# print(groupToName)
 
 
-groupToNameMetadata1 = {1:'chicken', 0: 'cow'}
+groupToNameMetadata1 = {0:'chicken', 1: 'cow'}
 groupToNameMetadata2 = {1: 'commensal', 2:"pathogen"}
 
 #NOTE: first genoem is in group 2 (index 1) for animal
+# or maybe not I'm not sure
 
 # need to balance proportion by which snp it has
 

@@ -14,6 +14,8 @@ NEEDS: path of all results
        path command:
        time python parsingMegaCatsResults.py ./megaCATS-main/k-12/deadliness-rMsaInput.txt-rResultChisqTestFixed.txt ./megaCATS-main/k-12/allSnpsIndexes.txt K-12Ref ./refGenomes/k-12.gbff 
 """
+#TODO:last run flipped Most Things
+
 
 codonsToAminoAcids = makeCodonDictionary()
 
@@ -199,7 +201,7 @@ prof.enable()
 lastMetaDataColName = ""
 indexOfLastGene = 0
 lastSNPpos = 0
-namesOfGroups = {'animal':{1:'chicken', 0: 'cow'},'pathogenicity':{1: 'commensal', 2:"pathogen"}}
+namesOfGroups = {'animal':{0:'chicken', 1: 'cow'},'pathogenicity':{1: 'commensal', 2:"pathogen"}}
 
 x = 0
 for line in snpsFileWithCorrectPosData:
@@ -222,7 +224,7 @@ for line in snpsFileWithCorrectPosData:
     secondHighestNuc = ""
 
     groups = nucInfo.split("|")
-    highestNuc, secondHighestNuc, indexOfMostSnpedGroup = getSnpInfo(nucInfo)
+    highestNuc, secondHighestNuc, indexOfMostSnpedGroup, _ = getSnpInfo(nucInfo)
 
 
 
@@ -261,7 +263,7 @@ for line in snpsFileWithCorrectPosData:
         if gene.stopPos > positionInGenome and gene.startPos < positionInGenome:
             gene.counter += 1
             #   this doesn't necessarily capture the case where group1(336_A,_75_G,_49_T)|group2(367_A,_18_G,_98_T)
-            snpGroup = namesOfGroups[currMetaDataColName][indexOfMostSnpedGroup]
+            snpGroup = namesOfGroups[currMetaDataColName][3-indexOfMostSnpedGroup]
 
             gene.snps.append(SNP(positionInGenome - gene.startPos, highestNuc, secondHighestNuc, pval, snpGroup))
             break
@@ -275,7 +277,7 @@ for gene in genes:
 def sortFunc(geneArg):
     return weights[geneArg]
 genes.sort(key=sortFunc)
-# genes.sort(key=lambda gene: 1 - gene.counter/len(gene.sequence)) # to sort by assending proportion
+# genes.sort(key=lambda gene: 1 - gene.counter/len(gene.sequence)) # to sort by ascending proportion
 outputFunction(genes, lastMetaDataColName, weights) # "Animal"
 
 

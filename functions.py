@@ -636,10 +636,10 @@ def getSnpInfo(nucInfo, numRequiredGenomesForGroupToBeConsidered=10):
 
     nucsOfGroups = getNumsOfNucs(nucInfo)
     numGroupsDeleted = 0
-    # for numofNucsIndex in range(len(nucsOfGroups) - 1, -1, -1):
-    #     if sum(nucsOfGroups[numofNucsIndex].values()) < numRequiredGenomesForGroupToBeConsidered:
-    #         numGroupsDeleted += 1
-    #         del nucsOfGroups[numofNucsIndex]
+    for numofNucsIndex in range(len(nucsOfGroups) - 1, -1, -1):
+        if sum(nucsOfGroups[numofNucsIndex].values()) < numRequiredGenomesForGroupToBeConsidered:
+            numGroupsDeleted += 1
+            del nucsOfGroups[numofNucsIndex]
     #     else:
     #         maxvalsKey = keymax(nucsOfGroups[numofNucsIndex])
     #         maxVal = nucsOfGroups[numofNucsIndex][maxvalsKey]
@@ -652,21 +652,27 @@ def getSnpInfo(nucInfo, numRequiredGenomesForGroupToBeConsidered=10):
     #             secondHighestNum = maxVal
     #             secondHighestNuc = maxvalsKey
 
-    # print(nucsOfGroups)
     indexOfHighestProportionOfANuc = argmax(nucsOfGroups, key=lambda a: valmax(a)/sum(a.values()))
 
-    indexOfNonSnpGroup = indexOfHighestProportionOfANuc + numGroupsDeleted
+    indexOfNonSnpGroup = indexOfHighestProportionOfANuc
     indexOfSnpGroup = 1 - indexOfNonSnpGroup
     oldNuc = keymax(nucsOfGroups[indexOfNonSnpGroup])
+    # print(nucsOfGroups, nucsOfGroups)
+
     try:
         nucsOfGroups[indexOfSnpGroup].pop(oldNuc)
     except KeyError:
         print("didn't find old nuc in other group, check things")
-    newNuc = keymax(nucsOfGroups[indexOfSnpGroup])
+    try:
+        newNuc = keymax(nucsOfGroups[indexOfSnpGroup])
+        snpProportion = nucsOfGroups[indexOfSnpGroup][newNuc] / nucsOfGroups[indexOfNonSnpGroup][oldNuc]
+    except KeyError:
+        newNuc = "N/A" # if the first pathogenicity group has the snp
+        snpProportion = 0
 
-    snpProportion = nucsOfGroups[indexOfSnpGroup][newNuc] / nucsOfGroups[indexOfNonSnpGroup][oldNuc]
+
 
     # print("indexOfSnpGroup", indexOfSnpGroup, "indexOfNonSnpGroup", indexOfNonSnpGroup)
     # print("highest nuc", oldNuc, "secondHighestNuc", newNuc, "prop", snpProportion)
     # print("_________")
-    return highestNuc, secondHighestNuc, indexOfSnpGroup, snpProportion
+    return highestNuc, secondHighestNuc, indexOfSnpGroup + numGroupsDeleted, snpProportion
