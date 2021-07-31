@@ -4,8 +4,11 @@ code to analyze E. coli genome differences across species by their animal host o
 
 This code can be downloaded and each python file is run as its own program using the terminal or the ide. Most programs require commandline arguments to specify the input files. However, most of the files are divided into two projects: one looking at gene presence or absence in the pan genome, and another that looks at snps. There are also some file management programs and programs that check that things are working properly.
 
+# SortNatureAssemblies.py
+This takes the assemblies from https://doi.org/10.1038/s41467-021-20988-w and groups them into pathogenic and commensal strains. This doesn't support commandline arguments.
+
 # MakingMetadataSheetForMetaCats.py
-This program makes the metadata that is required for megacats. It doesn't support commandline arguments.
+This program makes the metadata that is required for megacats (https://github.com/bpickett/megaCATS). It doesn't support commandline arguments.
 
 # getLongestContig.py
 This program takes a scaffold, gets the top contig and outputs this as a file. It was used to get the longest contig on a ragtag scaffold. This allows us to use a regular single alignment program (we used gsAlign). This works with gsAlignToMultipleAlign.py to create a multiple alignment without using Mauve. This step loses some of the DNA, but we only lost ~0.5Mb of the E. coli genomes.
@@ -33,8 +36,18 @@ This is just a python file with the functions that are shared across the reposit
 This program runs in python 3.8 (maybe other versions too, but it doesn't work on some versions of python). It uses an XML file that has the IDs of the Nucleotide entries in NCBI, and downloads the associated files. You can get the XML file through using the eutils for NCBI and using esearch and requesting all of the entries and then downloading that page using your browser.
 
 # genomesFromBioProjects.py
-This downloads the genomes within a specific bioproject.
+This downloads the genomes using bioproject names. This program used a csv from ncbi to download the mastitis genomes (this file is in the repo as allMastitisBioProjects.csv
 
 # concatenateContigs.py
 This turns an assembly into an assembly with all of the contigs added together into a single contig. This was an attempt to make Mauve faster.
+
+# pValueHistogram.py
+This makes a histogram from the pvalues from a megaCats output file.
+
+# turningGsAlignIntoMultipleAlign.py
+This was an attempt that didn't work out because it wasn't able to recover enough of the genome. It used the aligned sequence files from gsAlign instead of the vcf snp files.
+
+# parallelgsalignSNPsToMultipleAlign.py
+this was an attempt at multithreading, but it didn't result in much speed up (maybe needed to copy the set over). The single threaded version is pretty fast right now in comparison (~2hrs).
+
 
