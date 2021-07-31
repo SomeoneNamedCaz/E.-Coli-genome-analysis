@@ -7,6 +7,15 @@ This code can be downloaded and each python file is run as its own program using
 # SortNatureAssemblies.py
 This takes the assemblies from https://doi.org/10.1038/s41467-021-20988-w and groups them into pathogenic and commensal strains. This doesn't support commandline arguments.
 
+# downloadingXMLFileOfNucIDs.py
+This program runs in python 3.8 (maybe other versions too, but it doesn't work on some versions of python). It uses an XML file that has the IDs of the Nucleotide entries in NCBI, and downloads the associated files. You can get the XML file through using the eutils for NCBI and using esearch and requesting all of the entries and then downloading that page using your browser.
+
+# genomesFromBioProjects.py
+This downloads the genomes using bioproject names. This program used a csv from ncbi to download the mastitis genomes (this file is in the repo as allMastitisBioProjects.csv
+
+# unannotatedGbFilesToFasta.py
+This takes files downloaded from ncbi using the downloading python programs and combines them into a fasta file for each genome. This is done because the files directly downloaded only contained a single contig of the genome.
+
 # MakingMetadataSheetForMetaCats.py
 This program makes the metadata that is required for megacats (https://github.com/bpickett/megaCATS). It doesn't support commandline arguments.
 
@@ -31,12 +40,6 @@ This program discovers which genome is causing the problem with the third pathog
 
 # functions.py
 This is just a python file with the functions that are shared across the repository.
-
-# downloadingXMLFileOfNucIDs.py
-This program runs in python 3.8 (maybe other versions too, but it doesn't work on some versions of python). It uses an XML file that has the IDs of the Nucleotide entries in NCBI, and downloads the associated files. You can get the XML file through using the eutils for NCBI and using esearch and requesting all of the entries and then downloading that page using your browser.
-
-# genomesFromBioProjects.py
-This downloads the genomes using bioproject names. This program used a csv from ncbi to download the mastitis genomes (this file is in the repo as allMastitisBioProjects.csv
 
 # concatenateContigs.py
 This turns an assembly into an assembly with all of the contigs added together into a single contig. This was an attempt to make Mauve faster.
