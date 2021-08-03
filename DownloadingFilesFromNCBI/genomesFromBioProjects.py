@@ -1,6 +1,7 @@
 import sys
 import urllib
 import webbrowser
+import time
 
 # nuclotide search doesn't return enough data as it should
 # bioProjectsFileName = sys.argv[1] # as csv
