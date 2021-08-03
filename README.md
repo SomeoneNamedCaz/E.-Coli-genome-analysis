@@ -10,8 +10,8 @@ This takes the assemblies from https://doi.org/10.1038/s41467-021-20988-w and gr
 # downloadingXMLFileOfNucIDs.py
 This program runs in python 3.8 (maybe other versions too, but it doesn't work on some versions of python). It uses an XML file that has the IDs of the Nucleotide entries in NCBI, and downloads the associated files. You can get the XML file through using the eutils for NCBI and using esearch and requesting all of the entries and then downloading that page using your browser.
 
-# genomesFromBioProjects.py
-This downloads the genomes using bioproject names. This program used a csv from ncbi to download the mastitis genomes (this file is in the repo as allMastitisBioProjects.csv
+# downloadingFromSequenceSetBrowser.py
+It also downloads the genomes using bioproject names. This program used a csv from ncbi to download the mastitis genomes (this file is in the repo as WGSProjectNamesWithExtraStuffRemoved.tsv which comes from allMastitisBioProjects.csv)
 
 # unannotatedGbFilesToFasta.py
 This takes files downloaded from ncbi using the downloading python programs and combines them into a fasta file for each genome. This is done because the files directly downloaded only contained a single contig of the genome.
