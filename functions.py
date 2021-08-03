@@ -651,7 +651,6 @@ def getSnpInfo(nucInfo, numRequiredGenomesForGroupToBeConsidered=10):
     #         elif maxVal > secondHighestNum:
     #             secondHighestNum = maxVal
     #             secondHighestNuc = maxvalsKey
-
     indexOfHighestProportionOfANuc = argmax(nucsOfGroups, key=lambda a: valmax(a)/sum(a.values()))
 
     indexOfNonSnpGroup = indexOfHighestProportionOfANuc
@@ -675,4 +674,4 @@ def getSnpInfo(nucInfo, numRequiredGenomesForGroupToBeConsidered=10):
     # print("indexOfSnpGroup", indexOfSnpGroup, "indexOfNonSnpGroup", indexOfNonSnpGroup)
     # print("highest nuc", oldNuc, "secondHighestNuc", newNuc, "prop", snpProportion)
     # print("_________")
-    return highestNuc, secondHighestNuc, indexOfSnpGroup + numGroupsDeleted, snpProportion
+    return oldNuc, newNuc, indexOfSnpGroup + numGroupsDeleted, snpProportion

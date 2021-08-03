@@ -1,5 +1,7 @@
 """Because the megacats has a third group for pathogenicity that shouldn't exist,
  I'm going to combine that file with the pathogenicity only file"""
+
+#NOTE: doesn't fix sparcity
 import sys
 import cProfile
 from time import time
@@ -9,7 +11,7 @@ prof.enable()
 
 if len(sys.argv) < 3:
     print("please provide the pathogenicity only file path (should have MGCStat in the name) and the path of all of the combined stats (1AA-Summary ...)")
-
+    exit(1)
 
 pathogenicityOnlyFilePath = sys.argv[1]#"/Users/cazcullimore/Documents/ericksonLabCode/megaCATS-main/firstMegaCatsRunOnData/megaCatsInsertAndDelete/pathogenicity-rMsaInput.txt-rResultMGCStat.txt"
 # can copy into all file (I'm not sure if this is true yet
@@ -49,7 +51,7 @@ with open(pathogenicityOnlyFilePath) as pathOnlyFile, open(fileToFixPath + "Test
             #     pass
             # print("skipped")
             continue
-        pathOnlySnpIndex = cols[0] # string
+        pathOnlySnpIndex = cols[0].strip() # string
         correctPval = cols[1]
         # print("parth index", pathOnlySnpIndex)
         # try:
@@ -57,8 +59,8 @@ with open(pathogenicityOnlyFilePath) as pathOnlyFile, open(fileToFixPath + "Test
             fixCols = fixLine.split("\t")
             # print("other inde", fixCols[0])
             currIndex += 1
-            if fixCols[0].strip() == pathOnlySnpIndex.strip():
-                stringToWrite = pathOnlySnpIndex + "\t" + fixCols[1] + "\t"+ correctPval + "\t" + "\t".join(fixCols[3:])[:-1]
+            if fixCols[0].strip() == pathOnlySnpIndex:
+                stringToWrite = pathOnlySnpIndex + "\t" + fixCols[1] + "\t" + correctPval + "\t" + "\t".join(fixCols[3:-1]) + "\t" + "|".join(fixCols[-1].split("|")[1:])[:-1] # [:-1] for no \n
                 if addMetaData:
                     stringToWrite += "\t" + metaDataToReplace
                 stringToWrite += "\n"

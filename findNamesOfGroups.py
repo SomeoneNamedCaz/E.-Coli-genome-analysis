@@ -16,7 +16,7 @@ def determineWhichGroupsTheGenomeIsIn(genomeSeq, PathToFileToLookAt):
         for line in file:
             line = line.strip()
             cols = line.split("\t")
-            if line == '' or line[0] == '"' or cols[5] == "NA":# or float(cols[2]) > 0.05/500_000:
+            if line == '' or line[0] == '"' or cols[1] == "NA" or cols[0] == "Position":# or float(cols[2]) > 0.05/500_000:
                 continue
             # print(float(cols[1]))
             if len(groupGenomeIsInForEachSnp) == 0:
@@ -59,7 +59,7 @@ if len(sys.argv) < 4:
 sigSNPsByPosPath = sys.argv[1]
 genomePath = sys.argv[2]
 metadataPath = sys.argv[3]
-indexOfGenomeToGet = 400 # 400 is cow
+indexOfGenomeToGet = 100 # 400 is cow
 genomeSeq = open(genomePath).readlines()[1+indexOfGenomeToGet*2]#getFirstDataLine(genomePath)
 genomeName = open(genomePath).readlines()[indexOfGenomeToGet*2][1:-1]
 # genomeFile.close()
