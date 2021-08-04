@@ -53,4 +53,10 @@ This was an attempt that didn't work out because it wasn't able to recover enoug
 # parallelgsalignSNPsToMultipleAlign.py
 this was an attempt at multithreading, but it didn't result in much speed up (maybe needed to copy the set over). The single threaded version is pretty fast right now in comparison (~2hrs).
 
+# Gene Presence and Absence:
 
+# comparingPanGenomesFromRoaryFiles.py
+This takes the presence and absence file from roary and counts the number of genomes that each gene is in. It outputs a tsv that contains these counts. The first column is the gene name and the second is the number of genomes it is present in.
+
+# comparingCoreGenomesMyWay.py
+This program takes gene count files provided from comparingPanGenomesFromRoaryFiles.py and finds the genes that are highly prevelant in some groups and less prevalent in other groups. It has two cutoffs, one for determining what "highly prevelant" means and another for "less prevalent" means. This is to stabilize the results instead a binary cutoff between close values.
