@@ -36,7 +36,8 @@ suffix = sys.argv[3]
 annotatedRefGenomePath = sys.argv[4]#"./refGenomes/k-12.gbff"#"./AllAssemblies/refGenomeAnnotationsEdited.gb"
 removeSparce = False
 try:
-    removeSparce = sys.argv[5]
+    if sys.argv[5] == "True":
+        removeSparce = True
 except IndexError:
     pass
 
@@ -80,7 +81,7 @@ with open(snpStatPath) as file, open(snpsFileWithCorrectPosPath, "w") as outFile
         currMetaDataColName = cols[-1].split("-")[0]
         positionInSnpGenome = int(cols[0])
         posInRefGenome = snpLocations[positionInSnpGenome - 1]
-        if pval < significanceLevel:
+        if pval < significanceLevel and (not removeSparce or cols[4].strip() == "N"):
             dataToWrite = str(posInRefGenome) + "\t" + "\t".join(cols[1:]) + "\n"
             outFile.write(dataToWrite)
             snpsFileWithCorrectPosData.append(dataToWrite)
@@ -129,7 +130,7 @@ def outputFunction(listOfGenes, metadataCategory, weights):
 
                 # print("positionInGenome - gene.startPos", snp.location)
                 # print(len(gene.sequence))
-                seqWithoutSNP = gene.sequence[snp.location - (snp.location % 3) :snp.location+3-(snp.location % 3)]
+                seqWithoutSNP = gene.sequence[snp.location - (snp.location % 3) : snp.location+3-(snp.location % 3)]
                 # seqWithoutSNP[snp.location] = snp.oldNuc
                 seqWithoutSNP = list(seqWithoutSNP)
                 seqWithSNP = seqWithoutSNP
@@ -201,7 +202,7 @@ prof.enable()
 lastMetaDataColName = ""
 indexOfLastGene = 0
 lastSNPpos = 0
-namesOfGroups = {'animal':{0:'chicken', 1: 'cow'},'pathogenicity':{1: 'commensal', 2:"pathogen"}}
+namesOfGroups = {'animal': ['chicken','cow'], 'pathogenicity':['commensal', "pathogen"], 'deadliness':['commensal', "pathogen"]}
 
 x = 0
 for line in snpsFileWithCorrectPosData:
@@ -213,20 +214,14 @@ for line in snpsFileWithCorrectPosData:
     if line == "" or cols[0] == "Position" or line[0] == '"':
         continue
     pval = float(cols[2])
-    currMetaDataColName = cols[-1].split("-")[0]
+    currMetaDataColName = cols[-1].split("-")[0].lower()
     positionInGenome = int(cols[0])
     nucInfo = cols[5]
-    # nucInfo = nucInfo.strip()
-    # nucInfo = nucInfo.split("|")
-    highestNum = 0
-    highestNuc = ""
-    secondHighestNum = 0
-    secondHighestNuc = ""
 
     groups = nucInfo.split("|")
-    highestNuc, secondHighestNuc, indexOfMostSnpedGroup, _ = getSnpInfo(nucInfo)
+    oldNuc, newNuc, indexOfMostSnpedGroup, _ = getSnpInfo(nucInfo)
 
-
+    numsAndNucs = getNumsOfNucs(nucInfo)
 
     # group index is the index of the higher group with the snps
 
@@ -263,9 +258,9 @@ for line in snpsFileWithCorrectPosData:
         if gene.stopPos > positionInGenome and gene.startPos < positionInGenome:
             gene.counter += 1
             #   this doesn't necessarily capture the case where group1(336_A,_75_G,_49_T)|group2(367_A,_18_G,_98_T)
-            snpGroup = namesOfGroups[currMetaDataColName][3-indexOfMostSnpedGroup]
+            snpGroup = namesOfGroups[currMetaDataColName][1-indexOfMostSnpedGroup]
 
-            gene.snps.append(SNP(positionInGenome - gene.startPos, highestNuc, secondHighestNuc, pval, snpGroup))
+            gene.snps.append(SNP(positionInGenome - gene.startPos, oldNuc, newNuc, pval, snpGroup))
             break
 
 weights = {}
