@@ -1,6 +1,5 @@
 from downloadThread import *
 
-exit(0)
 searchBeginning = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id="
 downloadPath = "./AllCommensalStrains/"
 last5Times = []

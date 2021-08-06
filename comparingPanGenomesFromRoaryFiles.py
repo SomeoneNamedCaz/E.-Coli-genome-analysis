@@ -16,12 +16,13 @@ import sys
 
 # pathOfPresenceAbsenceFile = "/Users/cazcullimore/Documents/ericksonLabCode/AllAssemblies/allMastitisAssemblies/ProkkaOut/gffs/roaryOutputs/gene_presence_absence.Rtab"
 
-pathOfPresenceAbsenceFile = "/Users/cazcullimore/Documents/ericksonLabCode/AllAssemblies/AllCommensalBovineAssemblies/ProkkaOut/gffs/roaryOutputs/gene_presence_absence.Rtab"
+# pathOfPresenceAbsenceFile = "/Users/cazcullimore/Documents/ericksonLabCode/AllAssemblies/AllCommensalBovineAssemblies/ProkkaOut/gffs/roaryOutputs/gene_presence_absence.Rtab"
 # pathOfPresenceAbsenceFile = "/Users/cazcullimore/Documents/ericksonLabCode/AllAssemblies/APEC_assemblies/ProkkaOut/gffs/roaryOutputs/gene_presence_absence.Rtab"
 # pathOfPresenceAbsenceFile = "/Users/cazcullimore/Documents/ericksonLabCode/AllAssemblies/Avian_commensal/ProkkaOut/gffs/roaryOutputs/gene_presence_absence.Rtab"
+pathOfPresenceAbsenceFile = "/Users/cazcullimore/Documents/ericksonLabCode/mastitisRoary/ROARY file.tsv"
 # pathOfPresenceAbsenceFile = ""
 
-nameOfOutFile = pathOfPresenceAbsenceFile.split("/")[6] + "ReannotatedGeneCiounts.tsv"
+nameOfOutFile = pathOfPresenceAbsenceFile.split("/")[6] + "MichaelsRoaryGeneCounts.tsv"
 
 
 
@@ -37,17 +38,17 @@ with open(pathOfPresenceAbsenceFile) as infile, open(nameOfOutFile,"w") as outFi
         # print(line)
         if not onFirstLine:
             colIndex = 0
-            for presenceNum in cols[1:]:
+            for presenceNum in cols[8:94]:
                 if not colIndex in indexOfgenomesToExclude:
                     geneCount += int(presenceNum)
                 colIndex += 1
             outFile.write(geneName + "\t" + str(geneCount) + "\n")
-        #else:
-            # print("header", cols[8:94])
-            # genomes = cols[8:94]
-            # index = 0
+        else: # for michaels roary
+            print("header", cols[8:94])
+            genomes = cols[8:94]
+            index = 0
             # for genome in genomes:
-            #     if  genome in ["M6", "M9", "M11", "M12", "M50", "M37", "M109"]:
+            #     if genome in ["M6", "M9", "M11", "M12", "M50", "M37", "M109"]:
             #         indexOfgenomesToExclude.append(index)
             #     index += 1
 

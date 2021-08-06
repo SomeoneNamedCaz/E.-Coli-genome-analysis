@@ -21,7 +21,7 @@ codonsToAminoAcids = makeCodonDictionary()
 
 if len(sys.argv) < 5:
     print("""please give arguments: combined megaCats file, indexes of the snpsFile, the suffix you want for output files,
-          the reference genome file, optional: whether or not you want to remove the sparce entries""")
+          the reference genome file, optional: whether or not you want to remove the sparce entries (true by default)""")
     exit(1)
 
 # args
@@ -34,7 +34,7 @@ snpIndexesFrameShiftedPath = ".".join(snpIndexesPath.split(".")[:-2] + [snpIndex
 suffix = sys.argv[3]
 
 annotatedRefGenomePath = sys.argv[4]#"./refGenomes/k-12.gbff"#"./AllAssemblies/refGenomeAnnotationsEdited.gb"
-removeSparce = False
+removeSparce = True
 try:
     if sys.argv[5] == "True":
         removeSparce = True
@@ -53,7 +53,7 @@ numSnpsWithinGenesPath = "./numSnpsWithinGenes"
 
 
 
-
+namesOfGroups = {'animal': ['chicken','cow'], 'pathogenicity':['commensal', "pathogen"], 'deadliness':['commensal', "pathogen"]}
 percentSNPsCutOffForPercentSNPs = 0.02 # for pathway analysis
 
 snpLocations = [] # [snplocation1, ...]
@@ -182,13 +182,16 @@ def outputFunction(listOfGenes, metadataCategory, weights):
             mostSignificantSnps.append((snp, gene))
     mostSignificantSnps.sort(key=lambda snpAndGene: snpAndGene[0].pValue)
     with open(snpsSortedBySignificancePath + metadataCategory[0].upper() + metadataCategory[1:] + ".tsv", "w") as outFile:
-        outFile.write("SNP pValue\tGroupEnrichedInSNP\tSNPlocation\tgeneName\tnewNuc\toldNuc\tmutationType(frameShiftRecordedOnlyOnFirstNucOfIndel)\tgeneSequence\n")  # add category and move to the output function
+        outFile.write("SNP pValue\tGroupEnrichedInSNP\tSNPlocation\tgeneName\tnewNuc\tsnpGroupDistribution\toldNuc\tWildTypeDistribution\tmutationType(frameShiftRecordedOnlyOnFirstNucOfIndel)\tgeneSequence\n")  # add category and move to the output function
         for snpAndGene in mostSignificantSnps[:numSnpsToIncludeForMostSigSnps]:
             snp = snpAndGene[0]
             gene = snpAndGene[1]
+            #                                this is the index of the group more likely to have snp
+            snpGroup = snp.allNucCounts[1-namesOfGroups[metadataCategory].index(snp.nameOfGroupMoreLikelyToHaveSNP)]
+            nonSnpGroup = snp.allNucCounts[namesOfGroups[metadataCategory].index(snp.nameOfGroupMoreLikelyToHaveSNP)]
             outFile.write(
                 str(snpAndGene[0].pValue) + "\t" + snp.nameOfGroupMoreLikelyToHaveSNP + "\t" + str(snpAndGene[0].location) + "\t" + snpAndGene[1].name + "\t"
-                + snp.newNuc + "\t" + snp.oldNuc + "\t" + str(snp.mutationType.name) + "\t" + snpAndGene[1].sequence + "\n")
+                + snp.newNuc + "\t" + str(snpGroup) + "\t" + snp.oldNuc + "\t" + str(nonSnpGroup) + "\t" + str(snp.mutationType.name) + "\t" + snpAndGene[1].sequence + "\n")
 
 
 
@@ -202,8 +205,6 @@ prof.enable()
 lastMetaDataColName = ""
 indexOfLastGene = 0
 lastSNPpos = 0
-namesOfGroups = {'animal': ['chicken','cow'], 'pathogenicity':['commensal', "pathogen"], 'deadliness':['commensal', "pathogen"]}
-
 x = 0
 for line in snpsFileWithCorrectPosData:
     if x % 10000 == 0:
@@ -221,7 +222,14 @@ for line in snpsFileWithCorrectPosData:
     groups = nucInfo.split("|")
     oldNuc, newNuc, indexOfMostSnpedGroup, _ = getSnpInfo(nucInfo)
 
+
+    otherNucs = set()
     numsAndNucs = getNumsOfNucs(nucInfo)
+    for numAndNuc in numsAndNucs:
+        otherNucs = otherNucs.union(numAndNuc.keys())
+    otherNucs.remove(oldNuc)
+    otherNucs.remove(newNuc)
+
 
     # group index is the index of the higher group with the snps
 
@@ -260,7 +268,7 @@ for line in snpsFileWithCorrectPosData:
             #   this doesn't necessarily capture the case where group1(336_A,_75_G,_49_T)|group2(367_A,_18_G,_98_T)
             snpGroup = namesOfGroups[currMetaDataColName][1-indexOfMostSnpedGroup]
 
-            gene.snps.append(SNP(positionInGenome - gene.startPos, oldNuc, newNuc, pval, snpGroup))
+            gene.snps.append(SNP(positionInGenome - gene.startPos, oldNuc, newNuc, numsAndNucs, pval, snpGroup))
             break
 
 weights = {}
