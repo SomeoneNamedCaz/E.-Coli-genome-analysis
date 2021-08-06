@@ -131,10 +131,11 @@ class SNP:
         earlyStop = 3
         insertMissSense = 4
 
-    def __init__(self, location, oldNuc, newNuc, pValue, nameOfGroupMoreLikelyToHaveSNP, typeOfMutation=mutationType.silent):
+    def __init__(self, location, oldNuc, newNuc, allNucCounts, pValue, nameOfGroupMoreLikelyToHaveSNP, typeOfMutation=mutationType.silent):
         self.location = location
         self.oldNuc = oldNuc
         self.newNuc = newNuc
+        self.allNucCounts = allNucCounts
         self.pValue = pValue
         self.typeOfMutation = typeOfMutation
         self.nameOfGroupMoreLikelyToHaveSNP = nameOfGroupMoreLikelyToHaveSNP
