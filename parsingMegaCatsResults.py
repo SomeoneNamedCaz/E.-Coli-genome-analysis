@@ -1,11 +1,9 @@
 from functions import *
+from findNamesOfGroups import findNamesOfGroups
 """
 gets significant SNPs and maps them to the reference genome
 NEEDS: path of all results
        path of a file with the indexes of the SNPS (one index on each line, in order)
-       numberOfLines in snpStatPath
-       numPvaluesForEachMetadataCatagory
-       
        
        
        
@@ -14,46 +12,62 @@ NEEDS: path of all results
        path command:
        time python parsingMegaCatsResults.py ./megaCATS-main/k-12/deadliness-rMsaInput.txt-rResultChisqTestFixed.txt ./megaCATS-main/k-12/allSnpsIndexes.txt K-12Ref ./refGenomes/k-12.gbff 
 """
-#TODO:last run flipped Most Things
 
+#B2 has no nonsparse significant snps so throughs an error metadata string out og range
 
 codonsToAminoAcids = makeCodonDictionary()
 
 if len(sys.argv) < 5:
-    print("""please give arguments: combined megaCats file, indexes of the snpsFile, the suffix you want for output files,
-          the reference genome file, optional: whether or not you want to remove the sparce entries (true by default)""")
+    print("""please give arguments: combined megaCats file, file with the snp genomes, file with the snp indexes, the suffix you want for output files,
+          the reference genome file, optional: whether or not you want to remove the sparce entries (true by default), the output directory (current directory by default)""")
     exit(1)
 
+
+print("_________")
 # args
-snpStatPath = sys.argv[1]#"./megaCATS-main/firstMegaCatsRunOnData/1AA_Summary_Results_ALL-metaDataForMetaCatsPathFixed.tsv.txt" #TODO: send fixed stuff to doctor Erickson
-snpIndexesPath = sys.argv[2]#"./InsertAndDeleteCombinedGenomes/insertAndDeleteIndexes.txt"
-
+snpStatPath = sys.argv[1]#"./megaCATS-main/firstMegaCatsRunOnData/1AA_Summary_Results_ALL-metaDataForMetaCatsPathFixed.tsv.txt"
+snpGenomePath = sys.argv[2]#"./InsertAndDeleteCombinedGenomes/insertAndDeleteIndexes.txt"
+snpIndexesPath = sys.argv[3]
+print("stat",snpStatPath)
+print("genome", snpGenomePath)
+print("index", snpIndexesPath)
 # add FrameShiftedToIndexPath
-snpIndexesFrameShiftedPath = ".".join(snpIndexesPath.split(".")[:-2] + [snpIndexesPath.split(".")[-2]+"FrameShifted"] + [snpIndexesPath.split(".")[-1]])
+snpIndexesFrameShiftedPath = ".".join(snpIndexesPath.split(".")[:-1]) + "FrameShifted." + snpIndexesPath.split(".")[-1]
+metaDataFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/megaCATS-main/metaDataForMetaCats.tsv"
 
-suffix = sys.argv[3]
+suffix = sys.argv[4]
 
-annotatedRefGenomePath = sys.argv[4]#"./refGenomes/k-12.gbff"#"./AllAssemblies/refGenomeAnnotationsEdited.gb"
+annotatedRefGenomePath = sys.argv[5]#"./refGenomes/k-12.gbff"#"./AllAssemblies/refGenomeAnnotationsEdited.gb"
 removeSparce = True
 try:
-    if sys.argv[5] == "True":
-        removeSparce = True
+    if sys.argv[6] == "False":
+        removeSparce = False
 except IndexError:
     pass
 
+try:
+    outputLocation = sys.argv[7]
+except IndexError:
+    outputLocation = "."
+
+if outputLocation[-1] == "/":
+    outputLocation = outputLocation[:-1]
+
 numGenesToInclude = 10000
-numSnpsToIncludeForMostSigSnps = 100_000
+numSnpsToIncludeForMostSigSnps = 10_000_000
 
 
 # outputs
-snpsFileWithCorrectPosPath = "./sigSNPsByPosOnRefGenome" + suffix + ".txt" # created and then read
-snpsSortedBySignificancePath = "./snpsSortedBySignificanceWithGenesContainingThem" + suffix # created (extension added later)
-numSnpsWithinGenesPath = "./numSnpsWithinGenes"
+snpsFileWithCorrectPosPath = outputLocation + "/sigSNPsByPosOnRefGenome" + suffix + ".txt" # created and then read
+snpsSortedBySignificancePath =  outputLocation + "/snpsSortedBySignificanceWithGenesContainingThem" + suffix # created (extension added later)
+numSnpsWithinGenesPath =  outputLocation + "/numSnpsWithinGenes"
 
 
 
 
-namesOfGroups = {'animal': ['chicken','cow'], 'pathogenicity':['commensal', "pathogen"], 'deadliness':['commensal', "pathogen"]}
+
+namesOfGroups = findNamesOfGroups(metaDataFilePath, snpGenomePath, snpStatPath)#{'animal': ['chicken','cow'], 'pathogenicity':['commensal', "pathogen"], 'deadliness':['commensal', "pathogen"]}
+# print(nam)
 percentSNPsCutOffForPercentSNPs = 0.02 # for pathway analysis
 
 snpLocations = [] # [snplocation1, ...]
@@ -207,6 +221,7 @@ indexOfLastGene = 0
 lastSNPpos = 0
 x = 0
 for line in snpsFileWithCorrectPosData:
+    # print(line)
     if x % 10000 == 0:
         print(x)
     x += 1
@@ -266,7 +281,8 @@ for line in snpsFileWithCorrectPosData:
         if gene.stopPos > positionInGenome and gene.startPos < positionInGenome:
             gene.counter += 1
             #   this doesn't necessarily capture the case where group1(336_A,_75_G,_49_T)|group2(367_A,_18_G,_98_T)
-            snpGroup = namesOfGroups[currMetaDataColName][1-indexOfMostSnpedGroup]
+            # print("currMetaDataColName\n\n", "'"+ currMetaDataColName + "'", "\n\n\n")
+            snpGroup = namesOfGroups[currMetaDataColName.strip()][1-indexOfMostSnpedGroup]
 
             gene.snps.append(SNP(positionInGenome - gene.startPos, oldNuc, newNuc, numsAndNucs, pval, snpGroup))
             break

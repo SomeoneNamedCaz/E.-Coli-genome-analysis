@@ -295,7 +295,7 @@ def translate(validSeq, codonsToAminoAcids):
 
 def makeCodonDictionary():
     codonsToAminoAcids = {}
-    with open("codons.txt") as codonFile:
+    with open("/Users/cazcullimore/Documents/ericksonLabCode/codons.txt") as codonFile:
         for codonLine in codonFile:
             codonLine = codonLine.strip()
             cols = codonLine.split("\t")
@@ -627,13 +627,6 @@ def getSnpInfo(nucInfo, numRequiredGenomesForGroupToBeConsidered=10):
     :param numRequiredGenomesForGroupToBeConsidered: int to fix the pathogenicity error that has a 3 group for some reason
     :return: oldnuc, newnuc, bool
     """
-
-    # nucInfo = nucInfo.strip()
-    # nucInfo = nucInfo.split("|")
-    highestNum = 0
-    highestNuc = ""
-    secondHighestNum = 0
-    secondHighestNuc = ""
 
     nucsOfGroups = getNumsOfNucs(nucInfo)
     numGroupsDeleted = 0
