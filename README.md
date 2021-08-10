@@ -28,7 +28,7 @@ This takes .vcf files from gsAlign and outputs a fake "snp" genome that contains
 The snp genome can be used as the input for megaCats.
 
 # parsingMegaCatsResults.py
-This takes the statistics from megaCats and interprets them. It outputs a file of the significant snps that looks like the input megaCats stats. It also outputs two files for each metadata category: one looks at the genes that have the most snps in them; the other looks at each snp individually, ranks them by significance, and determines the gene that it is in. Both files look at the type of mutations that the snps provide.
+This takes the statistics from megaCats and interprets them: It requires the combined megaCats statistics, the file with the snp genomes (from gsAlignToMultipleAlign.py), the indexes also from gsAlignToMultipleAlign.py, a suffix to be added to the output file names, the reference annotated genome (.gb or .gbff). Optional commandline arguments are a flag to remove the sparce entries (according to megaCats), which is on by default, and the output directory, which is the current directory by default. It outputs a file of the significant snps that looks like the input megaCats stats. It also outputs two files for each metadata category: one looks at the genes that have the most snps in them; the other looks at each snp individually, ranks them by significance, and determines the gene that it is in. Both files look at the type of mutations that the snps provide.
 
 This program doesn't look at snps that aren't within a gene.
 
@@ -48,7 +48,7 @@ This turns an assembly into an assembly with all of the contigs added together i
 This makes a histogram from the pvalues from a megaCats output file.
 
 # turningGsAlignIntoMultipleAlign.py
-This was an attempt that didn't work out because it wasn't able to recover enough of the genome. It used the aligned sequence files from gsAlign instead of the vcf snp files.
+This was an attempt that didn't work out because it wasn't able to recover enough of the genome. It used the aligned sequence files (.maf) from gsAlign instead of the vcf snp files and tried to combine them.
 
 # parallelgsalignSNPsToMultipleAlign.py
 this was an attempt at multithreading, but it didn't result in much speed up (maybe needed to copy the set over). The single threaded version is pretty fast right now in comparison (~2hrs).
