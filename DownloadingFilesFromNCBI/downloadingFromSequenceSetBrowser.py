@@ -1,6 +1,10 @@
 from downloadThread import *
 
 threads = []
+examplesOfLengthsRequiredForUsingFirstCol = {"DA":"DADRKS010000001", "MI":"MIWM01000001"} # without .1
+
+outputPathPrefix = "./MissedMastitisOneRunOfTheProgramLongTime/"
+
 with open("WGSProjectNamesWithExtraStuffRemoved.tsv") as wgsFile:
     readyToStart = False
     for line in wgsFile:
@@ -18,47 +22,77 @@ with open("WGSProjectNamesWithExtraStuffRemoved.tsv") as wgsFile:
         try:
             numberOfFiles = int(stopFileName[-5:])
         except ValueError:
-            numberOfFiles = 1
+            numberOfFiles = int(1e5)
         # print(stopFileName[-5])
         # if startFileName == "NZ_LOOA01000001":
         readyToStart = True
         if readyToStart:
             for i in range(numberOfFiles):
-                if numberOfFiles != 1:
+                # get file info for downloading
+                if numberOfFiles != int(1e5):
                     indexAsString = str(i + 1)
                     # add to 5 len
                     while len(indexAsString) < 5:
                         indexAsString = "0" + indexAsString
                     contigName =  startFileName[3:-5] + indexAsString + ".1"
                 else:
-                    contigName = startFileName
+                    indexAsString = str(i + 1)
+                    #      add while the length of the current end file isn't as long as it should be
+                    while len(indexAsString) + len(startFileName) < len(
+                            examplesOfLengthsRequiredForUsingFirstCol[startFileName[:2]]):
+                        indexAsString = "0" + indexAsString
+                    contigName = startFileName + indexAsString + ".1"
 
                 t1 = time.time()
                 print(stopFileName)
                 print(contigName)
-                url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=assembly&term="# + contigName + "&retType=gb"
-                downloadThread = DownloadThread(contigName, contigName, url, "./MissedMastitis/" + contigName + ".xml", "")
-                threads.append(downloadThread)
-                downloadThread.start()
-                for threadIndex in range(len(threads) - 1, -1, -1):
-                    thread = threads[threadIndex]
-                    if thread.encounteredError:
-                        # print(thread.is_alive())
-                        time.sleep(12) # so it ncbi doesn't get mad
-                    if not thread.is_alive():
-                        threads.pop(threadIndex)
-                # print(url)
-                # try:
-                #     urllib.request.urlretrieve(url, "./DownloadedFromSSB/"+ contigName + ".gb")
-                # except:
-                #     time.sleep(3)
-                #     urllib.request.urlretrieve(url, "./DownloadedFromSSB/" + contigName + ".gb")
-                # print("downloaded")
-                # # time.sleep(1)
-                # print("sleep time",max(2/3 - (time.time() - t1),0))
-                # print("time to download", time.time() - t1)
-                # time.sleep(max(1/3 - (time.time() - t1),0))
-                time.sleep(1.5/3)
+                # check if downloaded
+                outputPath = outputPathPrefix + contigName + ".fasta"
+                try:
+                    with open(outputPath) as annotationFile:
+                        IDnotDownloaded = False
+                        # for line in annotationFile:
+                        #     if line.split()[0] == "CONTIG":
+                except:
+                    IDnotDownloaded = True
+
+                if IDnotDownloaded:
+                    print("downloading")
+                    url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id="# + contigName + "&retType=gb"
+                    downloadThread = DownloadThread(contigName, contigName, url, outputPath, "&retType=fasta")
+                    threads.append(downloadThread)
+                    downloadThread.start()
+                    numEncounteredError = 0
+                    for threadIndex in range(len(threads) - 1, -1, -1):
+                        thread = threads[threadIndex]
+                        if thread.encounteredError:
+                            # this is kind of a wierd way to deal with this problem. It might be better to just break at any HTTP
+                            # bad access error, but this allows for some failures if the internet or ncbi is cutting out at times,
+                            # which was happening earlier
+                            numEncounteredError += not thread.secondTryWorked # one if didn't work
+                            time.sleep(12) # so it ncbi doesn't get mad
+                        if not thread.is_alive():
+                            threads.pop(threadIndex)
+                    if numEncounteredError >= 1:
+                        while len(threads) > 0:
+                            for threadIndex in range(len(threads) - 1, -1, -1):
+                                thread = threads[threadIndex]
+                                if not thread.is_alive():
+                                    threads.pop(threadIndex)
+                            time.sleep(1)
+                        break
+                    # print(url)
+                    # try:
+                    #     urllib.request.urlretrieve(url, "./DownloadedFromSSB/"+ contigName + ".gb")
+                    # except:
+                    #     time.sleep(3)
+                    #     urllib.request.urlretrieve(url, "./DownloadedFromSSB/" + contigName + ".gb")
+                    # print("downloaded")
+                    # # time.sleep(1)
+                    # print("sleep time",max(2/3 - (time.time() - t1),0))
+                    # print("time to download", time.time() - t1)
+                    # time.sleep(max(1/3 - (time.time() - t1),0))
+                    time.sleep(2/3)
     # except IndexError:
     #     0
     # elif :
