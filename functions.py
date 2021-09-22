@@ -554,6 +554,11 @@ def getFirstDataLine(fastaFileName):
             if line[0] != ">":
                 return line
 
+def getFirstLine(fastaFileName):
+    with open(fastaFileName) as file:
+        for line in file:
+            return line
+
 
 def sortByMultipleCriteria(arrayToSort, criteria): # earlier criteria are more important, not done
     print("doesn't work yet")
@@ -669,3 +674,34 @@ def getSnpInfo(nucInfo, numRequiredGenomesForGroupToBeConsidered=10):
     # print("highest nuc", oldNuc, "secondHighestNuc", newNuc, "prop", snpProportion)
     # print("_________")
     return oldNuc, newNuc, indexOfSnpGroup + numGroupsDeleted, snpProportion
+
+
+def fastaFilesContainSameContigs(file1Name, file2Name):
+    with open(file1Name) as file1, open(file2Name) as file2:
+        file1Data = [] # list of contigs
+        file2Data = []  # list of contigs
+        currContig = ""
+        for line in file1:
+
+            if line[0] != ">":
+                currContig += line.strip()
+            else:
+                if currContig != "":
+                    file1Data.append(currContig)
+                currContig = ""
+        file1Data.append(currContig)
+        currContig = ""
+        for line in file2:
+
+            if line[0] != ">":
+                currContig += line.strip()
+            else: # if on header line
+                if currContig != "":
+                    file2Data.append(currContig)
+                currContig = ""
+        file2Data.append(currContig)
+        if len(file1Data) == 0 or len(file2Data) == 0:
+            raise Exception("no data recorded")
+        file1Data.sort()
+        file2Data.sort()
+    return file1Data == file2Data

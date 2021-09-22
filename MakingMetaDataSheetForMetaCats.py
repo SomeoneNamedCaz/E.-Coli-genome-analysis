@@ -1,10 +1,12 @@
 from functions import *
 
-metadataPath = "./metaDataForMetaCats.tsv"
-catagoryPaths = ["./AllAssemblies/allMastitisAssemblies/*.fasta"]
+metadataPath = "./metaDataForMetaCatsWithExtraMastitis.tsv"
+catagoryPaths = []#["./AllAssemblies/allMastitisAssemblies/*.fasta"]
 catagoryPaths.append("./AllAssemblies/AllCommensalBovineAssemblies/*.fasta")
 catagoryPaths.append("./AllAssemblies/APEC_assemblies/*.fasta")
 catagoryPaths.append("./AllAssemblies/Avian_commensal/*.fasta")
+catagoryPaths.append("./DownloadingFilesFromNCBI/MissedMastitisCombinedFastas/*.fasta")
+
 with open(metadataPath, "w") as file:
     # for catagoryPath in catagoryPaths:
     #     file.write(catagoryPath.split("/")[-2] + "\t")
@@ -14,8 +16,8 @@ with open(metadataPath, "w") as file:
         catagory = catagoryPath.split("/")[-2]
         for filePath in glob(catagoryPath):
             fileName = filePath.split("/")[-1]
-            file.write(fileName + "\t")
-            if catagory == "allMastitisAssemblies":
+            file.write("scaffold_" + fileName + ".vcf\t")
+            if catagory == "allMastitisAssemblies" or catagory == "MissedMastitisCombinedFastas":
                 file.write("cow\tpathogen")
             elif catagory == "AllCommensalBovineAssemblies":
                 file.write("cow\tcommensal")

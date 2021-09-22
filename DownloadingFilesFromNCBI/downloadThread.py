@@ -1,4 +1,5 @@
 import urllib.request
+import urllib.error
 import re
 import time
 import threading
@@ -20,8 +21,16 @@ class DownloadThread(threading.Thread):
         try:
             urllib.request.urlretrieve(self.query + self.ID + self.retType, self.pathAndFileName)
         except Exception as error:
-            self.encounteredError = True
+            # if error == urllib.error.HTTPError("HTTP Error 400: Bad Request"):
+            #     self.encounteredError = True
+            #     self.secondTryWorked = False
+            #     print("recognized bad request")
+            #     return
+
             print("error caught",error)
-            time.sleep(2/3 + random.uniform(0,2))
+            time.sleep(5/3 + random.uniform(0,2))
+            self.encounteredError = True
+            self.secondTryWorked = False
             urllib.request.urlretrieve(self.query + self.ID + self.retType, self.pathAndFileName)
             print("downloaded after error")
+            self.secondTryWorked = True
