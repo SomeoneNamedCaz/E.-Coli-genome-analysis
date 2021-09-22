@@ -28,6 +28,12 @@ def determineGroupIndexes(genomeSeq, PathToFileToLookAt):
             snpIndex = int(cols[0])
             if snpIndex + 3000 < lastSnpIndex:
                 print("all group counts", groupGenomeIsInForEachSnp)
+                numGroupsWithCounts = 0
+                for groupCounts in groupGenomeIsInForEachSnp:
+                    if groupCounts > 0.1:
+                        numGroupsWithCounts += 1
+                if numGroupsWithCounts > 1:
+                    raise Exception("incorrect genome or indexes being analyzed")
                 groupIndices.append(argmax(groupGenomeIsInForEachSnp))
                 groupGenomeIsInForEachSnp = []
             nucTheGenomeHas = genomeSeq[snpIndex - 1]
@@ -40,11 +46,10 @@ def determineGroupIndexes(genomeSeq, PathToFileToLookAt):
             numsOfNucs = getNumsOfNucs(cols[5])
             for index in range(len(groupGenomeIsInForEachSnp) - 2, len(groupGenomeIsInForEachSnp)):
                 # print("i",index)
-                otherGroupIndex = len(groupGenomeIsInForEachSnp) - 1 -index
+                otherGroupIndex = len(groupGenomeIsInForEachSnp) - 1 - index
                 try:
                     numsOfNucs[index][nucTheGenomeHas] # groupGenomeIsInForEachSnp[index] +=
                 except KeyError:
-                    pass
                     # print(numsOfNucs, nucTheGenomeHas)
                     # print("other",otherGroupIndex)
                     groupGenomeIsInForEachSnp[otherGroupIndex] += 1e6
@@ -53,6 +58,12 @@ def determineGroupIndexes(genomeSeq, PathToFileToLookAt):
             # else:
 
     print("all group counts",groupGenomeIsInForEachSnp)
+    numGroupsWithCounts = 0
+    for groupCounts in groupGenomeIsInForEachSnp:
+        if groupCounts > 0.1:
+            numGroupsWithCounts += 1
+    if numGroupsWithCounts > 1:
+        raise Exception("incorrect genome or indexes being analyzed")
     return (groupIndices + [argmax(groupGenomeIsInForEachSnp)], metaDataCategoriesFound)
 
 
@@ -60,7 +71,11 @@ def determineGroupIndexes(genomeSeq, PathToFileToLookAt):
 # genomeFile.close()
 def findNamesOfGroups(metadataPath, genomePath, snpStatPath):
     indexOfGenomeToGet = 0  # 400 is cow
-    genomeSeq = open(genomePath).readlines()[1 + indexOfGenomeToGet * 2]  # getFirstDataLine(genomePath)
+    try:
+        genomeSeq = open(genomePath).readlines()[1 + indexOfGenomeToGet * 2]  # getFirstDataLine(genomePath)
+    except IndexError:
+        print(genomePath + " file not found or has fewer than 2 lines")
+        exit(1)
     genomeName = open(genomePath).readlines()[indexOfGenomeToGet * 2][1:-1]
     groupIndexes, metadataCategoriesFound = determineGroupIndexes(genomeSeq, snpStatPath)
     allMetadataCategories = []
@@ -73,7 +88,6 @@ def findNamesOfGroups(metadataPath, genomePath, snpStatPath):
             cols = line.split("\t")
             if line == "":
                 continue
-
             if cols[0] == genomeName:
                 genomeMetadata = cols[1:]
             if onFirstLine:
@@ -104,6 +118,8 @@ def findNamesOfGroups(metadataPath, genomePath, snpStatPath):
 
 
     for i in range(len(groupIndexes)): # output not completely working but can do by hand
+        print(i)
+        print(genomeMetadata)
         indexOfTheGroupThatTheGenomeIsIn = groupIndexes[i]
         metaDataForTheGroupTheGenomeIsIn = genomeMetadata[i]
         category = allMetadataCategories[i]

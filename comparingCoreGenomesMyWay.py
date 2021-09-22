@@ -13,52 +13,82 @@ import random
 mastitisPrevalenceFileName = "mastitisCountsTakeFour.tsv"
 commensalAvianPrevalenceFileName = "natureCommensalCountsTake2.tsv"
 APECPrevalenceFileName = "naturePathogenCountsTake2.tsv"
-commensalBovinePrevalenceFileName = "CowCommensalCounts.tsv"
+# commensalBovinePrevalenceFileName = "CowCommensalCounts.tsv"
+# commensalBovinePrevalenceFileName = "./AllAssemblies/AllCommensalBovineAssemblies/ProkkaOutFailedBecauseTooLongContigs/gffs/roaryVersion13/gene_presence_absence.csv"
+commensalBovinePrevalenceFileName = "/Users/cazcullimore/Documents/ericksonLabCode/bovineCommensalAnnotatedGenomes/gffs/gene_presence_absence.csv"
+locationOfPrevalenceFiles = "./miscDataFilesCreatedFromPrograms/"
+
 def findCoreGenome(prevalenceFileName): # extra are M6, M9, M11, M12,M50,M37,M109
     geneCounts = []
     with open(prevalenceFileName) as prevalenceFile:
         for line in prevalenceFile:
             line = line.strip()
             cols = line.split("\t")
-            geneName = cols[0]
-            geneCount = int(cols[1]) #+ random.gauss(0, 2) # very good match with 1 somwhat bad match (50%) with 2, no core genome with 3
+            try:
+                geneName = cols[0]
+                geneCount = int(cols[1])
+            except:  # if it is the .csv file
+                cols = line.split('"')[1::2]
+                geneName = cols[0]
+                # print(cols2[:30])
+                if cols[10].strip() != "":
+                    continue
+                geneCount = int(cols[3])
             geneCounts.append(geneCount)
     geneCounts.sort()
     assumedNumberOfStrains = geneCounts[-100]
     print(assumedNumberOfStrains)
     # read through file to get percents
-    genes99_100 = []
-    genes95_99 = []
-    genes15_95 = []
-    genes0_15 = []
+    # highestGenes = []
+    # secondHighestGenes = []
+    # middleGenes = []
+    # secondLowestGenes = []
+    # lowestGenes = []
+    higherGenes = []
+    lowerGenes = []
     totalGenes = 0
     with open(prevalenceFileName) as prevalenceFile:
         for line in prevalenceFile:
             line = line.strip()
             cols = line.split("\t")
-            geneName = cols[0]
-            geneCount = int(cols[1])
+            try:
+                geneName = cols[0]
+                geneCount = int(cols[1])
+            except:# if it is the .csv file
+                cols = line.split('"')[1::2]
+                geneName = cols[0]
+                # print(cols2[:30])
+                if cols[10].strip() != "":
+                    continue
+                geneCount = int(cols[3])
+            # if geneCount/assumedNumberOfStrains >= 0.98:
+            #     highestGenes.append(geneName)
+            # elif geneCount/assumedNumberOfStrains >= 0.95:
+            #     secondHighestGenes.append(geneName)
+            # elif geneCount/assumedNumberOfStrains >= 0.80:
+            #     middleGenes.append(geneName)
+            # elif geneCount/assumedNumberOfStrains > 0.50:
+            #     secondLowestGenes.append(geneName)
+            # else:
+            #     lowestGenes.append(geneName)
             if geneCount/assumedNumberOfStrains >= 0.95:
-                genes99_100.append(geneName)
-            elif geneCount/assumedNumberOfStrains >= 0.80:
-                genes95_99.append(geneName)
-            elif geneCount/assumedNumberOfStrains > 0.15:
-                genes15_95.append(geneName)
-            else:
-                genes0_15.append(geneName)
+                higherGenes.append(geneName)
+            elif geneCount/assumedNumberOfStrains <= 0.85:
+                lowerGenes.append(geneName)
             totalGenes += 1
-    return [genes0_15,genes15_95,genes95_99,genes99_100]
-mastGenes = findCoreGenome(mastitisPrevalenceFileName)
-lowerMastGenes = mastGenes[0] + mastGenes[1]
+    return [lowerGenes, higherGenes]#[lowestGenes,secondLowestGenes, middleGenes,secondHighestGenes,highestGenes]
+
+mastGenes = findCoreGenome(locationOfPrevalenceFiles + mastitisPrevalenceFileName)
+lowerMastGenes = mastGenes[0]
 mastGenes = mastGenes[-1]# + mastGenes[-2]
 comensalBovineGenes = findCoreGenome(commensalBovinePrevalenceFileName)
-lowerComensalBovineGenes = comensalBovineGenes[0] + comensalBovineGenes[1]
+lowerComensalBovineGenes = comensalBovineGenes[0]
 comensalBovineGenes = comensalBovineGenes[-1] #+ comensalBovineGenes[-2]
-APECGenes = findCoreGenome(APECPrevalenceFileName)
-lowerAPECGenes = APECGenes[0] + APECGenes[1]
+APECGenes = findCoreGenome(locationOfPrevalenceFiles + APECPrevalenceFileName)
+lowerAPECGenes = APECGenes[0]
 APECGenes = APECGenes[-1] #+ APECGenes[-2]
-avianGenes = findCoreGenome(commensalAvianPrevalenceFileName)
-lowerAvianGenes = avianGenes[0] + avianGenes[1]
+avianGenes = findCoreGenome(locationOfPrevalenceFiles + commensalAvianPrevalenceFileName)
+lowerAvianGenes = avianGenes[0]
 avianGenes = avianGenes[-1]# + avianGenes[-2]
 
 sharedByAll = []
@@ -113,7 +143,7 @@ sharedByComensal = []
 #         if not HypotheticalProteinSeqInList(avianGene,comensalBovineGenes, cutoff=0.9) and not HypotheticalProteinSeqInList(avianGene,APECGenes, cutoff=0.9) and HypotheticalProteinSeqInList(avianGene,mastGenes, cutoff=0.9):
 #             sharedMastAndAvian.append(avianGene)
 
-# # old comparisions
+# # newer comparisions
 for mastGene in mastGenes:
     if mastGene in comensalBovineGenes and mastGene in APECGenes and mastGene in avianGenes:
         sharedByAll.append(mastGene)
@@ -136,11 +166,6 @@ for avianGene in avianGenes:
     if avianGene in lowerComensalBovineGenes and avianGene in lowerAPECGenes and avianGene in mastGenes:
         sharedMastAndAvian.append(avianGene)
 
-largeDifInPrevalence = []
-for mastGene in mastGenes:
-    if (mastGene in lowerComensalBovineGenes and mastGene in APECGenes and mastGene in lowerAvianGenes):
-        largeDifInPrevalence.append(mastGene)
-
 print("sharedByAll")
 print(sharedByAll)
 print("\n\nsharedByBovine")
@@ -149,8 +174,6 @@ print("\n\nsharedByChicken")
 print(sharedByChicken)
 print("\n\nsharedByDiseased")
 print(sharedByDiseased)
-print("\n\nlargeDifInPrevalence")
-print(largeDifInPrevalence)
 print("\n\nsharedMastAndAvian")
 print(sharedMastAndAvian)
 print("\n\nsharedcomensalBovineAndAPEC")
@@ -167,31 +190,33 @@ print(len(mastGenes))
 # c100 = ['yjjQ', 'malZ', 'entA', 'dhaM', 'pmrD', 'yhdY', 'frmB', 'copA', 'glsA1', 'ybcI', 'rpsU', 'fur', 'cspD', 'ygdR_2', 'ygaM', 'entS', 'nagA', 'rsfS', 'exbB', 'narH', 'rlmM', 'glgB', 'clpA', 'entH', 'rnd', 'purU', 'gltK', 'corC', 'malK', 'cysB', 'hybO', 'recF_1', 'trpS', 'dnaG', 'rfaF', 'topA_2', 'rbsA_1', 'ftsP', 'exbD', 'uppP', 'ttdB', 'plsC', 'rlmB', 'rlmH', 'ycgM', 'yeiP', 'rffH', 'yccU', 'kdpB', 'matP', 'yegT', 'gltI', 'bdm', 'truD', 'holE', 'aas', 'yebV', 'recX', 'sbp', 'gshA', 'moeA', 'ydiB', 'eptC', 'cca', 'amiB', 'ybjG', 'bcsZ', 'serC', 'mzrA', 'chbF', 'ogt', 'cmoB', 'yfcF', 'allS', 'helD', 'ugpA', 'dgcM', 'rlmA', 'arnF', 'fepE', 'xseA', 'eamB', 'ygdG', 'fucK', 'loiP', 'ygiD', 'yiaB', 'phnO', 'yjfF', 'gcd', 'frmA', 'ybdL', 'lnt', 'chiQ', 'pflB', 'ycaL', 'torA', 'por_2', 'dauA', 'narJ', 'uspF', 'manY', 'yegS', 'mglA_1', 'inaA', 'srlB', 'lplT', 'dsbC', 'pepP', 'nupG', 'qseC', 'ygiF', 'yhjB', 'lldD', 'rffG', 'wecD', 'glnA', 'thiE', 'ulaA', 'prpC', 'ssuC_2', 'lrp', 'rpsA', 'mrdA', 'creD', 'ghrA', 'cvrA', 'hslJ', 'marA', 'yebF', 'fliS', 'mtfA', 'fbaB', 'arnE', 'flk', 'pdxK', 'amiA', 'endA', 'glmU_2', 'ttdA', 'argE_1', 'argC', 'ghxP', 'alsT', 'allR', 'citX', 'mntS', 'artQ', 'dmsB_1', 'msbA_2', 'ompA', 'chbG', 'cysH_1', 'astD', 'yfcG', 'tmcA', 'nagB_2', 'torD', 'tilS', 'purT', 'ypdF', 'ydjZ_1', 'fucI', 'gcvP']
 # large diff : 'ulaE_2', 'glmU_2'
 
-# with open("genesSharedNewMastitisAnnotation95-80.tsv", "w") as sharedGenesFile:
-#
-#
-#     def writeOutSharedGeneList(sharedGeneList):
-#         for gene in sharedGeneList:
-#             sharedGenesFile.write("\t"+gene)
-#         sharedGenesFile.write("\n")
-#
-#     sharedGenesFile.write("sharedByAll")
-#     writeOutSharedGeneList(sharedByAll)
-#
-#     sharedGenesFile.write("sharedByBovine")
-#     writeOutSharedGeneList(sharedByBovine)
-#
-#     sharedGenesFile.write("sharedByChicken")
-#     writeOutSharedGeneList(sharedByChicken)
-#
-#     sharedGenesFile.write("sharedByDiseased")
-#     writeOutSharedGeneList(sharedByDiseased)
-#
-#     sharedGenesFile.write("sharedMastAndAvian")
-#     writeOutSharedGeneList(sharedMastAndAvian)
-#
-#     sharedGenesFile.write("sharedcomensalBovineAndAPEC")
-#     writeOutSharedGeneList(sharedcomensalBovineAndAPEC)
-#
-#     sharedGenesFile.write("sharedByComensal")
-#     writeOutSharedGeneList(sharedByComensal)
+# what if did real stats instead of large difference for annotations
+
+with open("MyAnnotation.tsv", "w") as sharedGenesFile:
+
+
+    def writeOutSharedGeneList(sharedGeneList):
+        for gene in sharedGeneList:
+            sharedGenesFile.write("\t"+gene)
+        sharedGenesFile.write("\n")
+
+    sharedGenesFile.write("sharedByAll")
+    writeOutSharedGeneList(sharedByAll)
+
+    sharedGenesFile.write("sharedByBovine")
+    writeOutSharedGeneList(sharedByBovine)
+
+    sharedGenesFile.write("sharedByChicken")
+    writeOutSharedGeneList(sharedByChicken)
+
+    sharedGenesFile.write("sharedByDiseased")
+    writeOutSharedGeneList(sharedByDiseased)
+
+    sharedGenesFile.write("sharedMastAndAvian")
+    writeOutSharedGeneList(sharedMastAndAvian)
+
+    sharedGenesFile.write("sharedcomensalBovineAndAPEC")
+    writeOutSharedGeneList(sharedcomensalBovineAndAPEC)
+
+    sharedGenesFile.write("sharedByComensal")
+    writeOutSharedGeneList(sharedByComensal)

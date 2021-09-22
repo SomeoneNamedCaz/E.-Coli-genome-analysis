@@ -17,9 +17,9 @@ NEEDS: path of all results
 
 codonsToAminoAcids = makeCodonDictionary()
 
-if len(sys.argv) < 5:
+if len(sys.argv) < 7:
     print("""please give arguments: combined megaCats file, file with the snp genomes, file with the snp indexes, the suffix you want for output files,
-          the reference genome file, optional: whether or not you want to remove the sparce entries (true by default), the output directory (current directory by default)""")
+          the reference genome file, the metadata used for megaCats, optional: whether or not you want to remove the sparce entries (true by default), the output directory (current directory by default)""")
     exit(1)
 
 
@@ -33,20 +33,21 @@ print("genome", snpGenomePath)
 print("index", snpIndexesPath)
 # add FrameShiftedToIndexPath
 snpIndexesFrameShiftedPath = ".".join(snpIndexesPath.split(".")[:-1]) + "FrameShifted." + snpIndexesPath.split(".")[-1]
-metaDataFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/megaCATS-main/metaDataForMetaCats.tsv"
+metaDataFilePath = sys.argv[6]
+# metaDataFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/mastitisSeverityMetadata.tsv" # for severity
 
 suffix = sys.argv[4]
 
 annotatedRefGenomePath = sys.argv[5]#"./refGenomes/k-12.gbff"#"./AllAssemblies/refGenomeAnnotationsEdited.gb"
 removeSparce = True
 try:
-    if sys.argv[6] == "False":
+    if sys.argv[7] == "False":
         removeSparce = False
 except IndexError:
     pass
 
 try:
-    outputLocation = sys.argv[7]
+    outputLocation = sys.argv[8]
 except IndexError:
     outputLocation = "."
 
@@ -61,9 +62,6 @@ numSnpsToIncludeForMostSigSnps = 10_000_000
 snpsFileWithCorrectPosPath = outputLocation + "/sigSNPsByPosOnRefGenome" + suffix + ".txt" # created and then read
 snpsSortedBySignificancePath =  outputLocation + "/snpsSortedBySignificanceWithGenesContainingThem" + suffix # created (extension added later)
 numSnpsWithinGenesPath =  outputLocation + "/numSnpsWithinGenes"
-
-
-
 
 
 namesOfGroups = findNamesOfGroups(metaDataFilePath, snpGenomePath, snpStatPath)#{'animal': ['chicken','cow'], 'pathogenicity':['commensal', "pathogen"], 'deadliness':['commensal', "pathogen"]}
@@ -215,6 +213,9 @@ prof = cProfile.Profile()
 prof.enable()
 
 
+if len(snpsFileWithCorrectPosData) == 0:
+    print("no significant snps found")
+    exit(10)
 
 lastMetaDataColName = ""
 indexOfLastGene = 0
@@ -273,7 +274,7 @@ for line in snpsFileWithCorrectPosData:
 
     lastMetaDataColName = currMetaDataColName
     lastSNPpos = positionInGenome
-    index = indexOfLastGene-1
+    index = indexOfLastGene - 1
     for gene in genes:#
         index += 1
 
@@ -297,6 +298,7 @@ def sortFunc(geneArg):
     return weights[geneArg]
 genes.sort(key=sortFunc)
 # genes.sort(key=lambda gene: 1 - gene.counter/len(gene.sequence)) # to sort by ascending proportion
+print(lastMetaDataColName)
 outputFunction(genes, lastMetaDataColName, weights) # "Animal"
 
 

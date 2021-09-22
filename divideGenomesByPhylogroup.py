@@ -55,3 +55,9 @@ for phylogroup in phylogroupToGenomes.keys():
     #             cols = line.strip().split("\t")
     #             if genomeName == cols[0]:
     #                 print(cols)
+
+
+with open("phylogroupDistribution.tsv", "w") as file:
+    file.write("Phylogroup\tnumberOfGenomesInThePhylogroup\tgenomeNames\n")
+    for phylogroup, genomes in phylogroupToGenomes.items():
+        file.write(phylogroup + "\t" + str(len(genomes)) + "\t" + " ".join(genomes) + "\n")

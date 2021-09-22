@@ -14,11 +14,11 @@ import sys
 # pathOfPresenceAbsenceFile = sys.argv[1]
 # nameOfOutFile = sys.argv[2]
 
-# pathOfPresenceAbsenceFile = "/Users/cazcullimore/Documents/ericksonLabCode/AllAssemblies/allMastitisAssemblies/ProkkaOut/gffs/roaryOutputs/gene_presence_absence.Rtab"
+# pathOfPresenceAbsenceFile = "/Users/cazcullimore/Documents/ericksonLabCode/AllAssemblies/allMastitisAssemblies/ProkkaOutFailedBecauseTooLongContigs/gffs/roaryOutputs/gene_presence_absence.Rtab"
 
-# pathOfPresenceAbsenceFile = "/Users/cazcullimore/Documents/ericksonLabCode/AllAssemblies/AllCommensalBovineAssemblies/ProkkaOut/gffs/roaryOutputs/gene_presence_absence.Rtab"
-# pathOfPresenceAbsenceFile = "/Users/cazcullimore/Documents/ericksonLabCode/AllAssemblies/APEC_assemblies/ProkkaOut/gffs/roaryOutputs/gene_presence_absence.Rtab"
-# pathOfPresenceAbsenceFile = "/Users/cazcullimore/Documents/ericksonLabCode/AllAssemblies/Avian_commensal/ProkkaOut/gffs/roaryOutputs/gene_presence_absence.Rtab"
+# pathOfPresenceAbsenceFile = "/Users/cazcullimore/Documents/ericksonLabCode/AllAssemblies/AllCommensalBovineAssemblies/ProkkaOutFailedBecauseTooLongContigs/gffs/roaryOutputs/gene_presence_absence.Rtab"
+# pathOfPresenceAbsenceFile = "/Users/cazcullimore/Documents/ericksonLabCode/AllAssemblies/APEC_assemblies/ProkkaOutFailedBecauseTooLongContigs/gffs/roaryOutputs/gene_presence_absence.Rtab"
+# pathOfPresenceAbsenceFile = "/Users/cazcullimore/Documents/ericksonLabCode/AllAssemblies/Avian_commensal/ProkkaOutFailedBecauseTooLongContigs/gffs/roaryOutputs/gene_presence_absence.Rtab"
 pathOfPresenceAbsenceFile = "/Users/cazcullimore/Documents/ericksonLabCode/mastitisRoary/ROARY file.tsv"
 # pathOfPresenceAbsenceFile = ""
 

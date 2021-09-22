@@ -19,21 +19,36 @@ if len(sys.argv) > 10:
 prof = cProfile.Profile()
 prof.enable()
 
-gsAlignPaths = sys.argv[1]#"./allGsAlignOutputs/*.vcf"
+gsAlignPathString = sys.argv[1]#"./allGsAlignOutputs/*.vcf"
+if gsAlignPathString.split(":")[0] == "MatchFile": # MatchFile:<file to match>:<pathPrefix>
+    # this block is for using the same input files that were used in a previous run of this program
+    # (if you say the file to match is the snp alignment output file)
+    print("matching file")
+    gsAlignFiles = []
+    with open(gsAlignPathString.split(":")[1]) as file:
+        for line in file:
+            if line[0] == ">":
+                gsAlignFiles.append(gsAlignPathString.split(":")[2] + line[1:].strip())
+else:
+    gsAlignFiles = glob(gsAlignPathString)
+
+
+print(gsAlignFiles)
+
 
 outFilePath = "/".join(sys.argv[2].split("/")[:-1]) + "/" #"./InsertAndDeleteCombinedGenomes/" # folder
 outFileName = sys.argv[2].split("/")[-1]
-thingsToSkip = []
+
 try:
     thingsToSkip = sys.argv[3].split(",")
-except:
-    IndexError
+except IndexError:
+    thingsToSkip = []
 
 
 snps = [] # list of elements like this: [fileName, location, oldNuc, NewNuc, type]
 
 numFiles = 0
-for filePath in glob(gsAlignPaths):
+for filePath in gsAlignFiles:
     numFiles += 1
     # if numFiles > 200:
     #     break
@@ -64,9 +79,10 @@ for filePath in glob(gsAlignPaths):
 
 
 snps.sort(key=lambda a: a[1])
-print(snps[:100000]) #to test
+for snp in snps[:10000]:
+    print(snp) #to test
 # del snpPositions
-allFiles = glob(gsAlignPaths)
+allFiles = gsAlignFiles
 
 for index in range(len(allFiles)):
     allFiles[index] = allFiles[index].split("/")[-1]
@@ -83,7 +99,7 @@ dataToWrite = {} # {fileName:SNPlist}
 print(len(snps))
 snpsLength = len(snps) #* len(filesWithoutSNP)
 for file in allFiles: # load the list with dicts with empty strings
-    dataToWrite[file] = ""
+    dataToWrite[file] = []#""
 t1 = time.time()
 numerrors = 0
 numSkipped = 0
@@ -97,12 +113,15 @@ needToSkip = False
 snpIndexPrintedToFile = False
 
 if not os.path.exists(outFilePath):
+    # print("tried to make dir")
+    # exit(1)
     os.mkdir(outFilePath)
 
 # add file name
 outFilePath += outFileName # needs three letter extension
 pathForSNPsIncludedIndexes = outFilePath[:-4] + "Indexes.txt"
 lenBefore = 0
+print(len(filesWithoutSNP))
 print("start loop")
 with open(pathForSNPsIncludedIndexes, "w") as indexFile, open(pathForSNPsIncludedIndexes[:-4]+"FrameShifted.txt", "w") as frameShiftIndexFile:
     for snp in snps: # list of elements like this: [fileName, location, oldNuc, NewNuc, type]
@@ -116,14 +135,16 @@ with open(pathForSNPsIncludedIndexes, "w") as indexFile, open(pathForSNPsInclude
             if not needToSkip: #419274
                 # lenBefore = len(dataToWrite[filesWithoutSNP[0]]) # all should have same length
                 for fileWithMissingSNP in filesWithoutSNP:
-                    dataToWrite[fileWithMissingSNP] += oldNucAtCurrentPos
+                    for char in oldNucAtCurrentPos:
+                        dataToWrite[fileWithMissingSNP].append(char)
 
                 # prob only need to do for the last one #TODO:check
                 if len(filesWithoutSNP) != 0:
                     maxLenOfSnpGenome = max(maxLenOfSnpGenome, len(dataToWrite[fileWithMissingSNP]))
 
                 for file in allFiles:
-                    dataToWrite[file] += "-" * (maxLenOfSnpGenome - len(dataToWrite[file]))
+                    for char in "-" * (maxLenOfSnpGenome - len(dataToWrite[file])):
+                        dataToWrite[file].append(char)
                 for i in range(maxLenOfSnpGenome - lenBefore):
                     indexFile.write(str(lastPos + i/1000) + "\n")
 
@@ -145,7 +166,7 @@ with open(pathForSNPsIncludedIndexes, "w") as indexFile, open(pathForSNPsInclude
             # get a random set element
             for randFile in filesWithoutSNP:
                 break
-            lenBefore = len(dataToWrite[randFile])
+            lenBefore = len(dataToWrite[randFile]) # should all have same length
         needToSkip = False
         try:
             filesWithoutSNP.remove(snp[0]) # throws error if trying to add duplicate snp
@@ -158,7 +179,8 @@ with open(pathForSNPsIncludedIndexes, "w") as indexFile, open(pathForSNPsInclude
                 snpIndexPrintedToFile = True
 
             # add the snp nucs
-            dataToWrite[snp[0]] += snp[3] # add snp to entry for file
+            for char in snp[3]:
+                dataToWrite[snp[0]].append(char) # add snp to entry for file
             # print("added this",snp[3])
             maxLenOfSnpGenome = max(maxLenOfSnpGenome, len(dataToWrite[snp[0]]))
         except KeyError:
@@ -171,10 +193,12 @@ with open(pathForSNPsIncludedIndexes, "w") as indexFile, open(pathForSNPsInclude
 
     # cover for last case
     for fileWithMissingSNP in filesWithoutSNP:
-        dataToWrite[fileWithMissingSNP] += oldNucAtCurrentPos
+        for char in oldNucAtCurrentPos:
+            dataToWrite[fileWithMissingSNP].append(char)
         maxLenOfSnpGenome = max(maxLenOfSnpGenome, len(dataToWrite[fileWithMissingSNP]))
     for file in allFiles:
-        dataToWrite[file] += "-" * (maxLenOfSnpGenome - len(dataToWrite[file]))
+        for char in "-" * (maxLenOfSnpGenome - len(dataToWrite[file])):
+            dataToWrite[file].append(char)
     for i in range(maxLenOfSnpGenome - lenBefore):
         indexFile.write(str(lastPos + i / 1000) + "\n")
 
@@ -185,7 +209,7 @@ print("printing dataToRight")
 print("done with snps loop, now writing")
 with open(outFilePath, "w") as outFile:
     for key in dataToWrite.keys():
-        val = dataToWrite[key]
+        val = "".join(dataToWrite[key])
         outFile.write(">" + key.split("/")[-1] + "\n")
         outFile.write(val + "\n")
 #

@@ -1,15 +1,20 @@
 from downloadThread import *
+import sys
+import os
 
 threads = []
-examplesOfLengthsRequiredForUsingFirstCol = {"DA":"DADRKS010000001", "MI":"MIWM01000001"} # without .1
+examplesOfLengthsRequiredForUsingFirstCol = {"DA":"DADRKS010000001", "MI":"MIWM01000001", "LO":"LOOH01000129"} # without .1
 
-outputPathPrefix = "./MissedMastitisOneRunOfTheProgramLongTime/"
+outputPathPrefix = sys.argv[1]#"./AllMastitis/"
 
-with open("WGSProjectNamesWithExtraStuffRemoved.tsv") as wgsFile:
+if not os.path.exists(outputPathPrefix):
+    os.mkdir(outputPathPrefix)
+
+with open(sys.argv[2]) as wgsFile:
     readyToStart = False
     for line in wgsFile:
-        cols = line.split("\t")
-        if cols[0][0] != "D" and cols[0][0] != "M":
+        cols = line.split(",")
+        if cols[0] == "prefix_s":
             continue
         # print(cols)
         # try:
@@ -79,7 +84,7 @@ with open("WGSProjectNamesWithExtraStuffRemoved.tsv") as wgsFile:
                                 thread = threads[threadIndex]
                                 if not thread.is_alive():
                                     threads.pop(threadIndex)
-                            time.sleep(1)
+                            time.sleep(12)
                         break
                     # print(url)
                     # try:
@@ -92,6 +97,8 @@ with open("WGSProjectNamesWithExtraStuffRemoved.tsv") as wgsFile:
                     # print("sleep time",max(2/3 - (time.time() - t1),0))
                     # print("time to download", time.time() - t1)
                     # time.sleep(max(1/3 - (time.time() - t1),0))
+                    if numberOfFiles == int(1e5):
+                        time.sleep(8 / 3)
                     time.sleep(2/3)
     # except IndexError:
     #     0
