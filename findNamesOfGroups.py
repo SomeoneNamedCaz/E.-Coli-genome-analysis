@@ -44,9 +44,9 @@ def determineGroupIndexes(genomeSeq, PathToFileToLookAt):
             # print(line)
             lastSnpIndex = snpIndex
             numsOfNucs = getNumsOfNucs(cols[5])
-            for index in range(len(groupGenomeIsInForEachSnp) - 2, len(groupGenomeIsInForEachSnp)):
+            for index in range(0, 2):
                 # print("i",index)
-                otherGroupIndex = len(groupGenomeIsInForEachSnp) - 1 - index
+                otherGroupIndex = 1 - index
                 try:
                     numsOfNucs[index][nucTheGenomeHas] # groupGenomeIsInForEachSnp[index] +=
                 except KeyError:

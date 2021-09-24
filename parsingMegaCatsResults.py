@@ -65,7 +65,8 @@ numSnpsWithinGenesPath =  outputLocation + "/numSnpsWithinGenes"
 
 
 namesOfGroups = findNamesOfGroups(metaDataFilePath, snpGenomePath, snpStatPath)#{'animal': ['chicken','cow'], 'pathogenicity':['commensal', "pathogen"], 'deadliness':['commensal', "pathogen"]}
-# print(nam)
+print(namesOfGroups)
+print("\n\n\n\nn\n")
 percentSNPsCutOffForPercentSNPs = 0.02 # for pathway analysis
 
 snpLocations = [] # [snplocation1, ...]
@@ -283,7 +284,7 @@ for line in snpsFileWithCorrectPosData:
             gene.counter += 1
             #   this doesn't necessarily capture the case where group1(336_A,_75_G,_49_T)|group2(367_A,_18_G,_98_T)
             # print("currMetaDataColName\n\n", "'"+ currMetaDataColName + "'", "\n\n\n")
-            snpGroup = namesOfGroups[currMetaDataColName.strip()][1-indexOfMostSnpedGroup]
+            snpGroup = namesOfGroups[currMetaDataColName.strip()][indexOfMostSnpedGroup]
 
             gene.snps.append(SNP(positionInGenome - gene.startPos, oldNuc, newNuc, numsAndNucs, pval, snpGroup))
             break
