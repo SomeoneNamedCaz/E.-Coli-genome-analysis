@@ -50,7 +50,7 @@ snps = [] # list of elements like this: [fileName, location, oldNuc, NewNuc, typ
 numFiles = 0
 for filePath in gsAlignFiles:
     numFiles += 1
-    # if numFiles > 200:
+    # if numFiles > 100:
     #     break
     print("opened one")
     with open(filePath) as file:
