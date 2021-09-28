@@ -52,6 +52,7 @@ def determineGroupIndexes(genomeSeq, PathToFileToLookAt):
                 except KeyError:
                     # print(numsOfNucs, nucTheGenomeHas)
                     # print("other",otherGroupIndex)
+                    print("line that shows",line)
                     groupGenomeIsInForEachSnp[otherGroupIndex] += 1e6
             # if nucTheGenomeHas == oldNuc: # if doesn't has snp
             #     pass#groupGenomeIsInForEachSnp[groupSnpIsIn] += (1 - proportion)
@@ -105,6 +106,7 @@ def findNamesOfGroups(metadataPath, genomePath, snpStatPath):
                     i += 1
 
     groupToName = {}
+    print("name", genomeName)
     print("groupIndexes",groupIndexes)
     print(genomeMetadata)
     if len(metadataCategoriesFound) < len(allMetadataCategories):

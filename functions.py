@@ -130,8 +130,9 @@ class SNP:
         frameShift = 2 # nonSense
         earlyStop = 3
         insertMissSense = 4
+        notWithinAGene = 5
 
-    def __init__(self, location, oldNuc, newNuc, allNucCounts, pValue, nameOfGroupMoreLikelyToHaveSNP, typeOfMutation=mutationType.silent):
+    def __init__(self, location, oldNuc, newNuc, allNucCounts, pValue, nameOfGroupMoreLikelyToHaveSNP, geneContainingSnp, typeOfMutation=mutationType.silent):
         self.location = location
         self.oldNuc = oldNuc
         self.newNuc = newNuc
@@ -139,6 +140,7 @@ class SNP:
         self.pValue = pValue
         self.typeOfMutation = typeOfMutation
         self.nameOfGroupMoreLikelyToHaveSNP = nameOfGroupMoreLikelyToHaveSNP
+        self.geneContainingSnp = geneContainingSnp
 
 class Gene:
     def __init__(self, startPos, stopPos, sequence, name, product):

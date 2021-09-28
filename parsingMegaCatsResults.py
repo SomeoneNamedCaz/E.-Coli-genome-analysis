@@ -70,6 +70,7 @@ print("\n\n\n\nn\n")
 percentSNPsCutOffForPercentSNPs = 0.02 # for pathway analysis
 
 snpLocations = [] # [snplocation1, ...]
+snpsForCurrentMetadataCategory = []
 
 
 with open(snpIndexesPath) as file:
@@ -189,22 +190,22 @@ def outputFunction(listOfGenes, metadataCategory, weights):
 
     """ This segment looks at the most significant snps and the genes that contain them
     """
-    mostSignificantSnps = []  # sorted, most significance first
-    for gene in listOfGenes:
-        for snp in gene.snps:
-            mostSignificantSnps.append((snp, gene))
-    mostSignificantSnps.sort(key=lambda snpAndGene: snpAndGene[0].pValue)
+    # mostSignificantSnps = []  # sorted, most significance first
+
+    # for gene in listOfGenes:
+    #     for snp in gene.snps:
+    #         mostSignificantSnps.append((snp, gene))
+    # mostSignificantSnps.sort(key=lambda snpAndGene: snpAndGene[0].pValue)
+    snpsForCurrentMetadataCategory.sort(key=lambda snp:snp.pValue)
     with open(snpsSortedBySignificancePath + metadataCategory[0].upper() + metadataCategory[1:] + ".tsv", "w") as outFile:
         outFile.write("SNP pValue\tGroupEnrichedInSNP\tSNPlocation\tgeneName\tnewNuc\tsnpGroupDistribution\toldNuc\tWildTypeDistribution\tmutationType(frameShiftRecordedOnlyOnFirstNucOfIndel)\tgeneSequence\n")  # add category and move to the output function
-        for snpAndGene in mostSignificantSnps[:numSnpsToIncludeForMostSigSnps]:
-            snp = snpAndGene[0]
-            gene = snpAndGene[1]
+        for snp in snpsForCurrentMetadataCategory[:numSnpsToIncludeForMostSigSnps]:
             #                                this is the index of the group more likely to have snp
-            snpGroup = snp.allNucCounts[1-namesOfGroups[metadataCategory].index(snp.nameOfGroupMoreLikelyToHaveSNP)]
-            nonSnpGroup = snp.allNucCounts[namesOfGroups[metadataCategory].index(snp.nameOfGroupMoreLikelyToHaveSNP)]
+            snpGroup = snp.allNucCounts[namesOfGroups[metadataCategory].index(snp.nameOfGroupMoreLikelyToHaveSNP)]
+            nonSnpGroup = snp.allNucCounts[1-namesOfGroups[metadataCategory].index(snp.nameOfGroupMoreLikelyToHaveSNP)]
             outFile.write(
-                str(snpAndGene[0].pValue) + "\t" + snp.nameOfGroupMoreLikelyToHaveSNP + "\t" + str(snpAndGene[0].location) + "\t" + snpAndGene[1].name + "\t"
-                + snp.newNuc + "\t" + str(snpGroup) + "\t" + snp.oldNuc + "\t" + str(nonSnpGroup) + "\t" + str(snp.mutationType.name) + "\t" + snpAndGene[1].sequence + "\n")
+                str(snp.pValue) + "\t" + snp.nameOfGroupMoreLikelyToHaveSNP + "\t" + str(snp.location) + "\t" + snp.geneContainingSnp.name + "\t"
+                + snp.newNuc + "\t" + str(snpGroup) + "\t" + snp.oldNuc + "\t" + str(nonSnpGroup) + "\t" + str(snp.mutationType.name) + "\t" + snp.geneContainingSnp.sequence + "\n")
 
 
 
@@ -272,10 +273,16 @@ for line in snpsFileWithCorrectPosData:
         for gene in genes:
             gene.counter = 0
             gene.snps = []
+        snpsForCurrentMetadataCategory = []
 
     lastMetaDataColName = currMetaDataColName
     lastSNPpos = positionInGenome
     index = indexOfLastGene - 1
+    snpFoundWithinGene = False
+
+    minDistance = 1e30
+    nearestGene = ""
+    snpGroup = namesOfGroups[currMetaDataColName.strip()][indexOfMostSnpedGroup]
     for gene in genes:#
         index += 1
 
@@ -284,10 +291,24 @@ for line in snpsFileWithCorrectPosData:
             gene.counter += 1
             #   this doesn't necessarily capture the case where group1(336_A,_75_G,_49_T)|group2(367_A,_18_G,_98_T)
             # print("currMetaDataColName\n\n", "'"+ currMetaDataColName + "'", "\n\n\n")
-            snpGroup = namesOfGroups[currMetaDataColName.strip()][indexOfMostSnpedGroup]
 
-            gene.snps.append(SNP(positionInGenome - gene.startPos, oldNuc, newNuc, numsAndNucs, pval, snpGroup))
+            newSnp = SNP(positionInGenome - gene.startPos, oldNuc, newNuc, numsAndNucs, pval, snpGroup, gene)
+            gene.snps.append(newSnp)
+            snpsForCurrentMetadataCategory.append(newSnp)
+            snpFoundWithinGene = True
             break
+    #     newDistance = min(abs(gene.startPos - positionInGenome), abs(gene.stopPos - positionInGenome))
+    #     if newDistance < minDistance:
+    #         nearestGene = gene
+    #         minDistance = newDistance
+    # if not snpFoundWithinGene:
+    #
+    #     nearestGeneCopy = deepcopy(nearestGene)
+    #     nearestGeneCopy.name = "NearestGeneIs:" + nearestGeneCopy.name
+    #     snp = SNP(positionInGenome - nearestGene.startPos, oldNuc, newNuc, numsAndNucs, pval, snpGroup,nearestGeneCopy)
+    #     snp.mutationType = SNP.mutationType.notWithinAGene
+    #     # print(snp.mutationType.name)
+    #     snpsForCurrentMetadataCategory.append(snp)
 
 weights = {}
 for gene in genes:
