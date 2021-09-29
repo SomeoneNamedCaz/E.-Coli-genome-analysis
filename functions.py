@@ -625,7 +625,7 @@ def getNumsOfNucs(nucInfo):
         nucsOfGroups.append(nucsToNum)
     return nucsOfGroups
 
-def getSnpInfo(nucInfo, numRequiredGenomesForGroupToBeConsidered=10):
+def getSnpInfo(nucInfo, numRequiredGenomesForGroupToBeConsidered= -10):
     """
     needs a binary metadata category with possible errors (like with path)
 
@@ -657,8 +657,9 @@ def getSnpInfo(nucInfo, numRequiredGenomesForGroupToBeConsidered=10):
     indexOfNonSnpGroup = indexOfHighestProportionOfANuc
     indexOfSnpGroup = 1 - indexOfNonSnpGroup
     oldNuc = keymax(nucsOfGroups[indexOfNonSnpGroup])
-    # print(nucsOfGroups, nucsOfGroups)
-
+    print(nucsOfGroups, nucsOfGroups)
+    print(indexOfSnpGroup)
+    print(nucInfo)
     try:
         nucsOfGroups[indexOfSnpGroup].pop(oldNuc)
     except KeyError:

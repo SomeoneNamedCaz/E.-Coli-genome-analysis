@@ -106,9 +106,7 @@ def findNamesOfGroups(metadataPath, genomePath, snpStatPath):
                     i += 1
 
     groupToName = {}
-    print("name", genomeName)
-    print("groupIndexes",groupIndexes)
-    print(genomeMetadata)
+
     if len(metadataCategoriesFound) < len(allMetadataCategories):
         i = 0
         for category in allMetadataCategories:
@@ -116,7 +114,9 @@ def findNamesOfGroups(metadataPath, genomePath, snpStatPath):
                 groupIndexes.insert(i,0)
                 i += 1
             i += 1
-
+    print("name", genomeName)
+    print("groupIndexes", groupIndexes)
+    print(genomeMetadata)
 
 
     for i in range(len(groupIndexes)): # output not completely working but can do by hand
