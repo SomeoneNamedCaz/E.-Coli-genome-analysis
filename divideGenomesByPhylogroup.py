@@ -28,11 +28,34 @@ with open(phylogroupsPath) as file:
         else:
             phylogroupToGenomes[cols[1]].add("scaffold_" + cols[0] + ".fasta.vcf")
 
-
-
+genomeToMetadata = {}
+with open("./metaDataForMetaCatsWithExtraMastitis.tsv") as file:
+    for line in file:
+        line = line.strip()
+        cols = line.split("\t")
+        if len(cols) < 2:
+            continue
+        genomeToMetadata[cols[0]] = cols[1:]
+print("phylogroup, mastCount, bovCom, avianCom, APEC")
 for phylogroup in phylogroupToGenomes.keys():
+    mastCount = 0
+    bovCom = 0
+    avianCom = 0
+    APEC = 0
+    for genomeName in phylogroupToGenomes[phylogroup]:
+        if genomeToMetadata[genomeName][0] == "cow":
+            if genomeToMetadata[genomeName][1] == "pathogen":
+                mastCount += 1
+            else:
+                bovCom += 1
+        else:
+            if genomeToMetadata[genomeName][1] == "pathogen":
+                APEC += 1
+            else:
+                avianCom += 1
+    print(phylogroup, mastCount, bovCom, avianCom, APEC)
     try:
-        with open("allSnpsForPhylogroup" + phylogroup +"NoDuplicates.afa", "w") as outFile:
+        with open("Phylogroup" + phylogroup +".afa", "w") as outFile:
             for genomeName in phylogroupToGenomes[phylogroup]:
                 try:
                     outFile.write(">" + genomeName.strip() + "\n" + genomeNameToSnpGenome[genomeName].strip() + "\n")
