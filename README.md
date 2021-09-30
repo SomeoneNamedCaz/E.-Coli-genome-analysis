@@ -15,6 +15,7 @@ It also downloads the genomes using bioproject names. This program used a csv fr
 
 # unannotatedGbFilesToFasta.py
 This takes files downloaded from ncbi using the downloading python programs and combines them into a fasta file for each genome. This is done because the files directly downloaded only contained a single contig of the genome.
+  - combiningFastaFiles.py is the version of this program that combines fasta contig files instead of gb files.
 
 # MakingMetadataSheetForMetaCats.py
 This program makes the metadata that is required for megacats (https://github.com/bpickett/megaCATS). It doesn't support commandline arguments.
@@ -23,14 +24,14 @@ This program makes the metadata that is required for megacats (https://github.co
 This program takes a scaffold, gets the top contig and outputs this as a file. It was used to get the longest contig on a ragtag scaffold. This allows us to use a regular single alignment program (we used gsAlign). This works with gsAlignToMultipleAlign.py to create a multiple alignment without using Mauve. This step loses some of the DNA, but we only lost ~0.5Mb of the E. coli genomes.
 
 # gsAlignToMultipleAlign.py
-This takes .vcf files from gsAlign and outputs a fake "snp" genome that contains all of the snps that are present in ten or more genomes. It also outputs the original indexes of the snps (so it is possible to map the snp genome back to the original one) and the original indexes of frame shifts. This is to bypass the multiple alignment process of mauve that would take too long to run on the almost 1,000 genomes that we would need them to run.
+This takes .vcf files from gsAlign and outputs a fake "snp" genome that contains all of the snps that are present in ten or more genomes. It also outputs the original indexes of the snps (so it is possible to map the snp genome back to the original one) and the original indexes of frame shifts. This is to bypass the multiple alignment process of mauve that would take too long to run on >1,000 genomes that we would need them to run.
 
-The snp genome can be used as the input for megaCats.
+The snp genome can be used as the input for megaCats. This program runs in 10-15minutes.
 
 # parsingMegaCatsResults.py
 This takes the statistics from megaCats and interprets them: It requires the combined megaCats statistics, the file with the snp genomes (from gsAlignToMultipleAlign.py), the indexes also from gsAlignToMultipleAlign.py, a suffix to be added to the output file names, the reference annotated genome (.gb or .gbff). Optional commandline arguments are a flag to remove the sparce entries (according to megaCats), which is on by default, and the output directory, which is the current directory by default. It outputs a file of the significant snps that looks like the input megaCats stats. It also outputs two files for each metadata category: one looks at the genes that have the most snps in them; the other looks at each snp individually, ranks them by significance, and determines the gene that it is in. Both files look at the type of mutations that the snps provide.
 
-This program doesn't look at snps that aren't within a gene.
+This program includes snps that are outside of genes in the sorted snp files. It doesn't inlcude them in the file that looks at the genes with the most snps
 
 # fixingPathogenicityFile.py
 When I ran megaCats the pathogenicity correlated snps had a third group. Since I didn't know the cause I worked around it. However, I have now discovered the cause (no newline at the end of the file), so it probably isn't needed anymore.
@@ -51,7 +52,7 @@ This makes a histogram from the pvalues from a megaCats output file.
 This was an attempt that didn't work out because it wasn't able to recover enough of the genome. It used the aligned sequence files (.maf) from gsAlign instead of the vcf snp files and tried to combine them.
 
 # parallelgsalignSNPsToMultipleAlign.py
-this was an attempt at multithreading, but it didn't result in much speed up (maybe needed to copy the set over). The single threaded version is pretty fast right now in comparison (~2hrs).
+this was an attempt at multithreading, but it didn't result in much speed up (maybe needed to copy the set over). The single threaded version is pretty fast right now in comparison.
 
 # Gene Presence and Absence:
 
