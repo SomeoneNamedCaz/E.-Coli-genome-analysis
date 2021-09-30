@@ -54,6 +54,9 @@ This was an attempt that didn't work out because it wasn't able to recover enoug
 # parallelgsalignSNPsToMultipleAlign.py
 this was an attempt at multithreading, but it didn't result in much speed up (maybe needed to copy the set over). The single threaded version is pretty fast right now in comparison.
 
+# AnnotatedGenomeAnalysis:
+This is a file that looks at the frequencies of the snps that were identified here https://doi.org/10.1038/s41467-021-20988-w for our genomes. 
+
 # Gene Presence and Absence:
 
 # comparingPanGenomesFromRoaryFiles.py
