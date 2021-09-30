@@ -1,4 +1,4 @@
-# gb contig files combined into a single fasta file. assumes that contigs are named like bioproject files "ADSFADF0100000xxx.gb"
+# fasta contig files combined into a single fasta file. assumes that contigs are named like bioproject files "ADSFADF0100000xxx.gb"
 # makes an intermediate file called temp.fasta so it will write over that file if it is in outputPath
 from functions import *
 pathToContigFiles = "./DownloadingFilesFromNCBI/AllMastitisFromSSB/"
