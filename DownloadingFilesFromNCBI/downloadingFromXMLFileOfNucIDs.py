@@ -2,12 +2,12 @@ from downloadThread import *
 from glob import glob
 
 searchBeginning = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id="
-# downloadPath = "./AllCommensalStrains/"
-downloadPath = "./MissedMastitis/"
+downloadPath = "./AllCommensalStrains/"
+# downloadPath = "./MissedMastitis/"
 last5Times = []
 threads = []
 
-xmlFiles = glob("./MissedMastitis/*.xml")#["allCommensalEColiIDs.xml"]
+xmlFiles = ["allCommensalEColiIDs.xml"] # glob("./MissedMastitis/*.xml")#
 
 for xmlFileName in xmlFiles:
     with open(xmlFileName) as IDFile:

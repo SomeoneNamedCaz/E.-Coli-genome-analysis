@@ -10,7 +10,8 @@ PTSfruc = "ATGAAAACGCTGCTGATTATTGACGCTAATCTCGGTCAGGCACGCGCCTATATGGCGAAGACCCTGCTG
 
 # fileFolderPath = "./ourMastitisAnnotatedGenomes"
 # fileFolderPath = "./allAnnotatedMastitisGenomes/gbks/"
-fileFolderPath = "./bovineCommensalAnnotatedGenomes/gbks/"
+fileFolderPath =  "" \
+                  "./oldReferenceGenome/AllAssemblies/AllCommensalBovineAssemblies/"
 # GenomesFromNucleotidePath = "./DownloadingFilesFromNCBI/DownloadedFromSSB"
 significantMutationsFileName = "predictiveGeneVariantsAcrossPhylogroups.csv"
 outFileName = "SNPNonSNPratiosTESTBovine.tsv" # "my cbtA seqs.fasta"

@@ -3,6 +3,7 @@ import sys
 import os
 
 threads = []
+# needs to be updated if you're going to use this method of downloading files
 examplesOfLengthsRequiredForUsingFirstCol = {"DA":"DADRKS010000001", "MI":"MIWM01000001", "LO":"LOOH01000129"} # without .1
 
 outputPathPrefix = sys.argv[1]#"./AllMastitis/"
