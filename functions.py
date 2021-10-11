@@ -657,9 +657,9 @@ def getSnpInfo(nucInfo, numRequiredGenomesForGroupToBeConsidered= -10):
     indexOfNonSnpGroup = indexOfHighestProportionOfANuc
     indexOfSnpGroup = 1 - indexOfNonSnpGroup
     oldNuc = keymax(nucsOfGroups[indexOfNonSnpGroup])
-    print(nucsOfGroups, nucsOfGroups)
-    print(indexOfSnpGroup)
-    print(nucInfo)
+    # print(nucsOfGroups, nucsOfGroups)
+    # print(indexOfSnpGroup)
+    # print(nucInfo)
     try:
         nucsOfGroups[indexOfSnpGroup].pop(oldNuc)
     except KeyError:
