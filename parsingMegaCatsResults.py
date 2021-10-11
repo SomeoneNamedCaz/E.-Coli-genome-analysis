@@ -66,7 +66,7 @@ numSnpsWithinGenesPath =  outputLocation + "/numSnpsWithinGenes"
 
 namesOfGroups = findNamesOfGroups(metaDataFilePath, snpGenomePath, snpStatPath)#{'animal': ['chicken','cow'], 'pathogenicity':['commensal', "pathogen"], 'deadliness':['commensal', "pathogen"]}
 print(namesOfGroups)
-print("\n\n\n\nn\n")
+print("\n\n\n\n\n")
 percentSNPsCutOffForPercentSNPs = 0.02 # for pathway analysis
 
 snpLocations = [] # [snplocation1, ...]
@@ -94,7 +94,10 @@ with open(snpStatPath) as file, open(snpsFileWithCorrectPosPath, "w") as outFile
         pval = float(cols[2])
         currMetaDataColName = cols[-1].split("-")[0]
         positionInSnpGenome = int(cols[0])
-        posInRefGenome = snpLocations[positionInSnpGenome - 1]
+        try:
+            posInRefGenome = snpLocations[positionInSnpGenome - 1]
+        except IndexError:
+            print(positionInSnpGenome-1, "is too far")
         if pval < significanceLevel and (not removeSparce or cols[4].strip() == "N"):
             dataToWrite = str(posInRefGenome) + "\t" + "\t".join(cols[1:]) + "\n"
             outFile.write(dataToWrite)
@@ -172,7 +175,6 @@ def outputFunction(listOfGenes, metadataCategory, weights):
                             synSnpPositions.append(str(snp.location))
                     except KeyError: # i.e. if it's an indel
                         snp.mutationType = SNP.mutationType.missSense # all indels are missense or frameshift
-                        pass
             # print(gene.counter, len(gene.snps))
             outFile.write(gene.name + "\t" + gene.product + "\t" + str(weights[gene]) + "\t" + str(gene.counter /
                           len(gene.sequence)) + "\t" +
