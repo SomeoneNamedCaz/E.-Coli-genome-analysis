@@ -1,4 +1,5 @@
 # this adds seq data to annotation files that don't have it
+# I think this program is obselete because you can just add .1 to add the sequence info
 import sys
 from glob import glob
 import os
@@ -56,4 +57,3 @@ for fileName in glob(os.path.join(pathToFiles, "*" + extension)):
     thread = AddSeqDataThread(fileName,query, pathToFiles, extension, fileName)
     thread.start()
     break
-    # I think this program isn't done because the other files have both.
