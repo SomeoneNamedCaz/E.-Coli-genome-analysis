@@ -26,3 +26,4 @@ with open(metadataPath, "w") as file:
             elif catagory == "Avian_commensal":
                 file.write("chicken\tcommensal")
             file.write("\n")
+    file.write("\n")

@@ -30,17 +30,10 @@ The snp genome can be used as the input for megaCats, and runs in ~30 minutes.
 
 This program works by putting all of the snps in a list with some information. This list is sorted, and looped through. For each snp the snp genome associated with that snp is appended the snp. Once all of the snps at a certain position have been entered, the snps are aligned. This alignment process works by adding the first nucleotide of the reference nucleotides corresponding to the snp (this is only more than one if there is a deletion at the position. Then dashes are added equal to the length of the longest insert or the length of the logest insert minus the length of the insert for that genome. Then refernce nucleotides are addded to make each genome the same length. If a snp at the next position will be within a snp at the current position, the alignment stops before the next snp's position so it can be added.
 
-
 # parsingMegaCatsResults.py
 This takes the statistics from megaCats and interprets them: It requires the combined megaCats statistics, the file with the snp genomes (from gsAlignToMultipleAlign.py), the indexes also from gsAlignToMultipleAlign.py, a suffix to be added to the output file names, the reference annotated genome (.gb or .gbff). Optional commandline arguments are a flag to remove the sparce entries (according to megaCats), which is on by default, and the output directory, which is the current directory by default. It outputs a file of the significant snps that looks like the input megaCats stats. It also outputs two files for each metadata category: one looks at the genes that have the most snps in them; the other looks at each snp individually, ranks them by significance, and determines the gene that it is in. Both files look at the type of mutations that the snps provide.
 
 This program includes snps that are outside of genes in the sorted snp files. It doesn't inlcude them in the file that looks at the genes with the most snps
-
-# fixingPathogenicityFile.py
-When I ran megaCats the pathogenicity correlated snps had a third group. Since I didn't know the cause, I worked around it. However, I have now discovered the cause (no newline at the end of the file), so it probably isn't needed anymore.
-
-# findingOddGenomeOut.py
-This program discovers which genome is causing the problem with the third pathogenicity group.
 
 # functions.py
 This is just a python file with the functions that are shared across the repository.
@@ -51,19 +44,5 @@ This turns an assembly into an assembly with all of the contigs added together i
 # pValueHistogram.py
 This makes a histogram from the pvalues from a megaCats output file.
 
-# turningGsAlignIntoMultipleAlign.py
-This was an attempt that didn't work out because it wasn't able to recover enough of the genome. It used the aligned sequence files (.maf) from gsAlign instead of the vcf snp files and tried to combine them.
-
-# parallelgsalignSNPsToMultipleAlign.py
-this was an attempt at multithreading, but it didn't result in much speed up (maybe needed to copy the set over). The single threaded version is pretty fast right now in comparison.
-
 # AnnotatedGenomeAnalysis:
 This is a file that looks at the frequencies of the snps that were identified here https://doi.org/10.1038/s41467-021-20988-w for our genomes. 
-
-# Gene Presence and Absence:
-
-# comparingPanGenomesFromRoaryFiles.py
-This takes the presence and absence file from roary and counts the number of genomes that each gene is in. It outputs a tsv that contains these counts. The first column is the gene name and the second is the number of genomes it is present in.
-
-# comparingCoreGenomesMyWay.py
-This program takes gene count files provided from comparingPanGenomesFromRoaryFiles.py and finds the genes that are highly prevelant in some groups and less prevalent in other groups. It has two cutoffs, one for determining what "highly prevelant" means and another for "less prevalent" means. This is to stabilize the results instead a binary cutoff between close values.
