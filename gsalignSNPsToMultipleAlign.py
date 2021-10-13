@@ -1,6 +1,7 @@
 """
 NOTE: this doesn't deal with other snps being within a deletion, but this doesn't seem to occur enough to be registered and it will just decrease the significance of a snp
 however it should be fixed sometime
+Don't forget about the overlapping deletions that can include reference nucleotides extending past the first deletion
 """
 from glob import glob
 import time
@@ -8,6 +9,8 @@ import copy
 import os
 import sys
 import cProfile
+
+debug = False
 if len(sys.argv) < 3: # when you do args need ""
     print("requires a path to all of the vcf files like *.vcf and a output file name with path !use quotes!\n"
           "you may add a list of the types of snps to skip and the cutoff to remove infrequent snps")
@@ -92,6 +95,7 @@ allFiles = gsAlignFiles
 
 for index in range(len(allFiles)):
     allFiles[index] = allFiles[index].split("/")[-1]
+allFiles = set(allFiles)
 filesWithoutSNP = set(copy.deepcopy(allFiles))
 
 removedFiles = set()
@@ -124,52 +128,66 @@ if not os.path.exists(outFilePath):
     os.mkdir(outFilePath)
 
 
-def alignSnps(lengthOfLongestSnpGenome, longestRefNucSeq, filesToSnpGenome, filesWithoutSNP, lenBefore, lastPosition, indexFile):
+def alignSnps(lengthOfLongestSnpGenome, longestRefNucSeq, filesToSnpGenome, filesWithoutSNP, lenBefore, lastPosition, indexFile, fileNameToLengthOfInsert, lengthOfLongestInsert,numberOfNucelotidesToStopAlignmentAt=-1):
+    if debug:
+        print(longestRefNucSeq)
     for fileWithMissingSNP in filesWithoutSNP:
-        filesToSnpGenome[fileWithMissingSNP].append(longestRefNucSeq[0])
-
-    # prob only need to do for the last one #TODO:check
-    if len(filesWithoutSNP) != 0:
-        lengthOfLongestSnpGenome = max(lengthOfLongestSnpGenome, len(filesToSnpGenome[fileWithMissingSNP]))
-
+        if not len(filesToSnpGenome[fileWithMissingSNP]) > lenBefore:
+            filesToSnpGenome[fileWithMissingSNP].append(longestRefNucSeq[0])
+    # longestRefNucSeq = longestRefNucSeq[1:]
     maxLenAfterDashes = lengthOfLongestSnpGenome
-    for file in allFiles:
-        dashesSinceLastNonDash = 0
-        for index in range(len(filesToSnpGenome[file]) - 1, -1, -1):
-            if filesToSnpGenome[file][index] != "-":
-                break
-            else:
-                dashesSinceLastNonDash += 1
-        # print(dashesSinceLastNonDash)
-        # if lengthOfLongestSnpGenome != len(filesToSnpGenome[file]): # if delete and longest genome don't add more dashes
-        for dash in "-" * (lengthOfLongestSnpGenome - len(filesToSnpGenome[file]) + dashesSinceLastNonDash):
-            filesToSnpGenome[file].append(dash)
-        # maxLenOfSnpGenome = max(maxLenOfSnpGenome, len(dataToWrite[file]))
 
-    for i in range(lengthOfLongestSnpGenome - lenBefore):
+
+    # add insert dashes?
+    for file in allFiles:
+        # dictionary has the keys of all of the inserts
+        if file in fileNameToLengthOfInsert.keys():
+            # add dashes to potentially smaller inserts
+            for _ in range(lengthOfLongestInsert - fileNameToLengthOfInsert[file]):
+                filesToSnpGenome[file].append("-")
+        else:
+            for _ in range(lengthOfLongestInsert):
+                filesToSnpGenome[file].append("-")
+        if len(filesToSnpGenome[file]) > maxLenAfterDashes:
+            maxLenAfterDashes = len(filesToSnpGenome[file])
+
+
+
+    for i in range(lengthOfLongestSnpGenome - lenBefore): # add subst and insert indexes
         indexFile.write(str(lastPosition + i / 1000) + "\n")
 
-    for snpGenome in filesToSnpGenome.values():
-        if len(snpGenome) > lengthOfLongestSnpGenome:
-            lengthOfLongestSnpGenome = len(snpGenome)
+    # for snpGenome in filesToSnpGenome.values():
+    #     if len(snpGenome) > lengthOfLongestSnpGenome:
+    #         lengthOfLongestSnpGenome = len(snpGenome)
+    lengthOfLongestSnpGenome = maxLenAfterDashes
 
+    maxLen = numberOfNucelotidesToStopAlignmentAt + lenBefore + lengthOfLongestInsert
     numRefNucsAdded = 0
     for file in allFiles:
-        numRefNucsToAdd = lengthOfLongestSnpGenome - len(filesToSnpGenome[file])
-        # print(numRefNucsToAdd, filesToSnpGenome[file])
-        if numRefNucsToAdd == 0:
+        if numberOfNucelotidesToStopAlignmentAt == -1:
+            numRefNucsToAdd = lengthOfLongestSnpGenome - len(filesToSnpGenome[file])
+        else:
+            numRefNucsToAdd = min(lengthOfLongestSnpGenome, maxLen) - len(filesToSnpGenome[file])
+        if numRefNucsToAdd <= 0: # if already too long or at proper length don't extend (fixes problems with sign changes)
             continue
-        for char in longestRefNucSeq[-numRefNucsToAdd:]:
-            filesToSnpGenome[file].append(char)
-        if numRefNucsToAdd > numRefNucsAdded:
-            numRefNucsAdded = numRefNucsToAdd
-    for i in range(numRefNucsAdded):
+
+        if numberOfNucelotidesToStopAlignmentAt == -1:
+            for char in longestRefNucSeq[-numRefNucsToAdd:]:
+                filesToSnpGenome[file].append(char)
+            if numRefNucsToAdd > numRefNucsAdded:
+                numRefNucsAdded = numRefNucsToAdd
+        else:
+            for char in longestRefNucSeq[:numberOfNucelotidesToStopAlignmentAt][-numRefNucsToAdd:]:
+                filesToSnpGenome[file].append(char)
+            if numRefNucsToAdd > numRefNucsAdded:
+                numRefNucsAdded = numRefNucsToAdd
+    for i in range(numRefNucsAdded): # add delete indexes if there are any
         indexFile.write(str(lastPosition + 1 + i) + "\n") # because of adding first ref nuc
 
-    # # TODO: add this data. Could be first instead of last
-    # if abs(len(oldNucAtCurrentPos) - len(dataToWrite[file])) % 3 != 0: # != 0
-    #     frameShiftIndexFile.write(str(currPos) + "\n")
-
+    if debug:
+        print(numRefNucsAdded, "numRefNucsAdded")
+        print("longestRefNucSeq",longestRefNucSeq)
+    return longestRefNucSeq[numRefNucsAdded+1:] # plus one because of added the first nucleotide earlier
 
 
 
@@ -178,6 +196,9 @@ def alignSnps(lengthOfLongestSnpGenome, longestRefNucSeq, filesToSnpGenome, file
 outFilePath += outFileName # needs three letter extension
 pathForSNPsIncludedIndexes = outFilePath[:-4] + "Indexes.txt"
 lenBefore = 0
+overlappingOldNucs = ""
+fileNameToLengthOfInsert = {} # string : int
+lengthOfLongestInsert = 0
 print(len(filesWithoutSNP))
 print("start loop")
 with open(pathForSNPsIncludedIndexes, "w") as indexFile, open(pathForSNPsIncludedIndexes[:-4] + "FrameShifted.txt", "w") as frameShiftIndexFile:
@@ -192,26 +213,49 @@ with open(pathForSNPsIncludedIndexes, "w") as indexFile, open(pathForSNPsInclude
         altNucs = snp[3]
         if lastPos < snpPos: # if ran out of SNPs at the position
             # add the oldNuc for that SNP
-            if not needToSkip:
-                # if lastPos + len(oldNucsAtCurrentPos) > snpPos: # if next snps are within the position
-
-                alignSnps(maxLenOfSnpGenome, oldNucsAtCurrentPos, dataToWrite, filesWithoutSNP, lenBefore, lastPos, indexFile)
             try:
                 if snpPos < snps[snpIndex + numSnpsRequired - 1][1]: # if less than 10 snp at current position
                     needToSkip = True
                     continue
             except:
                 pass
+
+            numNucsToAlign = snpPos - lastPos
+            if lastPos + len(oldNucsAtCurrentPos) > snpPos or lastPos + len(overlappingOldNucs) > snpPos: # if earlier overlap is continuing
+                # pass
+                oldNucsAtCurrentPos = alignSnps(maxLenOfSnpGenome, oldNucsAtCurrentPos, dataToWrite, filesWithoutSNP,
+                                               lenBefore, lastPos, indexFile, fileNameToLengthOfInsert,
+                                               lengthOfLongestInsert, numNucsToAlign)
+            else:
+                oldNucsAtCurrentPos = alignSnps(maxLenOfSnpGenome, oldNucsAtCurrentPos, dataToWrite, filesWithoutSNP,
+                                               lenBefore, lastPos, indexFile, fileNameToLengthOfInsert,
+                                               lengthOfLongestInsert)
+            # if len(oldNucsAtCurrentPos) > len(overlappingOldNucs):
+            #     overlappingOldNucs = oldNucsAtCurrentPos
+
+            if debug:
+                print("overlappingOldNucs", overlappingOldNucs)
+                for k, v in dataToWrite.items():
+                    print(k, "".join(v))
+                print("-------")
+            # print("dfkljasdfl;jasdlfkadsflajsdf;laksjdfl;")
             # reset everything for next snp
             lastPos = snpPos
             filesWithoutSNP = filesWithoutSNP.union(removedFiles)  # add back removed files
             removedFiles = set()
-            oldNucsAtCurrentPos = snp[2]
+            fileNameToLengthOfInsert = {}
+            if len(snp[2]) > len(oldNucsAtCurrentPos):
+                oldNucsAtCurrentPos = snp[2]
             snpIndexPrintedToFile = False
+            lengthOfLongestInsert = 0
             # get a random set element
+
             for randFile in filesWithoutSNP:
                 break
-            lenBefore = len(dataToWrite[randFile]) # should all have same length
+            lenBefore = len(dataToWrite[randFile]) # get smallest
+            for file in filesWithoutSNP:
+                if lenBefore > len(dataToWrite[file]):
+                    lenBefore = len(dataToWrite[file])
         needToSkip = False
         try:
             filesWithoutSNP.remove(snp[0]) # throws error if trying to add duplicate snp
@@ -230,6 +274,11 @@ with open(pathForSNPsIncludedIndexes, "w") as indexFile, open(pathForSNPsInclude
             if snpType == "DELETE":
                 for i in range(len(refNucs) - len(altNucs)):
                     dataToWrite[snp[0]].append("-")
+            elif snpType == "INSERT":
+                insertLength = len(altNucs) - len(refNucs)
+                fileNameToLengthOfInsert[snp[0]] = insertLength
+                if insertLength > lengthOfLongestInsert:
+                    lengthOfLongestInsert = insertLength
             # print("added this",snp[3])
 
         except KeyError:
@@ -241,9 +290,15 @@ with open(pathForSNPsIncludedIndexes, "w") as indexFile, open(pathForSNPsInclude
             print("progress",snpIndex / snpsLength)
 
     # cover for last case
-    alignSnps(maxLenOfSnpGenome, oldNucsAtCurrentPos, dataToWrite, filesWithoutSNP, lenBefore, lastPos, indexFile)
-
-
+    # if lastPos + len(oldNucsAtCurrentPos) + len(overlappingOldNucs) > snpPos:  # if next snps are within the position
+    #     numNucsToAlign = snpPos - lastPos
+    # if overlappingOldNucs != "":
+    #     overlappingOldNucs = alignSnps(maxLenOfSnpGenome, overlappingOldNucs + oldNucsAtCurrentPos, dataToWrite, filesWithoutSNP, lenBefore, lastPos, indexFile, numNucsToAlign)
+    # alignSnps(maxLenOfSnpGenome, overlappingOldNucs, dataToWrite, filesWithoutSNP, lenBefore, lastPos + numNucsToAlign, indexFile)
+    if debug:
+        print(overlappingOldNucs)
+    alignSnps(maxLenOfSnpGenome, oldNucsAtCurrentPos, dataToWrite, filesWithoutSNP, lenBefore, lastPos,
+              indexFile, fileNameToLengthOfInsert, lengthOfLongestInsert)
 print("printing dataToRight")
 
 # print(dataToWrite)
