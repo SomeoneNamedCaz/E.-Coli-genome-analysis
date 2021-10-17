@@ -79,9 +79,11 @@ with open(snpIndexesPath) as file:
         line = round((line - int(line)) * 1000 + int(line))
         snpLocations.append(line)
 
+if abs(len(getFirstDataLine(snpGenomePath)) - len(snpLocations)) > 10_000:
+    print("indexes are probably off")
 
 
-
+print("length of snp genomes", len(getFirstDataLine(snpGenomePath)))
 print(len(snpLocations))
 significanceLevel = 0.05/len(snpLocations)  # can change initial P-value cutoff if wanted
 snpsFileWithCorrectPosData = []
@@ -102,6 +104,8 @@ with open(snpStatPath) as file, open(snpsFileWithCorrectPosPath, "w") as outFile
             dataToWrite = str(posInRefGenome) + "\t" + "\t".join(cols[1:]) + "\n"
             outFile.write(dataToWrite)
             snpsFileWithCorrectPosData.append(dataToWrite)
+    print("last megaCats pos",positionInSnpGenome)
+
 #         else:
 #             print("not significant")
 indexesOfFrameShiftSnps = set()
@@ -212,9 +216,9 @@ def outputFunction(listOfGenes, metadataCategory, weights):
 
 
 
-import cProfile
-prof = cProfile.Profile()
-prof.enable()
+# import cProfile
+# prof = cProfile.Profile()
+# prof.enable()
 
 
 if len(snpsFileWithCorrectPosData) == 0:
@@ -326,5 +330,5 @@ print(lastMetaDataColName)
 outputFunction(genes, lastMetaDataColName, weights) # "Animal"
 
 
-prof.disable()
-prof.print_stats(sort=1)
+# prof.disable()
+# prof.print_stats(sort=1)

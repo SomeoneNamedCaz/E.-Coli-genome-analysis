@@ -1,6 +1,6 @@
 # E.-Coli-genome-analysis
 
-code to analyze E. coli genome differences across species by their animal host or by pathogenicity.
+code to analyze E. coli genome differences by their animal host or by pathogenicity.
 
 This code can be downloaded and each python file is run as its own program using the terminal or the ide. Most programs require commandline arguments to specify the input files. However, most of the files are divided into two projects: one looking at gene presence or absence in the pan genome, and another that looks at snps. There are also some file management programs and programs that check that things are working properly.
 
@@ -26,7 +26,7 @@ This program takes a scaffold, gets the top contig and outputs this as a file. I
 # gsAlignToMultipleAlign.py
 This takes .vcf files from gsAlign and outputs a fake "snp" genome that contains all of the snps that are present in ten or more genomes. It also outputs the original indexes of the snps (so it is possible to map the snp genome back to the original one) and the original indexes of frame shifts. This is to bypass the multiple alignment process of mauve that would take too long to run on >1,000 genomes that we would need them to run.
 
-The snp genome can be used as the input for megaCats, and runs in ~30 minutes.
+The snp genome can be used as the input for megaCats, and runs in ~10 minutes.
 
 This program works by putting all of the snps in a list with some information. This list is sorted, and looped through. For each snp the snp genome associated with that snp is appended the snp. Once all of the snps at a certain position have been entered, the snps are aligned. This alignment process works by adding the first nucleotide of the reference nucleotides corresponding to the snp (this is only more than one if there is a deletion at the position. Then dashes are added equal to the length of the longest insert or the length of the logest insert minus the length of the insert for that genome. Then refernce nucleotides are addded to make each genome the same length. If a snp at the next position will be within a snp at the current position, the alignment stops before the next snp's position so it can be added.
 
