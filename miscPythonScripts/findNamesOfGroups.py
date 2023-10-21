@@ -36,7 +36,12 @@ def determineGroupIndexes(genomeSeq, PathToFileToLookAt):
                     raise Exception("incorrect genome or indexes being analyzed")
                 groupIndices.append(argmax(groupGenomeIsInForEachSnp))
                 groupGenomeIsInForEachSnp = []
-            nucTheGenomeHas = genomeSeq[snpIndex - 1]
+            try:
+                nucTheGenomeHas = genomeSeq[snpIndex - 1]
+            except IndexError:
+                raise Exception("""it looks like the megaCATS file does not match the aligned SNP genome file
+                                since it is larger than a SNP genome. It also could be that you put in the wrong
+                                commandline arguments for these files""")
             # print(cols[0])
             oldNuc, newNuc, groupSnpIsIn, proportion = getSnpInfo(cols[5])
             # if proportion > 0.8:
@@ -52,7 +57,7 @@ def determineGroupIndexes(genomeSeq, PathToFileToLookAt):
                 except KeyError:
                     # print(numsOfNucs, nucTheGenomeHas)
                     # print("other",otherGroupIndex)
-                    print("line that shows",line)
+                    # print("line that shows",line)
                     groupGenomeIsInForEachSnp[otherGroupIndex] += 1e6
             # if nucTheGenomeHas == oldNuc: # if doesn't has snp
             #     pass#groupGenomeIsInForEachSnp[groupSnpIsIn] += (1 - proportion)

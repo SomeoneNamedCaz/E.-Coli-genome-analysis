@@ -7,10 +7,10 @@ import numpy as np
 alignedFilePath = sys.argv[1]
 metadataFilePath = sys.argv[2]
 
-charToIndex = {"A":0, "T":1, "C":2, "G":3, "-": 4, "N":5}
+charToIndex = {"A": 0, "T": 1, "C": 2, "G": 3, "-": 4, "N": 5}
 class NucCounter():
 
-    def __init__(self,countLength = 0, nameOfGroup = "unnamed",):
+    def __init__(self,countLength=0, nameOfGroup="unnamed",):
         self.nucCounts = []
         for _ in range(countLength):
             self.nucCounts.append([0] * len(charToIndex.values()))
@@ -55,9 +55,11 @@ def makeNucCounters(lengthOfSeqs, optionsForMetadataCategories):
 
 nucCounters = {}
 # maybe better with a matrix but 2 minutes isn't that bad
-# isPathogenic = np.array()
-# isCow = np.array()
-
+isPathogenic = []
+isCow = []
+arrayOfNucSeqs = []
+nucSeqNames = []
+breaker = 0
 with open(alignedFilePath) as alignedFile:
     # for metaDataTypes in range(len(possibleClassValues)):
     #     nucCounters =
@@ -67,6 +69,9 @@ with open(alignedFilePath) as alignedFile:
     nameOfSeq = "unknown"
     isFirstDataLine = True
     for line in alignedFile:
+        # breaker += 1
+        # if breaker == 10:
+        #     break
         line = line.strip()
         if line[0] == ">":
             nameOfSeq = line[1:]
@@ -84,17 +89,32 @@ with open(alignedFilePath) as alignedFile:
                     nucCounters[nameOfNucCounter].nucCounts[charIndex][charToIndex[char]] += 1
 
 
-for metaDataCategoryIndex in range(len(possibleClassValues)):
-    nucCountersOfOneMetadataCatagory = []
-    for option in possibleClassValues[metaDataCategoryIndex]:
-        # ["A","T","C","G"]
-        # for
-        nucCountersOfOneMetadataCatagory.append(nucCounters[option])
-    # TODO: only works with two options in each metadatacatagory
-    for nucIndex in range(len(nucCountersOfOneMetadataCatagory[0].nucCounts)):
-        dist1 = nucCountersOfOneMetadataCatagory[0].getDistributionAt([nucIndex])
-        dist2 = nucCountersOfOneMetadataCatagory[1].getDistributionAt([nucIndex])
-        dist2 = np.array(dist2)
-        dist1 = np.array(dist1)
-        degOfFreedom = max(sum([val != 0 for val in dist1]), sum([val != 0 for val in dist2]))
-        print(dist1, dist2, "chisquare P value??",stats.chi2.cdf(sum((dist1-dist2)**2/dist1)),df=degOfFreedom)
+
+with open("megcatsPythonOut.tsv", "w") as outFile:
+    for metaDataCategoryIndex in range(len(possibleClassValues)):
+        nucCountersOfOneMetadataCatagory = []
+        for option in possibleClassValues[metaDataCategoryIndex]:
+            # ["A","T","C","G"]
+            # for
+            nucCountersOfOneMetadataCatagory.append(nucCounters[option])
+        # TODO: only works with two options in each metadatacatagory
+        for nucIndex in range(len(nucCountersOfOneMetadataCatagory[0].nucCounts)):
+            dist1 = nucCountersOfOneMetadataCatagory[0].getDistributionAt(nucIndex)
+            dist2 = nucCountersOfOneMetadataCatagory[1].getDistributionAt(nucIndex)
+            dist2 = np.array(dist2)
+            dist1 = np.array(dist1)
+            dist2Total = sum(dist2) # total number of strains in each catagory
+            dist1Total = sum(dist1)
+            combinedDist = dist2 + dist1
+            degOfFreedom = sum([val != 0 for val in combinedDist]) - 1 # num classes - 1
+            chi2 = 0
+            for i in range(len(charToIndex.values())):
+                if dist1[i] != 0:
+                    chi2 += (dist1[i] - dist2[i] * dist1Total / dist2Total) ** 2 / dist1[i] ## I need to do percentage not subtraction of raw values
+                elif dist2[i] != 0:
+                    chi2 += (dist1[i] * dist2Total / dist1Total - dist2[i] ) ** 2 / dist2[i]
+
+            pVal = 1 - stats.chi2.cdf(chi2,df=degOfFreedom)
+            if pVal < 0.05 / len(nucCountersOfOneMetadataCatagory[0].nucCounts):
+                print(str(nucIndex),dist1, dist2, "chisquare" + str(chi2)+ "P value??", pVal, "degOfFreedom:", degOfFreedom)
+            outFile.write(str(nucIndex) + "\t" + str(dist1) + "\t" + str(dist2) + "\tchisquare\t"+ str(chi2) + "\tP value??\t" + str(pVal) + "\tdegOfFreedom:" + str(degOfFreedom) + "\n")

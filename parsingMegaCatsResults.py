@@ -1,5 +1,5 @@
 from functions import *
-from findNamesOfGroups import findNamesOfGroups
+from miscPythonScripts.findNamesOfGroups import findNamesOfGroups
 """
 gets significant SNPs and maps them to the reference genome
 NEEDS: path of all results
@@ -84,7 +84,7 @@ if abs(len(getFirstDataLine(snpGenomePath)) - len(snpLocations)) > 10_000:
 
 
 print("length of snp genomes", len(getFirstDataLine(snpGenomePath)))
-print(len(snpLocations))
+print("length of snp indexes",len(snpLocations))
 significanceLevel = 0.05/len(snpLocations)  # can change initial P-value cutoff if wanted
 snpsFileWithCorrectPosData = []
 with open(snpStatPath) as file, open(snpsFileWithCorrectPosPath, "w") as outFile:
