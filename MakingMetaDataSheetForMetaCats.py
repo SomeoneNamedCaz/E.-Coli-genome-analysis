@@ -1,4 +1,4 @@
-from functions import *
+from secondaryPythonScripts.functions import *
 
 metadataPath = "./metaDataForMetaCatsWithExtraMastitis.tsv"
 catagoryPaths = []#["./AllAssemblies/allMastitisAssemblies/*.fasta"]

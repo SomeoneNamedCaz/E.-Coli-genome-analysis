@@ -1,9 +1,12 @@
-import sys
-from functions import *
-from collections import deque
+from secondaryPythonScripts.functions import *
 from concurrent.futures import *
 from time import time
-# from dask.distributed import Client
+
+if len(sys.argv) < 5:
+    print("\nplease provide the path to the snp genome, the corresponding indexes, the reference sequence (.gb)")
+    print("and the output path output path")
+    exit(1)
+
 snpGenomePath = sys.argv[1]
 snpIndexesPath = sys.argv[2]
 print("snp genome path", snpGenomePath)
@@ -45,61 +48,45 @@ with open(snpGenomePath) as file:
 
 
 def addRefNucs(seq, indexes, referenceSeq):
-    refSeqDeque = deque(referenceSeq)
-    # lastIndex = 0
+    lastIndex = -1
     indexInSnpGenome = 0
-    numAddedNucs = 1
-    t1 = time()
-    numInserts = 0
+    alignedSeq = []
     for indexOfSNPInRefSeq in indexes:
-        if indexInSnpGenome % 5000 == 0:
-            print(indexInSnpGenome, time()-t1, "inserts", numInserts, "deque size", len(refSeqDeque))
-            t1 = time()
-            numInserts = 0
-        if indexOfSNPInRefSeq - int(indexOfSNPInRefSeq) != 0:
-            refSeqDeque.insert(int(indexOfSNPInRefSeq) + numAddedNucs, seq[indexInSnpGenome])
-            numAddedNucs += 1
-            numInserts += 1
-        else:
-            refSeqDeque[int(indexOfSNPInRefSeq) + numAddedNucs - 1] = seq[indexInSnpGenome]
-        # nucsToInsert = refSeq[int(lastIndex):int(indexOfSNPInRefSeq)]
-        # seq.insert(indexInSnpGenome, nucsToInsert)
-
-        # lastIndex = indexOfSNPInRefSeq + 1
+        nucsToInsert = referenceSeq[int(lastIndex) + 1:int(indexOfSNPInRefSeq)]
+        alignedSeq.append(nucsToInsert)
+        alignedSeq.append(seq[indexInSnpGenome])
+        lastIndex = indexOfSNPInRefSeq
         indexInSnpGenome += 1
 
-    # # add to the end of reference genome
-    # nucsToInsert = refSeq[int(lastIndex):]
-    # for key in alignedGenomes.keys():
-    #     alignedGenomes[key].append(nucsToInsert)
-    return "".join(refSeqDeque)
+    nucsToInsert = referenceSeq[int(lastIndex) + 1:]
+    alignedSeq.append(nucsToInsert)
+    return "".join(alignedSeq)
 
-pool = ThreadPoolExecutor() # int(len(alignedGenomes.keys())/2)
+
+numThreads = 1
+t1 = time()
+pool = ThreadPoolExecutor(numThreads)
 futures = []
-print("starting threads")
+# print("starting threads")
 for key in alignedGenomes.keys():
     futures.append((key,pool.submit(addRefNucs,alignedGenomes[key], snpIndexes, refSeq)))
-print("finished loading threads")
-# lastIndex = 0
-# indexInSnpGenome = 0
-# for indexOfSNPInRefSeq in snpIndexes:
-#     if indexOfSNPInRefSeq - int(indexOfSNPInRefSeq) != 0:
-#         continue # if it was a deletion we can just skip that
-#     nucsToInsert = refSeq[int(lastIndex):int(indexOfSNPInRefSeq)]
-#     for key in alignedGenomes.keys():
-#         alignedGenomes[key].insert(indexInSnpGenome, nucsToInsert)
-#
-#     lastIndex = indexOfSNPInRefSeq + 1
-#     indexInSnpGenome += 2 # one to move to the next seq and one for the insert (since alignedGenomes is a deque of chars)
+# print("finished loading threads")
 
+i = 0
 for keyAndfuture in futures:
     alignedGenomes[keyAndfuture[0]] = keyAndfuture[1].result()
-    print("finished")
+    # print("i: ", i)
+    i += 1
+print(numThreads,"threads took", time() - t1, "seconds")
 
-print(alignedGenomes)
+if not os.path.exists("/".join(outputPath.split("/")[-1:])):
+    os.mkdir("/".join(outputPath.split("/")[-1:]))
 
 with open(outputPath,"w") as outFile:
     for key in alignedGenomes.keys():
         outFile.write(">" + key + "\n")
-        outFile.write("".join(alignedGenomes[key]) + "\n")
-# print("".join(alignedGenomes["genome1"]))
+        outFile.write(alignedGenomes[key] + "\n")
+        if len(refSeq) + sum([index != int(index) for index in snpIndexes]) != len(alignedGenomes[key]):
+            print("PROBLEM ALIGNED GENOME IS THE WRONG SIZE")
+
+

@@ -47,11 +47,10 @@ except IndexError:
 try:
     numSnpsRequired = sys.argv[4]
 except IndexError:
-    numSnpsRequired = 10
+    numSnpsRequired = 1
 
 
 snps = [] # list of elements like this: [fileName, location, oldNuc, NewNuc, type]
-#1708844
 numFiles = 0
 for filePath in gsAlignFiles:
     numFiles += 1
@@ -327,10 +326,11 @@ with open(pathForSNPsIncludedIndexes, "w") as indexFile, open(pathForSNPsInclude
         print(overlappingOldNucs)
     alignSnps(maxLenOfSnpGenome, oldNucsAtCurrentPos, dataToWrite, filesWithoutSNP, lenBefore, lastPos,
               indexFile, fileNameToLengthOfInsert, lengthOfLongestInsert)
-print("printing dataToRight")
+# print("printing dataToRight")
 
-# print(dataToWrite)
+print(dataToWrite)
 print("done with snps loop, now writing")
+# if __name__ == "__main__":
 with open(outFilePath, "w") as outFile:
     for key in dataToWrite.keys():
         val = "".join(dataToWrite[key])

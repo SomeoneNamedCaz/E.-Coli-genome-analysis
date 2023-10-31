@@ -1,4 +1,4 @@
-from functions import *
+from secondaryPythonScripts.functions import *
 from miscPythonScripts.findNamesOfGroups import findNamesOfGroups
 """
 gets significant SNPs and maps them to the reference genome

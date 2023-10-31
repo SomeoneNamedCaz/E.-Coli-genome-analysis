@@ -1,4 +1,4 @@
-from functions import *
+from secondaryPythonScripts.functions import *
 pathBeginning = sys.argv[1]#"./AllAssemblies/AllCommensalBovineAssemblies"
 
 if (not os.path.exists(pathBeginning + "/ragtagOutputs/longestScaffoldFiles/")):

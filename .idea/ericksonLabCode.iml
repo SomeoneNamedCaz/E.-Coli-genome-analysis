@@ -887,7 +887,7 @@
       <excludeFolder url="file://$MODULE_DIR$/refGenomes" />
       <excludeFolder url="file://$MODULE_DIR$/substSNPcombinedGenomes" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="ericksonLabCode" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
