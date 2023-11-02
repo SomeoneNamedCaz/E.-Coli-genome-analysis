@@ -297,7 +297,7 @@ def translate(validSeq, codonsToAminoAcids):
 
 def makeCodonDictionary():
     codonsToAminoAcids = {}
-    with open("/codons.txt") as codonFile:
+    with open("codons.txt") as codonFile:
         for codonLine in codonFile:
             codonLine = codonLine.strip()
             cols = codonLine.split("\t")

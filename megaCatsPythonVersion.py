@@ -7,8 +7,13 @@ import copy
 
 alignedFilePath = sys.argv[1]
 metadataFilePath = sys.argv[2]
+outFilePath = sys.argv[3]
+matchMegacatsStyle = bool(sys.argv[4])
 
 charToIndex = {"A": 0, "T": 1, "C": 2, "G": 3, "-": 4, "N": 5}
+indexToChar = {}
+for k,v in charToIndex.items():
+    indexToChar[v] = k
 class NucCounter():
 
     def __init__(self,countLength=0, nameOfGroup="unnamed",):
@@ -62,8 +67,8 @@ isPathogenic = []
 isCow = []
 arrayOfNucSeqs = []
 nucSeqNames = []
-breaker = 0
-with open(alignedFilePath) as alignedFile:
+# breaker = 1 + int(sys.argv[3]) * 2
+with (open(alignedFilePath) as alignedFile):
     # for metaDataTypes in range(len(possibleClassValues)):
     #     nucCounters =
     # hard code for now
@@ -72,8 +77,8 @@ with open(alignedFilePath) as alignedFile:
     nameOfSeq = "unknown"
     isFirstDataLine = True
     for line in alignedFile:
-        # breaker += 1
-        # if breaker == 10 * 2:
+        # breaker -= 1
+        # if breaker == 0:
         #     break
         line = line.strip()
         if line[0] == ">":
@@ -93,8 +98,10 @@ with open(alignedFilePath) as alignedFile:
 
 
 
-with open("megcatsPythonOut.tsv", "w") as outFile:
-    for metaDataCategoryIndex in range(len(possibleClassValues)):
+with open(outFilePath, "w") as outFile:
+    headerInfo = "Position	Chi-Square Score	P-Value	Degrees of Freedom	Sparse Table (i.e. <5 of any residue)	Residue Diversity Between Groups	metaDataCategory"
+    outFile.write(headerInfo + "\n")
+    for metaDataCategoryIndex in range(len(possibleClassValues) - 1, -1, -1):
         nucCountersOfOneMetadataCatagory = []
         for option in possibleClassValues[metaDataCategoryIndex]:
             # ["A","T","C","G"]
@@ -106,8 +113,8 @@ with open("megcatsPythonOut.tsv", "w") as outFile:
             currentNucCounter2 = nucCountersOfOneMetadataCatagory[1]
             dist1 = currentNucCounter1.getDistributionAt(nucIndex)
             dist2 = currentNucCounter2.getDistributionAt(nucIndex)
-            dist2 = np.array(dist2)
-            dist1 = np.array(dist1)
+            # dist2 = np.array(dist2)
+            # dist1 = np.array(dist1)
             # totalGeneomesInEachMetadataGategory
             dist2Total = sum(dist2) # total number of strains in each catagory
             dist1Total = sum(dist1)
@@ -129,13 +136,28 @@ with open("megcatsPythonOut.tsv", "w") as outFile:
                     chi2 += (dist2[i] - dist2Expected[i]) ** 2 / dist2Expected[i]
 
 
-            pVal = 1 - stats.chi2.cdf(chi2,df=degOfFreedom)
+            pVal = stats.chi2.sf(chi2,df=degOfFreedom) # for higher accuracy
+
+
             # if pVal < 0.05 / len(nucCountersOfOneMetadataCatagory[0].nucCounts):
             # print(str(nucIndex),dist1, dist2, "chisquare" + str(chi2) + "P value??", pVal, "degOfFreedom:", degOfFreedom)
             """Position	Chi-Square Score	P-Value	Degrees of Freedom	Sparse Table (i.e. <5 of any residue)	Residue Diversity Between Groups	Results_Filename
              313 	 7.46929814283269 	 0.0238815503170304 	 2 	 Y 	 group1(19_A,_18_C,_1_T)|group2(8_A,_30_C,_1_T) 	severity-rMsaInput.txt-rResultChisqTest.txt"""
 
+            if matchMegacatsStyle:
+                megaCatsDist1 = ""
+                megaCatsDist2 = ""
+                for index in range(len(dist1)):
+                    if dist1[index] != 0:
+                        megaCatsDist1 += str(dist1[index]) + "_" + indexToChar[index] + ","
+                    if dist2[index] != 0:
+                        megaCatsDist2 += str(dist2[index]) + "_" + indexToChar[index] + ","
+                megaCatsDist1 = megaCatsDist1[:-1]
+                megaCatsDist2 = megaCatsDist2[:-1]
+                residueDiversity = currentNucCounter1.nameOfGroup + "(" + megaCatsDist1 + ")|" + currentNucCounter2.nameOfGroup +"(" + megaCatsDist2 + ")"
+            else:
+                residueDiversity = currentNucCounter1.nameOfGroup + str(dist1) + "|" + currentNucCounter2.nameOfGroup + str(dist2)
             sparseTable = "N"
-            outFile.write("\t".join([str(nucIndex),str(chi2),str(pVal),str(degOfFreedom), sparseTable,
-                currentNucCounter1.nameOfGroup + str(dist1) + "|" + currentNucCounter2.nameOfGroup + str(dist2), classNames[metaDataCategoryIndex]]))
+            outFile.write("\t".join([str(nucIndex+int(matchMegacatsStyle)),str(chi2),str(pVal),str(degOfFreedom), sparseTable,
+                residueDiversity, classNames[metaDataCategoryIndex]]))
             outFile.write("\n")
