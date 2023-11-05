@@ -10,7 +10,7 @@ def loadIndexes(indexFilePath):
             line = round((line - int(line)) * 1000 + int(line))
             snpLocations.append(line)
     return snpLocations
-def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, annotatedRefGenomePath, removeSparce=True, outputDirectory="."):
+def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaDataFilePath, annotatedRefGenomePath, removeSparce=True, outputDirectory="."):
     # add FrameShiftedToIndexPath
     snpIndexesFrameShiftedPath = ".".join(snpIndexesPath.split(".")[:-1]) + "FrameShifted." + snpIndexesPath.split(".")[-1]
     # hard-coded parameters for output

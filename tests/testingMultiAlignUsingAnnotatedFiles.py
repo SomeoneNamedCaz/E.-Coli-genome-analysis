@@ -1,8 +1,8 @@
-from functions import *
+from secondaryPythonScripts.functions import *
 """take all qor genes and find the distribution of nucs in each metadata catagory"""
 
 
-pathToGBFiles = "/Users/cazcullimore/Documents/ericksonLabCode/filesToTestMultiAlign/gbks/*/*.gbk"
+pathToGBFiles = "/Users/cazcullimore/Documents/ericksonLabCode/filesToTestMultiAlign/normalAlignedGenomes/gbks/*.gbk"
 metadataFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/metaDataForMetaCatsWithExtraMastitis.tsv"
 snpFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/RedoingEverything/snpsSortedBySignificanceWithGenesContainingThemOldIndexPathogenicity.tsv"
 # snpFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/RedoingEverything/snpsSortedBySignificanceWithGenesContainingThemOldIndexAnimal.tsv"
@@ -40,14 +40,16 @@ with open(snpFilePath) as snpFile:
         cols = line.split("\t")
         geneName = cols[3]
         snpIndex = int(cols[2])
+        i = -1
         for path in glob(pathToGBFiles):
+            i += 1
             try:
                 fileName = path.split("/")[-1]
                 try:
                     geneSeq = pathToGenes[path][geneName][1]
                     nuc = geneSeq[snpIndex]
-
-                    print(geneSeq[snpIndex-5:snpIndex], geneSeq[snpIndex], geneSeq[snpIndex+1:snpIndex+5])
+                    if i % 50:
+                        print(geneSeq[snpIndex-5:snpIndex], geneSeq[snpIndex], geneSeq[snpIndex+1:snpIndex+5])
                     secondMetadataCatagoryForFile = fileNameToMetadataCategory["scaffold_" + fileName.split(".")[0]][1]
                     firstMetadataCatagoryForFile = fileNameToMetadataCategory["scaffold_" + fileName.split(".")[0]][0]
                     try:
