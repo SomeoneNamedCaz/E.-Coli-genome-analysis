@@ -1,11 +1,17 @@
-from secondaryPythonScripts.functions import *
+# from secondaryPythonScripts.functions import *
+import sys
+
+sys.path.insert(1, '/Users/cazcullimore/Documents/ericksonLabCode/secondaryPythonScripts')
+from functions import *
 """take all qor genes and find the distribution of nucs in each metadata catagory"""
+if len(sys.argv) < 3:
+    print("please provide the paths to the gbks and the path to the file of snps sorted by significance from parsingMegacatsResults.py")
+    exit(1)
 
-
-pathToGBFiles = "/Users/cazcullimore/Documents/ericksonLabCode/filesToTestMultiAlign/normalAlignedGenomes/gbks/*.gbk"
+pathToGBFiles = sys.argv[1]#"/Users/cazcullimore/Documents/ericksonLabCode/filesToTestMultiAlign/normalAlignedGenomes/gbks/*.gbk"
 metadataFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/metaDataForMetaCatsWithExtraMastitis.tsv"
-snpFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/RedoingEverything/snpsSortedBySignificanceWithGenesContainingThemOldIndexPathogenicity.tsv"
-# snpFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/RedoingEverything/snpsSortedBySignificanceWithGenesContainingThemOldIndexAnimal.tsv"
+# snpFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/RedoingEverything/snpsSortedBySignificanceWithGenesContainingThemOldIndexPathogenicity.tsv"
+snpFilePath = sys.argv[2]#"/Users/cazcullimore/Documents/ericksonLabCode/RedoingEverything/snpsSortedBySignificanceWithGenesContainingThemOldIndexAnimal.tsv"
 print(pathToGBFiles)
 print(metadataFilePath)
 print(snpFilePath)

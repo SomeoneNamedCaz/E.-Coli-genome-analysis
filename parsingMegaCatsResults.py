@@ -326,5 +326,5 @@ if __name__ == "__main__":
 
     if outputLocation[-1] == "/":
         outputLocation = outputLocation[:-1]
-    parseMegaCatsFile(snpStatPath, snpGenomePath, snpIndexesPath, suffix, annotatedRefGenomePath, metaDataFilePath,
+    parseMegaCatsFile(snpStatPath, snpGenomePath, snpIndexesPath, suffix, metaDataFilePath, annotatedRefGenomePath,
                       removeSparce=removeSparce, outputDirectory=outputLocation)

@@ -5,7 +5,10 @@ import copy
 import os
 import sys
 import cProfile
+from secondaryPythonScripts.functions import *
 
+refSeqPath = "/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/refGenomes/k-12.fasta"
+refSeq = readInFastaAsList(refSeqPath)[1]
 debug = False
 if len(sys.argv) < 3: # when you do args need ""
     print("requires a path to all of the vcf files like *.vcf and a output file name with path !use quotes!\n"
@@ -243,13 +246,22 @@ with open(pathForSNPsIncludedIndexes, "w") as indexFile, open(pathForSNPsInclude
         if snpType in thingsToSkip:
             print(snp[4])
             continue
-        snpPos = snp[1]
+        snpPos = snp[1] - 1
         refNucs = snp[2]
         altNucs = snp[3]
+        if refSeq[snpPos:len(refNucs) + snpPos] != refNucs:
+            if len(refNucs) > 1 or len(altNucs) > 1:
+                print("nucs on wrong strand longer than 1 nuc. snp data: " + str(snp))
+                continue # we need to move the position back, so we probably should do that earlier in the program
+                         # before we sort the snps
+                # raise Exception("nucs on wrong strand longer than 1 nuc. snp data: " + str(snp))
+            refNucs = reverseComplement(refNucs)
+            altNucs = reverseComplement(altNucs)
+
         if lastPos < snpPos: # if ran out of SNPs at the position
             # add the oldNuc for that SNP
             try:
-                if snpPos < snps[snpIndex + numSnpsRequired - 1][1]: # if less than 10 snp at current position
+                if snpPos < snps[snpIndex + numSnpsRequired - 1][1] - 1: # if less than 10 snp at current position
                     needToSkip = True
                     continue
             except:

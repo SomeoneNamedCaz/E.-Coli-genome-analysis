@@ -1,7 +1,17 @@
 import unittest
 import sys
+
+from Bio import SeqIO
+from Bio.Blast import NCBIWWW
+from Bio.Blast import NCBIXML
+# from Bio
+from Bio.Entrez import *
+import re
 sys.path.insert(1, '/Users/cazcullimore/Documents/ericksonLabCode/secondaryPythonScripts')
-from tests.functions import *
+try:
+    from secondaryPythonScripts.functions import *
+except ImportError:
+    pass
 
 class MyTestCase(unittest.TestCase):
 
@@ -47,6 +57,34 @@ class MyTestCase(unittest.TestCase):
         fastaPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/unitTests/k-12.fasta"
         index = 0
         self.assertEqual(getContigs(gbPath), readInFastaAsList(fastaPath)[1:][::2])
+
+    def testGetGenes(self): # test
+        # this looks at if the genes are similar to what they should look like
+        testGb = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/tenAssembliesFromEachCategory/gbks/1465_SS_220.fasta.gbk"
+        genes = getGenesOnContigs(testGb, getContigs(testGb))
+        for geneName, geneSeq in genes.items():
+            blastResult = NCBIWWW.qblast("blastn", "nt", geneSeq, alignments=10)
+            parsedResult = NCBIXML.parse(blastResult)
+            item = next(parsedResult)
+            seq_record = SeqIO.read(handle, "gb")
+            nucleotide_accession = seq_record.annotations["db_source"]
+
+            nucl_id = nucleotide_accession.split()[-1]
+
+            for alignment in item.alignments:
+                for hsp in alignment.hsps:
+                    print(hsp)
+            # blastResult
+            handle = efetch(db="nucleotide", id=item.alignments[0].hit_id, rettype="gb",retmode="text", query_key="aroC", email="cazvash9.student.byu.edu")
+            # for xmlLine in blastResult:
+            #     if "<Hsp_hseq>" in xmlLine:
+            #         re.findall(r"<Hsp_hseq>(.+)</Hsp_hseq>")
+            # print("".join(blastResult))
+        print("done")
+
+    # def testTwoFilesHaveSameInfo(self):
+    #     filesContainTheSameInformation()
+
 
 if __name__ == '__main__':
     unittest.main()

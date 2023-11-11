@@ -1,10 +1,10 @@
 import unittest
-from tests.functions import *
+from secondaryPythonScripts.functions import *
 
 class MyTestCase(unittest.TestCase):
 
 
-    def testReadInFasta(self):
+    def testForWeirdThingsInVCFFiles(self):
         fastaPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/unitTests/k-12.fasta"
         gbPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/unitTests/k-12.gbff"
         vcfPaths = "/Users/cazcullimore/Documents/ericksonLabCode/k-12RefGenomeAnalysisFiles/AllAssemblies/APEC_assemblies/ragtagOutputs/longestScaffoldFiles/carefulGsAlign/*.vcf"

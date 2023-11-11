@@ -82,7 +82,9 @@ with (open(alignedFilePath) as alignedFile):
         #     break
         line = line.strip()
         if line[0] == ">":
-            nameOfSeq = line[1:]
+            print("before", line[1:])
+            nameOfSeq = '_'.join(line[1:].split("_")[:-2]) + "." + line[1:].split("_")[-2]
+            print("nameOfSeq", nameOfSeq)
         else:
             if isFirstDataLine:
                 isFirstDataLine = False
@@ -113,14 +115,12 @@ with open(outFilePath, "w") as outFile:
             currentNucCounter2 = nucCountersOfOneMetadataCatagory[1]
             dist1 = currentNucCounter1.getDistributionAt(nucIndex)
             dist2 = currentNucCounter2.getDistributionAt(nucIndex)
-            # dist2 = np.array(dist2)
-            # dist1 = np.array(dist1)
             # totalGeneomesInEachMetadataGategory
             dist2Total = sum(dist2) # total number of strains in each catagory
             dist1Total = sum(dist1)
             totalNumberOfGenomes = dist1Total + dist2Total
             combinedDist = dist2 + dist1
-            degOfFreedom = sum([val != 0 for val in combinedDist]) - 1 # num classes - 1
+            degOfFreedom = max([val != 0 for val in combinedDist]) - 1 # num classes - 1
             if degOfFreedom == 0: # if not a snp continue
                 continue
             chi2 = 0

@@ -10,6 +10,8 @@
       <excludeFolder url="file://$MODULE_DIR$/miscDataFilesCreatedFromPrograms" />
       <excludeFolder url="file://$MODULE_DIR$/refGenomes" />
       <excludeFolder url="file://$MODULE_DIR$/snpAlign" />
+      <excludeFolder url="file://$MODULE_DIR$/AllAssembliesInOneFolder" />
+      <excludeFolder url="file://$MODULE_DIR$/tests/testFiles/tenAssembliesFromEachCategory" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

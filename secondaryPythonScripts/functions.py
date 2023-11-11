@@ -23,6 +23,20 @@ def reverseComplement(seq):
             reverseComplementSeq = 'C' + reverseComplementSeq
     return reverseComplementSeq
 
+def complement(seq):
+    complementSeq = []  # string of complementary nucleotides
+    seq = seq.upper()  # to cover for lowercase
+    for char in seq:
+        if char == 'A':
+            complementSeq.append('T')  # add nucleotide to front (this flips the sequence)
+        elif char == 'T':
+            complementSeq.append("A")
+        elif char == 'C':
+            complementSeq.append("G")
+        elif char == 'G':
+            complementSeq.append('C')
+    return ''.join(complementSeq)
+
 def getContigs(fileName):
     contigs = []
     with open(fileName) as file:
@@ -297,7 +311,7 @@ def translate(validSeq, codonsToAminoAcids):
 
 def makeCodonDictionary():
     codonsToAminoAcids = {}
-    with open("../codons.txt") as codonFile:
+    with open("codons.txt") as codonFile:
         for codonLine in codonFile:
             codonLine = codonLine.strip()
             cols = codonLine.split("\t")
@@ -741,13 +755,14 @@ def readInFastaAsDict(fileName):
 def readInFastaAsList(fileName):
     fileData = []
     with open(fileName) as file:
-        entryData = ""
+        entryData = []
         for line in file:
             if line[0] == ">":
                 fileData.append(line.strip())
-                if entryData != "":
-                    fileData.append(entryData)
-                entryData = ""
+                if entryData != []:
+                    fileData.append(''.join(entryData))
+                entryData = []
             else:
-               entryData += line.strip()
+               entryData.append(line.strip())
+    fileData.append(''.join(entryData))
     return fileData
