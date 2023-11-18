@@ -12,6 +12,7 @@
       <excludeFolder url="file://$MODULE_DIR$/snpAlign" />
       <excludeFolder url="file://$MODULE_DIR$/AllAssembliesInOneFolder" />
       <excludeFolder url="file://$MODULE_DIR$/tests/testFiles/tenAssembliesFromEachCategory" />
+      <excludeFolder url="file://$MODULE_DIR$/tests/testFiles" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

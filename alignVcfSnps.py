@@ -7,7 +7,7 @@ import sys
 import cProfile
 from secondaryPythonScripts.functions import *
 
-def alignVcfSnps(gsAlignPathString, outFilePath, thingsToSkip=[], numSnpsRequired=10, debug = False, refSeqPath="/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/refGenomes/k-12.fasta"):
+def alignVcfSnps(gsAlignPathString, outFilePath, thingsToSkip=[], numSnpsRequired=10, debug = False, refSeqPath="/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.fasta", ignoreRefSeq=False):
 
     if gsAlignPathString.split(":")[0] == "MatchFile": # MatchFile:<file to match>:<pathPrefix>
         # this block is for using the same input files that were used in a previous run of this program
@@ -30,25 +30,32 @@ def alignVcfSnps(gsAlignPathString, outFilePath, thingsToSkip=[], numSnpsRequire
 
     outFileDirectory = "/".join(outFilePath.split("/")[:-1]) + "/"
 
-    snps = [] # list of elements like this: [fileName, location, oldNuc, NewNuc, type]
-    numFiles = 0
-    for filePath in gsAlignFiles:
-        numFiles += 1
-        # if numFiles > 100:
-        #     break
-        with open(filePath) as file:
-            for line in file:
-                line = line.strip()
-                cols = line.split("\t")
-                if line == "" or line[0] == "#": # or cols[7][5:] == "SUBSTITUTE":
-                    continue
-                #               0                       1           2           3           4
-                snps.append([filePath.split("/")[-1], int(cols[1]), cols[3], cols[4], cols[7][5:]])
 
+
+
+    ## parse files
+    def parseFiles(listOfFiles, refGenomeSeq):
+        numFiles = 0
+        snps = []  # list of elements like this: [fileName, location, oldNuc, NewNuc, type]
+        for filePath in listOfFiles:
+            numFiles += 1
+            # if numFiles > 100:
+            #     break
+            with open(filePath) as file:
+                for line in file:
+                    line = line.strip()
+                    cols = line.split("\t")
+                    if line == "" or line[0] == "#": # or cols[7][5:] == "SUBSTITUTE":
+                        continue
+                    location = int(cols[1]) - 1
+                    #               0                       1             2           3           4
+                    snps.append([filePath.split("/")[-1], location, cols[3], cols[4], cols[7][5:]])
+        return snps
+    snps = parseFiles(gsAlignFiles, refSeq)
     snps.sort(key=lambda a: a[1])
-    if debug:
-        for snp in snps[:100_000]:
-            print(snp) #to test
+    # if debug:
+    for snp in snps[:1_00]:
+        print(snp) #to test
 
     allFiles = gsAlignFiles
 
@@ -89,9 +96,8 @@ def alignVcfSnps(gsAlignPathString, outFilePath, thingsToSkip=[], numSnpsRequire
 
 
     def alignSnps(lengthOfLongestSnpGenome, longestRefNucSeq, filesToSnpGenome, filesWithoutSNP, lenBefore, lastPosition, indexFile, fileNameToLengthOfInsert, lengthOfLongestInsert,numberOfNucelotidesToStopAlignmentAt=-1):
-        # print(lastPosition)
-        testPositions = [1708844, 1708847]
         if debug:
+            testPositions = [1708844, 1708847]
             if lastPosition in testPositions:
                 print("error")
                 for k, v in dataToWrite.items():
@@ -102,6 +108,7 @@ def alignVcfSnps(gsAlignPathString, outFilePath, thingsToSkip=[], numSnpsRequire
                 filesToSnpGenome[fileWithMissingSNP].append(longestRefNucSeq[0])
         maxLenAfterDashes = lengthOfLongestSnpGenome
 
+        
         if debug:
             if lastPosition in testPositions:
                 print("error")
@@ -113,7 +120,6 @@ def alignVcfSnps(gsAlignPathString, outFilePath, thingsToSkip=[], numSnpsRequire
         # add insert dashes
         # After this, all genomes will be the same length if there is no delete.
         # If there is a delete, it will be the longest genome that's why we can add reference nucleotides to balance the lengths
-        maxDashesAdded = 0
         for file in allFiles:
             # dictionary has the keys of all of the inserts
             if file in fileNameToLengthOfInsert.keys():
@@ -195,9 +201,12 @@ def alignVcfSnps(gsAlignPathString, outFilePath, thingsToSkip=[], numSnpsRequire
     fileNameToNextValidPosition = {} # only for conflicts within GSalign files
     for file in allFiles:
         fileNameToNextValidPosition[file] = 0
+    if debug:
+        print(len(filesWithoutSNP))
+        print("start loop")
 
-    print(len(filesWithoutSNP))
-    print("start loop")
+
+    ######################## MAIN LOOP ###########################
     with open(pathForSNPsIncludedIndexes, "w") as indexFile, open(pathForSNPsIncludedIndexes[:-4] + "FrameShifted.txt", "w") as frameShiftIndexFile:
         for snp in snps: # list of elements like this: [fileName, location, oldNuc, NewNuc, type]
             if debug:
@@ -205,24 +214,30 @@ def alignVcfSnps(gsAlignPathString, outFilePath, thingsToSkip=[], numSnpsRequire
             snpIndex += 1
             snpType = snp[4]
             if snpType in thingsToSkip:
-                print(snp[4])
+                print("skipped:", snp[4])
                 continue
-            snpPos = snp[1] - 1
+            snpPos = snp[1]
             refNucs = snp[2]
             altNucs = snp[3]
-            if refSeq[snpPos:len(refNucs) + snpPos] != refNucs:
-                if len(refNucs) > 1 or len(altNucs) > 1:
-                    print("nucs on wrong strand longer than 1 nuc. snp data: " + str(snp))
-                    continue # we need to move the position back, so we probably should do that earlier in the program
-                             # before we sort the snps
-                    # raise Exception("nucs on wrong strand longer than 1 nuc. snp data: " + str(snp))
-                refNucs = reverseComplement(refNucs)
-                altNucs = reverseComplement(altNucs)
+            # check for using the other strand
+            if not ignoreRefSeq:
+                if refSeq[snpPos:len(refNucs) + snpPos] != refNucs:
+                    if len(refNucs) > 1 or len(altNucs) > 1:
+                        if debug:
+                            print("nucs on wrong strand longer than 1 nuc. snp data: " + str(snp))
+                        continue # we need to move the position back, so we probably should do that earlier in the program
+                                 # before we sort the snps
+                        # raise Exception("nucs on wrong strand longer than 1 nuc. snp data: " + str(snp))
+                    refNucs = reverseComplement(refNucs)
+                    altNucs = reverseComplement(altNucs)
+                    if refSeq[snpPos:len(refNucs) + snpPos] != refNucs:
+                        print("broken")
+                        continue
 
             if lastPos < snpPos: # if ran out of SNPs at the position
                 # add the oldNuc for that SNP
                 try:
-                    if snpPos < snps[snpIndex + numSnpsRequired - 1][1] - 1: # if less than 10 snp at current position
+                    if snpPos < snps[snpIndex + numSnpsRequired - 1][1]: # if less than 10 snp at current position
                         needToSkip = True
                         continue
                 except:
@@ -300,15 +315,16 @@ def alignVcfSnps(gsAlignPathString, outFilePath, thingsToSkip=[], numSnpsRequire
         alignSnps(maxLenOfSnpGenome, oldNucsAtCurrentPos, dataToWrite, filesWithoutSNP, lenBefore, lastPos,
                   indexFile, fileNameToLengthOfInsert, lengthOfLongestInsert)
     # print("printing dataToRight")
-
-    print(dataToWrite)
-    print("done with snps loop, now writing")
+    if debug:
+        print(dataToWrite)
+        print("done with snps loop, now writing")
     # if __name__ == "__main__":
     with open(outFileDirectory, "w") as outFile:
         for key in dataToWrite.keys():
             val = "".join(dataToWrite[key])
             outFile.write(">" + key.split("/")[-1] + "\n")
             outFile.write(val + "\n")
+    return dataToWrite
 if __name__ == "__main__":
     if len(sys.argv) < 3:  # when you do args need ""
         print("requires a path to all of the vcf files like *.vcf and a output file name with path !use quotes!\n"

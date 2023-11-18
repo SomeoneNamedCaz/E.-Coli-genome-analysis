@@ -1,0 +1,8 @@
+##fileformat=VCFv4.1
+##reference=/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.fasta
+##source=GSAlign 1.0.22
+##INFO=<ID=TYPE,Number=1,Type=String,Description="The type of allele, either SUBSTITUTE, INSERT, or DELETE.">
+##contig=<ID=U00096.3,length=4641652>
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+U00096.3	309	.	A	ACC	100	*	TYPE=INSERT
+U00096.3	310	.	TCGT	A	100	*	TYPE=DELETE

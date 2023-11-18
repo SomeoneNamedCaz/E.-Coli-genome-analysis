@@ -758,9 +758,9 @@ def readInFastaAsList(fileName):
         entryData = []
         for line in file:
             if line[0] == ">":
-                fileData.append(line.strip())
                 if entryData != []:
                     fileData.append(''.join(entryData))
+                fileData.append(line.strip())
                 entryData = []
             else:
                entryData.append(line.strip())

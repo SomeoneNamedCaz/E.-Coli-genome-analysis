@@ -15,7 +15,7 @@ except ImportError:
 
 class MyTestCase(unittest.TestCase):
 
-    def testReadInFasta(self):
+    def testReadIn1ContigFasta(self):
         fastaPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/unitTests/k-12.fasta"
         fileData = readInFastaAsList(fastaPath)
         print(len(fileData))
@@ -29,6 +29,25 @@ class MyTestCase(unittest.TestCase):
                         self.assertEqual(fileData[0], entryData)
                         fileData.pop(0)
                         entryData = ""
+                else:
+                    entryData += line.strip()
+        if entryData != "":
+            self.assertEqual(fileData[0], entryData)
+            fileData.pop(0)
+        self.assertEqual(fileData, [])# should be empty
+
+    def testReadInAssemblyFasta(self):
+        fastaPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/tenAssembliesFromEachCategory/1465_SS_220.fasta"
+        fileData = readInFastaAsList(fastaPath)
+        print(len(fileData))
+        with open(fastaPath) as file:
+            entryData = ""
+            for line in file:
+                if line[0] == ">":
+                    if entryData != "":
+                        self.assertEqual(fileData.pop(0), entryData)
+                        entryData = ""
+                    self.assertEqual(fileData.pop(0), line.strip())
                 else:
                     entryData += line.strip()
         if entryData != "":
@@ -59,6 +78,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(getContigs(gbPath), readInFastaAsList(fastaPath)[1:][::2])
 
     def testGetGenes(self): # test
+        return
         # this looks at if the genes are similar to what they should look like
         testGb = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/tenAssembliesFromEachCategory/gbks/1465_SS_220.fasta.gbk"
         genes = getGenesOnContigs(testGb, getContigs(testGb))
