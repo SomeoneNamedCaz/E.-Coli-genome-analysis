@@ -78,15 +78,15 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(getContigs(gbPath), readInFastaAsList(fastaPath)[1:][::2])
 
     def testGetGenes(self): # test
-        return
         # this looks at if the genes are similar to what they should look like
-        testGb = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/tenAssembliesFromEachCategory/gbks/1465_SS_220.fasta.gbk"
+        testGb = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/gbks/1465_SS_220.fasta.gbk"
+        
         genes = getGenesOnContigs(testGb, getContigs(testGb))
         for geneName, geneSeq in genes.items():
             blastResult = NCBIWWW.qblast("blastn", "nt", geneSeq, alignments=10)
             parsedResult = NCBIXML.parse(blastResult)
             item = next(parsedResult)
-            seq_record = SeqIO.read(handle, "gb")
+            seq_record = SeqIO.read(item, "gb")
             nucleotide_accession = seq_record.annotations["db_source"]
 
             nucl_id = nucleotide_accession.split()[-1]

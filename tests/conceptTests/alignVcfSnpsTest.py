@@ -49,7 +49,7 @@ class MyTestCase(unittest.TestCase):
 
     def testLotsOfFiles(self):
         filePath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fake vcfs/test*.vcf"
-        outPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/snpAlign/lostsOfFIles.afa"
+        outPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/snpAlign/lotsOfFIles.afa"
         indexFilePath = outPath[:-4] + "Indexes.txt"
         alignedSnps = alignVcfSnps(filePath, outFilePath=outPath, numSnpsRequired=1, ignoreRefSeq=True)
         # test alignment                                                        add 341 later
@@ -64,20 +64,24 @@ class MyTestCase(unittest.TestCase):
         
         # test indexes
         indexes = readInIndexes(indexFilePath)
-        expectedIndexes = (addIndexesForInserts(308,10)
-                            + addIndexesForInserts(309, 5)
-                            + addIndexesForDeletes(309, 4)
-                            + addIndexesForInserts(317, 23)
-                            + addIndexesForInserts(318, 8)
-                            + addIndexesForDeletes(319, 15)
-                            + addIndexesForDeletes(340,6)
-                            + addIndexesForInserts(439, 18)#
-                            + addIndexesForDeletes(440,2)
-                            + addIndexesForInserts(442, 6)
-                            + addIndexesForDeletes(443, 3)
-                            + addIndexesForInserts(599,17)
-                            + addIndexesForDeletes(699,25)
-                            + addIndexesForDeletes(3449,1))
+        expectedIndexes = (InsertIndexes(308, 10)
+                           + InsertIndexes(309, 5)
+                           + DeleteIndexes(310, 3)
+                           + InsertIndexes(317, 23)
+                           + InsertIndexes(318, 8)
+                           + DeleteIndexes(319, 15)
+                           + DeleteIndexes(340, 6)
+                           + InsertIndexes(439, 18)  #
+                           + DeleteIndexes(440, 2)
+                           + InsertIndexes(442, 6)
+                           + DeleteIndexes(443, 3)
+                           + InsertIndexes(599, 17)
+                           + DeleteIndexes(699, 25)
+                           + DeleteIndexes(3449, 1))
+        print("expected")
+        print(expectedIndexes)
+        print("actual")
+        print(indexes)
         self.assertListEqual(indexes, expectedIndexes)
         
     def testReferenceGenomeMatching(self):
@@ -130,7 +134,7 @@ def readInIndexes(fileName):
                 continue
             indexes.append(float(line))
     return indexes
-def addIndexesForInserts(startIndex, numIndexes):
+def InsertIndexes(startIndex, numIndexes):
     indexes = []
     for i in range(0, numIndexes):
         indexes.append(startIndex + i / 1000)
@@ -140,7 +144,7 @@ def addConsequtiveInserts(startIndex, numIndexes): ## for deletes
     for i in range(startIndex, startIndex + numIndexes):
         indexes.append(float(i))
     return indexes
-def addIndexesForDeletes(startIndex, numIndexes):
+def DeleteIndexes(startIndex, numIndexes):
     return addConsequtiveInserts(startIndex, numIndexes)
 if __name__ == '__main__':
     unittest.main()
