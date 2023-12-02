@@ -47,9 +47,28 @@ def alignVcfSnps(gsAlignPathString, outFilePath, thingsToSkip=[], numSnpsRequire
                     cols = line.split("\t")
                     if line == "" or line[0] == "#": # or cols[7][5:] == "SUBSTITUTE":
                         continue
+                    
                     location = int(cols[1]) - 1
-                    #               0                       1             2           3           4
-                    snps.append([filePath.split("/")[-1], location, cols[3], cols[4], cols[7][5:]])
+                    refNucs = cols[3]
+                    altNucs = cols[4]
+                    snpType = cols[7][5:]
+                    if refGenomeSeq[location:len(refNucs) + location] != refNucs and not ignoreRefSeq:
+                        # if snpType == "INSERT":
+                        #     location -= len(altNucs) - 1
+                        if snpType == "DELETE":
+                            location -= len(refNucs) - 1
+                        refNucs = reverseComplement(refNucs)
+                        altNucs = reverseComplement(altNucs)
+                        if refSeq[location:len(refNucs) + location] != refNucs:
+                            print("broken")
+                            print(refGenomeSeq[location-1:len(refNucs) + location+1])
+                            print(refGenomeSeq[location-1] + " " + refGenomeSeq[location:len(refNucs) + location] + " " + refGenomeSeq[location+1])
+                            print("  "+refNucs)
+                            print(line)
+                            continue
+                    
+                    #               0                       1            2      3         4
+                    snps.append([filePath.split("/")[-1], location, refNucs, altNucs, snpType])
         return snps
     snps = parseFiles(gsAlignFiles, refSeq)
     snps.sort(key=lambda a: a[1])

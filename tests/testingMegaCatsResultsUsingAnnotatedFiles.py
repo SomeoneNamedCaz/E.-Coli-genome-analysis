@@ -2,8 +2,7 @@
 import sys
 
 sys.path.insert(1, '/Users/cazcullimore/Documents/ericksonLabCode/secondaryPythonScripts')
-from functions import *
-"""take all qor genes and find the distribution of nucs in each metadata catagory"""
+from secondaryPythonScripts.functions import *
 if len(sys.argv) < 3:
     print("please provide the paths to the gbks and the path to the file of snps sorted by significance from parsingMegacatsResults.py")
     exit(1)

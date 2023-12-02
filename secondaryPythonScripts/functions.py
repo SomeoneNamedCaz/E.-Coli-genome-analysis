@@ -743,13 +743,17 @@ def combineFastaDataLines(fileName):
 def readInFastaAsDict(fileName):
     fileData = {}
     with open(fileName) as file:
-        entryData = ""
+        entryData = []
+        lastGenomeName = ""
         for line in file:
             if line[0] == ">":
-                fileData[line[1:].strip()] = entryData
-                entryData = ""
+                if entryData != []:
+                    fileData[lastGenomeName] = ''.join(entryData)
+                lastGenomeName = line[1:].strip()
+                entryData = []
             else:
-                entryData += line.strip()
+               entryData.append(line.strip())
+        fileData[lastGenomeName] = ''.join(entryData)
     return fileData
 
 def readInFastaAsList(fileName):
@@ -766,3 +770,16 @@ def readInFastaAsList(fileName):
                entryData.append(line.strip())
     fileData.append(''.join(entryData))
     return fileData
+
+def readMetaDataAsDict(metadataFilePath):
+    seqNameToMetaDataType = {}
+    with open(metadataFilePath) as metadataFile: # process metadata
+        isFirstLine = True
+        for line in metadataFile:
+            line = line.strip()
+            cols = line.split("\t")
+            if isFirstLine:
+                isFirstLine = False
+            else:
+                seqNameToMetaDataType[cols[0]] = cols[1:]
+    return seqNameToMetaDataType
