@@ -3,7 +3,7 @@ from alignVcfSnps import *
 from secondaryPythonScripts.makePlinkFiles import *
 from megaCatsPythonVersion import *
 from parsingMegaCatsResults import *
-from convertSNPAlignmentToNormalAlignment import *
+from reconstructNormalAlignment import *
 
 pathToAssemblies = "./AllAssembliesInOneFolder/*.fasta"
 # pathToAssemblies = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/tenAssembliesFromEachCategory/*.fasta"
@@ -68,4 +68,4 @@ if runMegaCats:
 	                  removeSparce=True, outputDirectory="./RedoingEverything/")
 	
 if runNormalAlignment:
-	makeNormalAlignment(snpGenomePath=snpAlignPath, snpIndexesPath=snpIndexPath, refGenomePath=pathToRefGenomeGb, outputPath=normalAlignPath)
+	reconstructOriginalAlignedGenome(snpGenomePath=snpAlignPath, snpIndexesPath=snpIndexPath, refGenomePath=pathToRefGenomeGb, outputPath=normalAlignPath)

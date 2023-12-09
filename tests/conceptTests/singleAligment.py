@@ -3,7 +3,7 @@ sys.path.insert(1, '/Users/cazcullimore/Documents/ericksonLabCode/')
 from alignVcfSnps import *
 from megaCatsPythonVersion import *
 from parsingMegaCatsResults import *
-from convertSNPAlignmentToNormalAlignment import *
+from reconstructNormalAlignment import *
 import unittest
 sys.path.insert(1, '/Users/cazcullimore/Documents/ericksonLabCode/secondaryPythonScripts')
 try:
@@ -42,8 +42,8 @@ class MyTestCase(unittest.TestCase):
             alignVcfSnps(vcfFilePath, outFilePath=snpAlignPath, thingsToSkip=typesOfSnpsToSkipDuringAlignment, numSnpsRequired=1)
         
         if redoNormalAligment:
-            makeNormalAlignment(snpGenomePath=snpAlignPath, snpIndexesPath=snpIndexPath,
-                            refGenomePath=pathToRefGenomeGb, outputPath=normalAlignFastaPath)
+            reconstructOriginalAlignedGenome(snpGenomePath=snpAlignPath, snpIndexesPath=snpIndexPath,
+                                             refGenomePath=pathToRefGenomeGb, outputPath=normalAlignFastaPath)
         if reAnnotate:
             # need fasta of
             os.system("cd " + "/".join(normalAlignFastaPath.split("/")[:-1]) + "; for fileName in *.fasta; do conda run -n prokkaEnv prokka $fileName --force --centre X --compliant; done; cp */*.gbk " + annotatedNormalAlignPath)

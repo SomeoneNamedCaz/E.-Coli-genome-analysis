@@ -18,7 +18,7 @@ def addRefNucs(seq, indexes, referenceSeq):
     alignedSeq.append(nucsToInsert)
     return "".join(alignedSeq)
 
-def makeNormalAlignment(snpGenomePath, snpIndexesPath, refGenomePath, outputPath):
+def reconstructNormalAlignment(snpGenomePath, snpIndexesPath, refGenomePath, outputPath):
     print("snp genome path", snpGenomePath)
     print("index path", snpIndexesPath)
     print("refGenomePath", refGenomePath)
@@ -35,8 +35,7 @@ def makeNormalAlignment(snpGenomePath, snpIndexesPath, refGenomePath, outputPath
     
         for line in file:  # special stuff here to adjust for float method that was added
             line = float(line.strip())
-            snpIndexes.append(line - 1)  # because genome files count starting at 1
-    
+            snpIndexes.append(line)
     
     # load snp genomes
     alignedGenomes = {}
@@ -65,7 +64,7 @@ def makeNormalAlignment(snpGenomePath, snpIndexesPath, refGenomePath, outputPath
         i += 1
     print(numThreads,"threads took", time() - t1, "seconds")
     
-    if not os.path.exists("/".join(outputPath.split("/")[-1:])):
+    if not os.path.exists("/".join(outputPath.split("/")[-1:])) and outputPath.count("/") != 0:
         os.mkdir("/".join(outputPath.split("/")[-1:]))
     
     with open(outputPath,"w") as outFile:
@@ -89,4 +88,4 @@ if __name__ == "__main__":
     refGenomePath = sys.argv[3]  # .gbff file
     
     outputPath = sys.argv[4]  # with file
-    makeNormalAlignment(snpGenomePath, snpIndexesPath, refGenomePath, outputPath)
+    reconstructOriginalAlignedGenome(snpGenomePath, snpIndexesPath, refGenomePath, outputPath)

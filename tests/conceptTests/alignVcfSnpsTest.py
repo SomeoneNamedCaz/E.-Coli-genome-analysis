@@ -1,3 +1,4 @@
+import re
 import unittest
 import sys
 import os
@@ -6,7 +7,7 @@ try: # so pycharm recognizes it
     from secondaryPythonScripts.functions import *
 except ImportError:
     pass
-from convertSNPAlignmentToNormalAlignment import *
+from reconstructNormalAlignment import *
 from alignVcfSnps import alignVcfSnps
 
 class MyTestCase(unittest.TestCase):
@@ -130,7 +131,7 @@ class MyTestCase(unittest.TestCase):
         pathToRefGenomeFasta = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fakeFastas/testRef.fasta"
         # pathToRefGenomeGb = "/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.gbff"
         namePrefix = "reconstructFakeGenomes"  # the name to give to start all the files created
-        genomeFastaFile = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fakeFastas/*.fasta"
+        genomeFastaFiles = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fakeFastas/*.fasta"
         vcfFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fakeFastas/gsAlignOutputs/*.vcf"
         
         normalAlignFastaPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/annotatedNormalAlignFiles/" + namePrefix + ".fasta"
@@ -150,10 +151,13 @@ class MyTestCase(unittest.TestCase):
                          numSnpsRequired=1,refSeqPath=pathToRefGenomeFasta, ignoreRefSeq=False)
         
         if redoNormalAligment:
-            makeNormalAlignment(snpGenomePath=snpAlignPath, snpIndexesPath=snpIndexPath,
-                                refGenomePath=pathToRefGenomeFasta, outputPath=normalAlignFastaPath)
+            reconstructOriginalAlignedGenome(snpGenomePath=snpAlignPath, snpIndexesPath=snpIndexPath,
+                                             refGenomePath=pathToRefGenomeFasta, outputPath=normalAlignFastaPath)
         
-        
+        normalAlignNameToSeq = readInFastaAsDict(normalAlignFastaPath)
+        self.maxDiff = None
+        for file in glob(genomeFastaFiles):
+            self.assertEqual(readInFastaAsList(file)[1], re.sub("-","",normalAlignNameToSeq[file.split("/")[-1]+".vcf"]))
 
         """maybe look for the snps that are in genes and the compare them to the annotated files but first just test that the ref seq matches some of the aligned seqs"""
 
