@@ -4,7 +4,7 @@ import sys
 from scipy import stats
 import numpy as np
 import copy
-def pythonMegaCats(alignedFilePath,metadataFilePath, outFilePath,matchMegacatsStyle=True):
+def doMegaCatsStats(alignedFilePath, metadataFilePath, outFilePath, matchMegacatsStyle=True):
     charToIndex = {"A": 0, "T": 1, "C": 2, "G": 3, "-": 4, "N": 5}
     indexToChar = {}
     for k,v in charToIndex.items():
@@ -78,7 +78,7 @@ def pythonMegaCats(alignedFilePath,metadataFilePath, outFilePath,matchMegacatsSt
             line = line.strip()
             if line[0] == ">":
                 print("before", line[1:])
-                nameOfSeq = '_'.join(line[1:].split("_")[:-2]) + "." + line[1:].split("_")[-2]
+                nameOfSeq = line[1:]
                 print("nameOfSeq", nameOfSeq)
             else:
                 if isFirstDataLine:
@@ -115,7 +115,7 @@ def pythonMegaCats(alignedFilePath,metadataFilePath, outFilePath,matchMegacatsSt
                 dist1Total = sum(dist1)
                 totalNumberOfGenomes = dist1Total + dist2Total
                 combinedDist = dist2 + dist1
-                degOfFreedom = max([val != 0 for val in combinedDist]) - 1 # num classes - 1
+                degOfFreedom = max(sum([val != 0 for val in dist1]), max([val != 0 for val in dist2])) - 1 # num classes - 1
                 if degOfFreedom == 0: # if not a snp continue
                     continue
                 chi2 = 0
@@ -163,4 +163,4 @@ if __name__ == "__main__":
     metadataFilePath = sys.argv[2]
     outFilePath = sys.argv[3]
     matchMegacatsStyle = bool(sys.argv[4])
-    pythonMegaCats(snpAlignmentFilePath, metadataFilePath, outFilePath, matchMegacatsStyle)
+    doMegaCatsStats(snpAlignmentFilePath, metadataFilePath, outFilePath, matchMegacatsStyle)

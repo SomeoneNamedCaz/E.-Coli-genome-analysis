@@ -10,7 +10,7 @@ if len(sys.argv) < 3:
 pathToGBFiles = sys.argv[1]#"/Users/cazcullimore/Documents/ericksonLabCode/filesToTestMultiAlign/normalAlignedGenomes/gbks/*.gbk"
 metadataFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/metaDataForMetaCatsWithExtraMastitis.tsv"
 snpFilePath = sys.argv[2]
-snpIndexFilePath = "/".join(snpFilePath.split("/")[:-1]) + snpFilePath.split("/")[-1][:-4] + "Indexes.txt"
+snpIndexFilePath = "/".join(snpFilePath.split("/")[:-1]) + "/" + snpFilePath.split("/")[-1][:-4] + "Indexes.txt"
 print(pathToGBFiles)
 print(metadataFilePath)
 print(snpFilePath)
@@ -25,11 +25,11 @@ with open(metadataFilePath) as metadataFile: # process metadata
         else:
             fileNameToMetadataCategory[cols[0].split(".")[0]] = cols[1:]
 # # for 56 {'pathogen': {'A': 0, 'T': 148, 'C': 0, 'G': 335}, 'commensal': {'A': 3, 'T': 226, 'C': 0, 'G': 233}, 'cow': {'A': 0, 'T': 255, 'C': 0, 'G': 141}, 'chicken': {'A': 3, 'T': 119, 'C': 0, 'G': 427}}
-# geneName = "thrB"
+geneName = "thrB"
 # print(geneName, snpIndex)
 pathToGenes = {}
 
-def getStartPositionsOfGenes():
+# def getStartPositionsOfGenes():
 
 
 
@@ -47,7 +47,7 @@ for path in glob(pathToGBFiles):
                 isFirstLine = False
                 continue
             geneDistributions = {"pathogen": {"A":0, "T":0, "C":0, "G":0}, "commensal": {"A":0, "T":0, "C":0, "G":0}, "cow": {"A":0, "T":0, "C":0, "G":0}, "chicken": {"A":0, "T":0, "C":0, "G":0}}
-            snpIndex = int(indexLine)
+            snpIndex = int(float(indexLine))
             i = -1
             for path in glob(pathToGBFiles):
                 i += 1
@@ -71,5 +71,5 @@ for path in glob(pathToGBFiles):
                     exit(0)
                 except Exception as e:
                     print(e)
-            print(geneDistributions)
+            print("index",indexLine, geneDistributions)
             # print(name, )

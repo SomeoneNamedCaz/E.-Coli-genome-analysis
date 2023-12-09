@@ -7,7 +7,50 @@ import sys
 import cProfile
 from secondaryPythonScripts.functions import *
 
-def alignVcfSnps(gsAlignPathString, outFilePath, thingsToSkip=[], numSnpsRequired=10, debug = False, refSeqPath="/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.fasta", ignoreRefSeq=False):
+
+def fixNucsOnOtherStrand(refGenomeSeq, location, refNucs, altNucs, snpType):
+    correspondingRefSeq = refGenomeSeq[location:len(refNucs) + location]
+    if refGenomeSeq[location:len(refNucs) + location] != refNucs:
+        # if snpType == "INSERT":
+        #     location -= len(altNucs) - 1
+        if snpType == "DELETE":
+            location -= len(refNucs) - 1
+        if refNucs.count("N") == 0 and altNucs.count("N") == 0:
+            refNucs = reverseComplement(refNucs)
+            altNucs = reverseComplement(altNucs)
+            if refGenomeSeq[location:len(refNucs) + location] != refNucs:
+                print("real problem")
+        else:
+            print("problem", refNucs, altNucs)
+    return location, refNucs, altNucs
+
+def readInSnps(listOfFiles, refGenomeSeq, ignoreRefSeq):
+    numFiles = 0
+    snps = []  # list of elements like this: [fileName, location, oldNuc, NewNuc, type]
+    for filePath in listOfFiles:
+        numFiles += 1
+        # if numFiles > 100:
+        #     break
+        with open(filePath) as file:
+            for line in file:
+                line = line.strip()
+                cols = line.split("\t")
+                if line == "" or line[0] == "#":  # or cols[7][5:] == "SUBSTITUTE":
+                    continue
+                
+                location = int(cols[1]) - 1
+                refNucs = cols[3]
+                altNucs = cols[4]
+                if refNucs.count("N") != 0 or altNucs.count("N") != 0:
+                    continue
+                snpType = cols[7][5:]
+                if not ignoreRefSeq:
+                    location, refNucs, altNucs = fixNucsOnOtherStrand(refGenomeSeq, location, refNucs, altNucs, snpType)
+                
+                #               0                       1            2      3         4
+                snps.append([filePath.split("/")[-1], location, refNucs, altNucs, snpType])
+    return snps
+def alignVcfSnps(gsAlignPathString, outFilePath, thingsToSkip=[], numSnpsRequired=10, debug = False, refSeqPath="/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.fasta", ignoreRefSeq=True):
 
     if gsAlignPathString.split(":")[0] == "MatchFile": # MatchFile:<file to match>:<pathPrefix>
         # this block is for using the same input files that were used in a previous run of this program
@@ -29,48 +72,8 @@ def alignVcfSnps(gsAlignPathString, outFilePath, thingsToSkip=[], numSnpsRequire
     refSeq = readInFastaAsList(refSeqPath)[1]
 
     outFileDirectory = "/".join(outFilePath.split("/")[:-1]) + "/"
-
-
-
-
     ## parse files
-    def parseFiles(listOfFiles, refGenomeSeq):
-        numFiles = 0
-        snps = []  # list of elements like this: [fileName, location, oldNuc, NewNuc, type]
-        for filePath in listOfFiles:
-            numFiles += 1
-            # if numFiles > 100:
-            #     break
-            with open(filePath) as file:
-                for line in file:
-                    line = line.strip()
-                    cols = line.split("\t")
-                    if line == "" or line[0] == "#": # or cols[7][5:] == "SUBSTITUTE":
-                        continue
-                    
-                    location = int(cols[1]) - 1
-                    refNucs = cols[3]
-                    altNucs = cols[4]
-                    snpType = cols[7][5:]
-                    if refGenomeSeq[location:len(refNucs) + location] != refNucs and not ignoreRefSeq:
-                        # if snpType == "INSERT":
-                        #     location -= len(altNucs) - 1
-                        if snpType == "DELETE":
-                            location -= len(refNucs) - 1
-                        refNucs = reverseComplement(refNucs)
-                        altNucs = reverseComplement(altNucs)
-                        if refSeq[location:len(refNucs) + location] != refNucs:
-                            print("broken")
-                            print(refGenomeSeq[location-1:len(refNucs) + location+1])
-                            print(refGenomeSeq[location-1] + " " + refGenomeSeq[location:len(refNucs) + location] + " " + refGenomeSeq[location+1])
-                            print("  "+refNucs)
-                            print(line)
-                            continue
-                    
-                    #               0                       1            2      3         4
-                    snps.append([filePath.split("/")[-1], location, refNucs, altNucs, snpType])
-        return snps
-    snps = parseFiles(gsAlignFiles, refSeq)
+    snps = readInSnps(gsAlignFiles, refSeq, ignoreRefSeq=ignoreRefSeq)
     snps.sort(key=lambda a: a[1])
     # if debug:
     for snp in snps[:1_00]:
@@ -122,6 +125,7 @@ def alignVcfSnps(gsAlignPathString, outFilePath, thingsToSkip=[], numSnpsRequire
                 for k, v in dataToWrite.items():
                     print(k[5:15] + "\t" + str(len(v)) + "\t"+ "".join(v[-100:]))
                 print(longestRefNucSeq)
+                
         for fileWithMissingSNP in filesWithoutSNP:
             if not len(filesToSnpGenome[fileWithMissingSNP]) > lenBefore: # in other words if equal to len befor
                 filesToSnpGenome[fileWithMissingSNP].append(longestRefNucSeq[0])

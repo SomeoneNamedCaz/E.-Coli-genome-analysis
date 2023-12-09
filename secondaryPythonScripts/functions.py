@@ -39,22 +39,25 @@ def complement(seq):
 
 def getContigs(fileName):
     contigs = []
-    with open(fileName) as file:
-        contig = ""
-        inContig = False
-        for line in file:
-            line = line.strip()
-            cols = line.split()
-            if line == 'ORIGIN':
-                inContig = True
-            elif line == "//":
-                contig = contig.upper()
-                contigs.append(contig)
-                contig = ""
-                inContig = False
-            if inContig:
-                contig += "".join(cols[1:]) # everything but numbers
-    return contigs
+    if fileName.split(".")[-1] == "fasta":
+        return readInFastaAsList(fileName)[1:][::2]
+    else:
+        with open(fileName) as file:
+            contig = ""
+            inContig = False
+            for line in file:
+                line = line.strip()
+                cols = line.split()
+                if line == 'ORIGIN':
+                    inContig = True
+                elif line == "//":
+                    contig = contig.upper()
+                    contigs.append(contig)
+                    contig = ""
+                    inContig = False
+                if inContig:
+                    contig += "".join(cols[1:]) # everything but numbers
+        return contigs
 
 def getGenesOnContigs(fileName, contigs): #TODO: doesn't do such a good job on <,>, or num..num,num..num
     genes = {} # dictionary keys gene_name values = products and seqs
@@ -239,8 +242,8 @@ def getGenesOnContigsByPosition(fileName, contigs):
                     # if "," in nums: # if of form join(this..this, this..this)
 
                     nums = nums.split("..")
-                    geneStartPoses.append(int(nums[0]))
-                    geneStopPoses.append(int(nums[-1])-shortenEndOfGenomeBy)
+                    geneStartPoses.append(int(nums[0]) - 1)
+                    geneStopPoses.append(int(nums[-1])-shortenEndOfGenomeBy - 1)
                 elif cols[0] == "gene":
                     inCDS = False
                 elif inCDS:
@@ -593,7 +596,10 @@ def sortByMultipleCriteria(arrayToSort, criteria): # earlier criteria are more i
     arrayToSort = firstHalf + secondHalf
 
 def argmax(array, key=lambda a:a):
-    maxVal = array[0]
+    try:
+        maxVal = array[0]
+    except IndexError:
+        raise Exception("can't do argmax on empty input")
     indexOfMax = 0
     index = 1
     for curVal in array[1:]:

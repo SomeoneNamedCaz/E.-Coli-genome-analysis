@@ -2,7 +2,10 @@
 import sys
 
 sys.path.insert(1, '/Users/cazcullimore/Documents/ericksonLabCode/secondaryPythonScripts')
-from secondaryPythonScripts.functions import *
+try:
+    from secondaryPythonScripts.functions import *
+except ImportError:
+    from functions import *
 if len(sys.argv) < 3:
     print("please provide the paths to the gbks and the path to the file of snps sorted by significance from parsingMegacatsResults.py")
     exit(1)
@@ -11,9 +14,9 @@ pathToGBFiles = sys.argv[1]#"/Users/cazcullimore/Documents/ericksonLabCode/files
 metadataFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/metaDataForMetaCatsWithExtraMastitis.tsv"
 # snpFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/RedoingEverything/snpsSortedBySignificanceWithGenesContainingThemOldIndexPathogenicity.tsv"
 snpFilePath = sys.argv[2]#"/Users/cazcullimore/Documents/ericksonLabCode/RedoingEverything/snpsSortedBySignificanceWithGenesContainingThemOldIndexAnimal.tsv"
-print(pathToGBFiles)
-print(metadataFilePath)
-print(snpFilePath)
+print("gb files",pathToGBFiles)
+print("metadata", metadataFilePath)
+print("megaCatsFile",snpFilePath)
 fileNameToMetadataCategory = {}
 with open(metadataFilePath) as metadataFile: # process metadata
     isFirstLine = True
@@ -53,8 +56,9 @@ with open(snpFilePath) as snpFile:
                 try:
                     geneSeq = pathToGenes[path][geneName][1]
                     nuc = geneSeq[snpIndex]
-                    if i % 50:
-                        print(geneSeq[snpIndex-5:snpIndex], geneSeq[snpIndex], geneSeq[snpIndex+1:snpIndex+5])
+                    # if i % 50 == 0:
+                    print(geneSeq[snpIndex-5:snpIndex], geneSeq[snpIndex], geneSeq[snpIndex+1:snpIndex+5])
+                    print(geneSeq)
                     secondMetadataCatagoryForFile = fileNameToMetadataCategory["scaffold_" + fileName.split(".")[0]][1]
                     firstMetadataCatagoryForFile = fileNameToMetadataCategory["scaffold_" + fileName.split(".")[0]][0]
                     try:

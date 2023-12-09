@@ -11,6 +11,7 @@ def loadIndexes(indexFilePath):
             snpLocations.append(line)
     return snpLocations
 def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaDataFilePath, annotatedRefGenomePath, removeSparce=True, outputDirectory="."):
+    codonsToAminoAcids = makeCodonDictionary()
     # add FrameShiftedToIndexPath
     snpIndexesFrameShiftedPath = ".".join(snpIndexesPath.split(".")[:-1]) + "FrameShifted." + snpIndexesPath.split(".")[-1]
     # hard-coded parameters for output
@@ -289,7 +290,6 @@ if __name__ == "__main__":
 
     # B2 has no nonsparse significant snps so throughs an error metadata string out og range
 
-    codonsToAminoAcids = makeCodonDictionary()
 
     if len(sys.argv) < 7:
         print("""please give arguments: combined megaCats file, file with the snp genomes, file with the snp indexes, the suffix you want for output files,

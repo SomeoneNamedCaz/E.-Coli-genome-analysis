@@ -6,7 +6,9 @@ try: # so pycharm recognizes it
     from secondaryPythonScripts.functions import *
 except ImportError:
     pass
+from convertSNPAlignmentToNormalAlignment import *
 from alignVcfSnps import alignVcfSnps
+
 class MyTestCase(unittest.TestCase):
     def testSingleFile(self):
         filePath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fake vcfs/test3.vcf"
@@ -49,16 +51,17 @@ class MyTestCase(unittest.TestCase):
 
     def testLotsOfFiles(self):
         filePath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fake vcfs/test*.vcf"
+        # filePath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fakeFastas/gsAlignOutputs/test*.vcf"
         outPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/snpAlign/lotsOfFIles.afa"
         indexFilePath = outPath[:-4] + "Indexes.txt"
         alignedSnps = alignVcfSnps(filePath, outFilePath=outPath, numSnpsRequired=1, ignoreRefSeq=True)
-        # test alignment                                                        add 341 later
+        # test alignment
         #                      308 stuff         |317                   | 318   |319           |340  |439           440| |442  |443
         self.assertEqual("A-----------------A----------------------A-------TGAAAAAAAACGAAATGGTTGA-----------------TGG-----TTGA----------------TTGTGTGTGTGTGTGTGTGTGTGTGT", ''.join(alignedSnps["test2.vcf"]))
         self.assertEqual("G---------ATGGTAAAA----------------------AC------T--------------TGGTTGA-----------------TGG-----TTGATCCCCCCCCCCCCCCCGTGTGTGTGTGTGTGTGTGTGTGTGT", ''.join(alignedSnps["test3.vcf"]))
         self.assertEqual("ACC-------A----AAAA----------------------ATGGGGGTCGAAAAAAAACGAAATGGTTGA----------------------------T----------------G------------------------T", ''.join(alignedSnps["test4.vcf"]))
-        self.assertEqual("T---------A----AAATTTTTTTTTTTTTTTTTTTTTTTA-------TGAAAAAAAACGAAAT-----A-----------------TGGTTGGTTTGA----------------GTGTGTGTGTGTGTGTGTGTGTGTGC", ''.join(alignedSnps["test5.vcf"]))
-        self.assertEqual("GGGGGGGGGGA----AAAA----------------------AC------TTAAAAAAAACGAAATGGTTGACCGGAGTTGGGAGCCTCTGG-----TTGA----------------GTGTGTGTGTGTGTGTGTGTGTGTGT", ''.join(alignedSnps["test6.vcf"]))
+        self.assertEqual("T---------A----AAAATTTTTTTTTTTTTTTTTTTTTTA-------TGAAAAAAAACGAAAT-----A-----------------TGGTTGGTTTGA----------------GTGTGTGTGTGTGTGTGTGTGTGTGC", ''.join(alignedSnps["test5.vcf"]))
+        self.assertEqual("AGGGGGGGGGA----AAAA----------------------AC------TTAAAAAAAACGAAATGGTTGACCGGAGTTGGGAGCCTCTGG-----TTGA----------------GTGTGTGTGTGTGTGTGTGTGTGTGT", ''.join(alignedSnps["test6.vcf"]))
         self.assertEqual("A---------A----AAAA----------------------A-------TGAAAAAAAACGAAATGGTTGA-----------------TGG-----TTGA----------------GTGTGTGTGTGTGTGTGTGTGTGTGT", ''.join(alignedSnps["test7.vcf"]))
         self.assertEqual("A---------A----AAAA----------------------A-------TGAAAAAAAACGAAATGGTTGA-----------------TGG-----TTGA----------------GTGTGTGTGTGTGTGTGTGTGTGTGT", ''.join(alignedSnps["test8.vcf"]))
         
@@ -121,7 +124,36 @@ class MyTestCase(unittest.TestCase):
                         print(refSeq[iLine-2:iLine+2] +"  " +snpGenome[fileLineIndex])
                         print("didn't find ref nuc", iLine)
                         print("__")
-
+        
+    def testReconstructFakeGenomes(self):
+        
+        pathToRefGenomeFasta = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fakeFastas/testRef.fasta"
+        # pathToRefGenomeGb = "/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.gbff"
+        namePrefix = "reconstructFakeGenomes"  # the name to give to start all the files created
+        genomeFastaFile = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fakeFastas/*.fasta"
+        vcfFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fakeFastas/gsAlignOutputs/*.vcf"
+        
+        normalAlignFastaPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/annotatedNormalAlignFiles/" + namePrefix + ".fasta"
+        
+        snpAlignPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/snpAlign/" + namePrefix + ".afa"
+        snpIndexPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/snpAlign/" + namePrefix + "Indexes.txt"
+        
+        # print("annotatedNormalAlignPath", annotatedNormalAlignPath)
+        print("vcfFilePath", vcfFilePath)
+        print("snpAlignPath", snpAlignPath)
+        
+        reAlignSnps = True
+        redoNormalAligment = True
+        typesOfSnpsToSkipDuringAlignment = []  # ["INSERT", "DELETE"]
+        if reAlignSnps:
+            alignVcfSnps(vcfFilePath, outFilePath=snpAlignPath, thingsToSkip=typesOfSnpsToSkipDuringAlignment,
+                         numSnpsRequired=1,refSeqPath=pathToRefGenomeFasta, ignoreRefSeq=False)
+        
+        if redoNormalAligment:
+            makeNormalAlignment(snpGenomePath=snpAlignPath, snpIndexesPath=snpIndexPath,
+                                refGenomePath=pathToRefGenomeFasta, outputPath=normalAlignFastaPath)
+        
+        
 
         """maybe look for the snps that are in genes and the compare them to the annotated files but first just test that the ref seq matches some of the aligned seqs"""
 
