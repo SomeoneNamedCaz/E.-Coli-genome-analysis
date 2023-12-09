@@ -50,7 +50,7 @@ def readInSnps(listOfFiles, refGenomeSeq, ignoreRefSeq):
                 #               0                       1            2      3         4
                 snps.append([filePath.split("/")[-1], location, refNucs, altNucs, snpType])
     return snps
-def alignVcfSnps(gsAlignPathString, outFilePath, thingsToSkip=[], numSnpsRequired=10, debug = False, refSeqPath="/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.fasta", ignoreRefSeq=True):
+def alignVcfSnps(gsAlignPathString, outFilePath, thingsToSkip=[], numSnpsRequired=10, debug = False, refSeqPath="/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.fasta", ignoreRefSeq=True, includeGenomeWithoutAnySnps=True):
 
     if gsAlignPathString.split(":")[0] == "MatchFile": # MatchFile:<file to match>:<pathPrefix>
         # this block is for using the same input files that were used in a previous run of this program
@@ -84,6 +84,8 @@ def alignVcfSnps(gsAlignPathString, outFilePath, thingsToSkip=[], numSnpsRequire
     for index in range(len(allFiles)):
         allFiles[index] = allFiles[index].split("/")[-1]
     allFiles = set(allFiles)
+    if includeGenomeWithoutAnySnps:
+        allFiles.add("genomeWitoutAnySnps")
     filesWithoutSNP = set(copy.deepcopy(allFiles))
 
     removedFiles = set()
@@ -162,9 +164,6 @@ def alignVcfSnps(gsAlignPathString, outFilePath, thingsToSkip=[], numSnpsRequire
             indexFile.write(str(lastPosition + i / 1000) + "\n")
             indexesAdded.append(str(lastPosition + i / 1000) + "\n")
 
-        # for snpGenome in filesToSnpGenome.values():
-        #     if len(snpGenome) > lengthOfLongestSnpGenome:
-        #         lengthOfLongestSnpGenome = len(snpGenome)
         lengthOfLongestSnpGenome = maxLenAfterDashes
 
         maxLen = numberOfNucelotidesToStopAlignmentAt + lenBefore + lengthOfLongestInsert
@@ -206,7 +205,7 @@ def alignVcfSnps(gsAlignPathString, outFilePath, thingsToSkip=[], numSnpsRequire
                 print("numRefNucsAdded", numRefNucsAdded)
                 print("after align")
                 for k, v in dataToWrite.items():
-                    print(k[5:15] + "\t" + str(len(v)) + "\t"+ "".join(v[-100:]))# str(len(v)) should all be the same here
+                    print(k[5:15] + "\t" + str(len(v)) + "\t" + "".join(v[-100:]))# str(len(v)) should all be the same here
                 print(indexesAdded, "done,", longestRefNucSeq[numRefNucsAdded+1:], "really done now")
 
         return longestRefNucSeq[numRefNucsAdded+1:] # plus one because of added the first nucleotide earlier

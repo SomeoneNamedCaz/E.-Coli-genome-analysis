@@ -34,10 +34,10 @@ class MyTestCase(unittest.TestCase):
         print("vcfFilePath", vcfFilePath)
         print("snpAlignPath",snpAlignPath)
     
-        reAlignSnps = False
-        redoNormalAligment = False
-        reAnnotate = False
-        typesOfSnpsToSkipDuringAlignment = ["INSERT", "DELETE"]
+        reAlignSnps = True
+        redoNormalAligment = True
+        reAnnotate = True
+        typesOfSnpsToSkipDuringAlignment = []#["INSERT", "DELETE"]
         if reAlignSnps:
             alignVcfSnps(vcfFilePath, outFilePath=snpAlignPath, thingsToSkip=typesOfSnpsToSkipDuringAlignment, numSnpsRequired=1)
         
@@ -50,10 +50,8 @@ class MyTestCase(unittest.TestCase):
         normalAlignGenes = getGenesOnContigsByPosition(annotatedNormalAlignPath, getContigs(annotatedNormalAlignPath))
         
         assemblyGenes = getGenesOnContigs(scaffoldGb, getContigs(scaffoldGb))
-        alignedSeq = readInFastaAsList(snpAlignPath)[1]
+        alignedSeq = readInFastaAsDict(snpAlignPath)[vcfFilePath.split("/")[-1]]
         lineOfIndexfile = -1
-        possibleScafIndexes = list(range(-4, 4))
-        possibleMyAlignIndexes = list(range(-4, 4))
         with open(snpIndexPath) as indexFile:
             for index in indexFile:
                 lineOfIndexfile += 1
@@ -74,9 +72,13 @@ class MyTestCase(unittest.TestCase):
                         print("myalign\t", end="")
                         printNearbyNucs(alignedSeq, lineOfIndexfile, 10)
         
+    def testMultiAlignment(self):
+        pass
+        
 def printNearbyNucs(seq, pos, numFlankingNucs):
     print(seq[pos - numFlankingNucs + 1:pos],
           seq[pos],
           seq[pos + 1: pos + numFlankingNucs])
+    
 if __name__ == '__main__':
 	unittest.main()

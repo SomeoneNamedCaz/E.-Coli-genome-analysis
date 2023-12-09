@@ -14,14 +14,14 @@ class MyTestCase(unittest.TestCase):
     def testSingleFile(self):
         filePath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fake vcfs/test3.vcf"
         outPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/snpAlign/singleFileSnps.afa"
-        expectedIndexes = [308.0,309.0, 310.0,311.0, 312.0,313.0,318.0, 318.001]
-        for i in range(319,319+15):
-            expectedIndexes.append(float(i))
-        for i in range(600,600+17):
-            expectedIndexes.append(600.0 + i/1000)
+        expectedIndexes = ([308.0] + InsertIndexes(309,5) +
+                           InsertIndexes(318,2) +
+                           DeleteIndexes(319, 15) +
+                           InsertIndexes(599, 17))
         indexFilePath = outPath[:-4] + "Indexes.txt"
-        alignVcfSnps(filePath, outFilePath=outPath, numSnpsRequired=1, ignoreRefSeq=True)
-        self.assertEqual(readInFastaAsList(outPath)[1], "GATGGTACT--------------ATCCCCCCCCCCCCCCC")
+        alignVcfSnps(filePath, outFilePath=outPath, numSnpsRequired=1, ignoreRefSeq=True,
+                     includeGenomeWithoutAnySnps=True)
+        self.assertEqual(readInFastaAsDict(outPath)[filePath.split("/")[-1]], "GATGGTACT--------------ATCCCCCCCCCCCCCCC")
         
         # test indexes
         indexes = readInIndexes(indexFilePath)
@@ -89,12 +89,12 @@ class MyTestCase(unittest.TestCase):
         self.assertListEqual(indexes, expectedIndexes)
         
     def testReferenceGenomeMatching(self):
-        gsAlignVCFs = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fake vcfs/*.vcf"
+        gsAlignVCFs = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fake vcfs/test*.vcf"
         # gsAlignVCFs = "/Users/cazcullimore/Documents/ericksonLabCode/AllAssembliesInOneFolder/ragtagOutputs/longestScaffoldFiles/gsAlignOutputs/*.vcf"#"/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/vcfsFromScaffolds/*.vcf"
         alignedSnpPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/snpAlign/allSnps.afa"
         reRunAlignment = True
 
-        refSeq = readInFastaAsList("/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.fasta")[1]
+        refSeq = readInFastaAsList("/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fakeFastas/testRef.fasta")[1]
         if not os.path.exists(alignedSnpPath) or reRunAlignment:
             alignVcfSnps(gsAlignVCFs,alignedSnpPath, numSnpsRequired=1)
         indexFilePath = alignedSnpPath[:-4] + "Indexes.txt"
@@ -122,9 +122,10 @@ class MyTestCase(unittest.TestCase):
                                 print("__")
                             foundRefNuc = True
                     if not foundRefNuc:
-                        print(refSeq[iLine-2:iLine+2] +"  " +snpGenome[fileLineIndex])
+                        print(refSeq[iLine-2:iLine+2],[genome[fileLineIndex]for genome in alignedSnps])
                         print("didn't find ref nuc", iLine)
                         print("__")
+                        raise Exception("didn't find ref nuc", iLine,refSeq[iLine-2:iLine+2],[genome[fileLineIndex]for genome in alignedSnps])
         
     def testReconstructFakeGenomes(self):
         
@@ -148,7 +149,7 @@ class MyTestCase(unittest.TestCase):
         typesOfSnpsToSkipDuringAlignment = []  # ["INSERT", "DELETE"]
         if reAlignSnps:
             alignVcfSnps(vcfFilePath, outFilePath=snpAlignPath, thingsToSkip=typesOfSnpsToSkipDuringAlignment,
-                         numSnpsRequired=1,refSeqPath=pathToRefGenomeFasta, ignoreRefSeq=False)
+                         numSnpsRequired=1, refSeqPath=pathToRefGenomeFasta, ignoreRefSeq=False)
         
         if redoNormalAligment:
             reconstructNormalAlignment(snpGenomePath=snpAlignPath, snpIndexesPath=snpIndexPath,
@@ -157,8 +158,42 @@ class MyTestCase(unittest.TestCase):
         normalAlignNameToSeq = readInFastaAsDict(normalAlignFastaPath)
         self.maxDiff = None
         for file in glob(genomeFastaFiles):
-            self.assertEqual(readInFastaAsList(file)[1], re.sub("-","",normalAlignNameToSeq[file.split("/")[-1]+".vcf"]))
+            self.assertEqual(readInFastaAsList(file)[1], re.sub("-","", normalAlignNameToSeq[file.split("/")[-1]+".vcf"]))
 
+    def testReconstructingSingleAlignement(self):
+        pathToRefGenomeFasta = "/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.fasta"
+        # pathToRefGenomeGb = "/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.gbff"
+        namePrefix = "reconstructScaffold"  # the name to give to start all the files created
+        genomeFastaFile = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/scaffolds/longestScaffoldFiles/scaffold_1465_SS_220.fasta"
+        vcfFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/vcfsFromScaffolds/scaffold_1465_SS_220.fasta.vcf"
+        
+        normalAlignFastaPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/annotatedNormalAlignFiles/" + namePrefix + ".fasta"
+        snpAlignPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/snpAlign/" + namePrefix + ".afa"
+        snpIndexPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/snpAlign/" + namePrefix + "Indexes.txt"
+        
+        
+        # print("annotatedNormalAlignPath", annotatedNormalAlignPath)
+        print("vcfFilePath", vcfFilePath)
+        print("snpAlignPath", snpAlignPath)
+        
+        reAlignSnps = True
+        redoNormalAligment = True
+        typesOfSnpsToSkipDuringAlignment = []  # ["INSERT", "DELETE"]
+        if reAlignSnps:
+            alignVcfSnps(vcfFilePath, outFilePath=snpAlignPath, thingsToSkip=typesOfSnpsToSkipDuringAlignment,
+                         numSnpsRequired=1, refSeqPath=pathToRefGenomeFasta, ignoreRefSeq=False)
+        
+        if redoNormalAligment:
+            reconstructNormalAlignment(snpGenomePath=snpAlignPath, snpIndexesPath=snpIndexPath,
+                                       refGenomePath=pathToRefGenomeFasta, outputPath=normalAlignFastaPath)
+        
+        normalAlignNameToSeq = readInFastaAsDict(normalAlignFastaPath)
+        self.maxDiff = None
+        genomeName = genomeFastaFile.split("/")[-1] + ".vcf"
+        originalGenome = readInFastaAsList(genomeFastaFile)[1]
+        reconstructedGenome = re.sub("-", "", normalAlignNameToSeq[genomeName])
+        self.assertEqual(originalGenome,
+                         reconstructedGenome)
         """maybe look for the snps that are in genes and the compare them to the annotated files but first just test that the ref seq matches some of the aligned seqs"""
 
 def readInIndexes(fileName):

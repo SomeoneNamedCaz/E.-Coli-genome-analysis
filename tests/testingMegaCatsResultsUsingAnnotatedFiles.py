@@ -5,7 +5,8 @@ sys.path.insert(1, '/Users/cazcullimore/Documents/ericksonLabCode/secondaryPytho
 try:
     from secondaryPythonScripts.functions import *
 except ImportError:
-    from functions import *
+    pass
+    # from functions import *
 if len(sys.argv) < 3:
     print("please provide the paths to the gbks and the path to the file of snps sorted by significance from parsingMegacatsResults.py")
     exit(1)
@@ -44,7 +45,7 @@ with open(snpFilePath) as snpFile:
         if isFirstLine:
             isFirstLine = False
             continue
-        geneDistributions = {"pathogen": {"A":0, "T":0, "C":0, "G":0}, "commensal": {"A":0, "T":0, "C":0, "G":0}, "cow": {"A":0, "T":0, "C":0, "G":0}, "chicken": {"A":0, "T":0, "C":0, "G":0}}
+        geneDistributions = {"pathogen": {"A":0, "T":0, "C":0, "G":0}, "comnensal": {"A":0, "T":0, "C":0, "G":0}, "cow": {"A":0, "T":0, "C":0, "G":0}, "chicken": {"A":0, "T":0, "C":0, "G":0}}
         cols = line.split("\t")
         geneName = cols[3]
         snpIndex = int(cols[2])

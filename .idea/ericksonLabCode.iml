@@ -13,7 +13,15 @@
       <excludeFolder url="file://$MODULE_DIR$/AllAssembliesInOneFolder" />
       <excludeFolder url="file://$MODULE_DIR$/tests/testFiles/tenAssembliesFromEachCategory" />
       <excludeFolder url="file://$MODULE_DIR$/tests/testFiles" />
+      <excludeFolder url="file://$MODULE_DIR$/tests/testFiles/AssemblyAnnotations" />
+      <excludeFolder url="file://$MODULE_DIR$/tests/testFiles/PROKKA_12052023" />
+      <excludeFolder url="file://$MODULE_DIR$/tests/testFiles/annotatedNormalAlignFiles" />
+      <excludeFolder url="file://$MODULE_DIR$/tests/testFiles/pirate" />
+      <excludeFolder url="file://$MODULE_DIR$/tests/testFiles/scaffolds" />
     </content>
+    <content url="file://$MODULE_DIR$/tests/testFiles/fake vcfs" />
+    <content url="file://$MODULE_DIR$/tests/testFiles/fakeAssemblies" />
+    <content url="file://$MODULE_DIR$/tests/testFiles/fakeFastas" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
