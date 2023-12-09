@@ -42,8 +42,8 @@ class MyTestCase(unittest.TestCase):
             alignVcfSnps(vcfFilePath, outFilePath=snpAlignPath, thingsToSkip=typesOfSnpsToSkipDuringAlignment, numSnpsRequired=1)
         
         if redoNormalAligment:
-            reconstructOriginalAlignedGenome(snpGenomePath=snpAlignPath, snpIndexesPath=snpIndexPath,
-                                             refGenomePath=pathToRefGenomeGb, outputPath=normalAlignFastaPath)
+            reconstructNormalAlignment(snpGenomePath=snpAlignPath, snpIndexesPath=snpIndexPath,
+                                       refGenomePath=pathToRefGenomeGb, outputPath=normalAlignFastaPath)
         if reAnnotate:
             # need fasta of
             os.system("cd " + "/".join(normalAlignFastaPath.split("/")[:-1]) + "; for fileName in *.fasta; do conda run -n prokkaEnv prokka $fileName --force --centre X --compliant; done; cp */*.gbk " + annotatedNormalAlignPath)

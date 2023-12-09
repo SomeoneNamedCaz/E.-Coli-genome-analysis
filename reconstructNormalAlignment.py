@@ -17,7 +17,6 @@ def addRefNucs(seq, indexes, referenceSeq):
     nucsToInsert = referenceSeq[int(lastIndex) + 1:]
     alignedSeq.append(nucsToInsert)
     return "".join(alignedSeq)
-
 def reconstructNormalAlignment(snpGenomePath, snpIndexesPath, refGenomePath, outputPath):
     print("snp genome path", snpGenomePath)
     print("index path", snpIndexesPath)
@@ -88,4 +87,4 @@ if __name__ == "__main__":
     refGenomePath = sys.argv[3]  # .gbff file
     
     outputPath = sys.argv[4]  # with file
-    reconstructOriginalAlignedGenome(snpGenomePath, snpIndexesPath, refGenomePath, outputPath)
+    reconstructNormalAlignment(snpGenomePath, snpIndexesPath, refGenomePath, outputPath)

@@ -68,4 +68,4 @@ if runMegaCats:
 	                  removeSparce=True, outputDirectory="./RedoingEverything/")
 	
 if runNormalAlignment:
-	reconstructOriginalAlignedGenome(snpGenomePath=snpAlignPath, snpIndexesPath=snpIndexPath, refGenomePath=pathToRefGenomeGb, outputPath=normalAlignPath)
+	reconstructNormalAlignment(snpGenomePath=snpAlignPath, snpIndexesPath=snpIndexPath, refGenomePath=pathToRefGenomeGb, outputPath=normalAlignPath)

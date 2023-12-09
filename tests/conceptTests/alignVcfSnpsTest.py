@@ -151,8 +151,8 @@ class MyTestCase(unittest.TestCase):
                          numSnpsRequired=1,refSeqPath=pathToRefGenomeFasta, ignoreRefSeq=False)
         
         if redoNormalAligment:
-            reconstructOriginalAlignedGenome(snpGenomePath=snpAlignPath, snpIndexesPath=snpIndexPath,
-                                             refGenomePath=pathToRefGenomeFasta, outputPath=normalAlignFastaPath)
+            reconstructNormalAlignment(snpGenomePath=snpAlignPath, snpIndexesPath=snpIndexPath,
+                                       refGenomePath=pathToRefGenomeFasta, outputPath=normalAlignFastaPath)
         
         normalAlignNameToSeq = readInFastaAsDict(normalAlignFastaPath)
         self.maxDiff = None

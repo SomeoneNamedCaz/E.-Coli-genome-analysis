@@ -31,7 +31,7 @@ class MyTestCase(unittest.TestCase):
 			tempFile.write(snpAlignText + "\n")
 		with open(snpIndexPath, "w") as tempFile:
 			tempFile.write("309.0\n310.0\n311.0\n312.0\n313.0\n699.0\n")
-		reconstructOriginalAlignedGenome(snpGenomePath=snpGenomePath, snpIndexesPath=snpIndexPath, refGenomePath=refFastaPath, outputPath=normalAlignPath)
+		reconstructNormalAlignment(snpGenomePath=snpGenomePath, snpIndexesPath=snpIndexPath, refGenomePath=refFastaPath, outputPath=normalAlignPath)
 		
 		originalSeq = readInFastaAsList(testFastaPath)[1]
 		reconstructedSeq = re.sub("-","",readInFastaAsList(normalAlignPath)[1])
