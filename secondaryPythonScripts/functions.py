@@ -9,6 +9,9 @@ import sys
 from enum import Enum
 from copy import deepcopy
 
+DATA_DIR = "/Users/cazcullimore/dev/data/"
+TEST_DATA_DIR = "/Users/cazcullimore/dev/ericksonLabCode/tests/testFiles/"
+
 def reverseComplement(seq):
     reverseComplementSeq = ''  # string of complementary nucleotides
     seq = seq.upper()  # to cover for lowercase
@@ -238,7 +241,7 @@ def translate(validSeq, codonsToAminoAcids):
 
 def makeCodonDictionary():
     codonsToAminoAcids = {}
-    with open("/Users/cazcullimore/Documents/ericksonLabCode/secondaryPythonScripts/codons.txt") as codonFile:
+    with open(DATA_DIR + "secondaryPythonScripts/codons.txt") as codonFile:
         for codonLine in codonFile:
             codonLine = codonLine.strip()
             cols = codonLine.split("\t")

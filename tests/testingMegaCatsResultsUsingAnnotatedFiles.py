@@ -3,7 +3,7 @@ import time
 from concurrent.futures import *
 from glob import glob
 
-sys.path.insert(1, '/Users/cazcullimore/Documents/ericksonLabCode/secondaryPythonScripts')
+sys.path.insert(1, '/Users/cazcullimore/dev/ericksonLabCode/secondaryPythonScripts')
 try:
     from secondaryPythonScripts.functions import *
 except ImportError:
@@ -13,10 +13,10 @@ if len(sys.argv) < 3:
     print("please provide the paths to the gbks and the path to the file of snps sorted by significance from parsingMegacatsResults.py")
     exit(1)
 
-pathToGBFiles = sys.argv[1]#"/Users/cazcullimore/Documents/ericksonLabCode/filesToTestMultiAlign/normalAlignedGenomes/gbks/*.gbk"
-metadataFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/metaDataForMetaCatsWithExtraMastitis.tsv"
-snpFilePath = sys.argv[2]#"/Users/cazcullimore/Documents/ericksonLabCode/RedoingEverything/snpsSortedBySignificanceWithGenesContainingThemOldIndexAnimal.tsv"
-annotatedRefGenomePath = "/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.gbff"
+pathToGBFiles = sys.argv[1]#DATA_DIR + "filesToTestMultiAlign/normalAlignedGenomes/gbks/*.gbk"
+metadataFilePath = DATA_DIR + "metaDataForMetaCatsWithExtraMastitis.tsv"
+snpFilePath = sys.argv[2]#DATA_DIR + "RedoingEverything/snpsSortedBySignificanceWithGenesContainingThemOldIndexAnimal.tsv"
+annotatedRefGenomePath = DATA_DIR + "refGenomes/k-12.gbff"
 print("gb files",pathToGBFiles)
 print("metadata", metadataFilePath)
 print("megaCatsFile",snpFilePath)

@@ -6,24 +6,24 @@ from parsingMegaCatsResults import *
 from reconstructNormalAlignment import *
 
 pathToAssemblies = "./AllAssembliesInOneFolder/*.fasta"
-# pathToAssemblies = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/tenAssembliesFromEachCategory/*.fasta"
-pathToRefGenomeFasta = "/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.fasta"
-pathToRefGenomeGb = "/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.gbff"
+# pathToAssemblies = TEST_DATA_DIR + "tenAssembliesFromEachCategory/*.fasta"
+pathToRefGenomeFasta = DATA_DIR + "refGenomes/k-12.fasta"
+pathToRefGenomeGb = DATA_DIR + "refGenomes/k-12.gbff"
 
 
 namePrefix = "fullScript" # the name to give to start all the files created
 pathsToGsAlignVCFs = "/".join(pathToAssemblies.split("/")[:-1]) + "/ragtagOutputs/longestScaffoldFiles/gsAlignOutputs/*.vcf"
 # pathsToGsAlignVCFs = "./AllAssembliesInOneFolder/carefulAssemblyGsAlign/*.vcf"
-# snpAlignPath = "/Users/cazcullimore/Documents/ericksonLabCode/RedoingEverything/SnpAlign/all.afa"
-# pathsToGsAlignVCFs = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/vcfsFromScaffolds/*.vcf"
-snpAlignPath = "/Users/cazcullimore/Documents/ericksonLabCode/RedoingEverything/SnpAlign/" + namePrefix +".afa"
-snpIndexPath = "/Users/cazcullimore/Documents/ericksonLabCode/RedoingEverything/SnpAlign/" + namePrefix +"Indexes.txt"
+# snpAlignPath = DATA_DIR + "RedoingEverything/SnpAlign/all.afa"
+# pathsToGsAlignVCFs = TEST_DATA_DIR + "vcfsFromScaffolds/*.vcf"
+snpAlignPath = DATA_DIR + "RedoingEverything/SnpAlign/" + namePrefix +".afa"
+snpIndexPath = DATA_DIR + "RedoingEverything/SnpAlign/" + namePrefix +"Indexes.txt"
 
-plinkOutputPath = "/Users/cazcullimore/Documents/ericksonLabCode/RedoingEverything/plinkFiles/"
-metadataFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/metaDataForMetaCatsWithExtraMastitis.tsv"
-megaCatStatsFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/RedoingEverything/metadataStats.tsv"
+plinkOutputPath = DATA_DIR + "RedoingEverything/plinkFiles/"
+metadataFilePath = DATA_DIR + "metaDataForMetaCatsWithExtraMastitis.tsv"
+megaCatStatsFilePath = DATA_DIR + "RedoingEverything/metadataStats.tsv"
 
-normalAlignPath = "/Users/cazcullimore/Documents/ericksonLabCode/RedoingEverything/" + namePrefix + "normalAlign.afa"
+normalAlignPath = DATA_DIR + "RedoingEverything/" + namePrefix + "normalAlign.afa"
 
 reRunScaffoldAndGsAlign = False
 reAlignSnps = True

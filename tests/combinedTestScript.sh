@@ -6,7 +6,7 @@ cd /Users/cazcullimore/Documents/ericksonLabCode/tests/tenAssembliesFromEachCate
 conda activate gsAlign; mkdir gsAlignOutputs; for fileName in *.fasta; do gsAlign -r   /Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.fasta -q $fileName -o scaffold_$fileName -t 16; done;
 mv *.vcf ./gsAlignOutputs/;
 rm *.maf;
-time python gsalignSNPsToMultipleAlign.py "/Users/cazcullimore/Documents/ericksonLabCode/gsAlignOutputs/*.vcf" ./SnpAlign/carefulAndFixedUsingOppositeStrand.afa;
+time python gsalignSNPsToMultipleAlign.py DATA_DIR + "gsAlignOutputs/*.vcf" ./SnpAlign/carefulAndFixedUsingOppositeStrand.afa;
 
 time python megaCatsPythonVersion.py ./SnpAlign/carefulAndFixedUsingOppositeStrand.afa /Users/cazcullimore/Documents/ericksonLabCode/metaDataForMetaCatsWithExtraMastitis.tsv ./megaCatsTest.txt True;
 time python /Users/cazcullimore/Documents/ericksonLabCode/parsingMegaCatsResults.py

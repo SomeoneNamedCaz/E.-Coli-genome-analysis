@@ -7,7 +7,7 @@ from Bio.Blast import NCBIXML
 # from Bio
 from Bio.Entrez import *
 import re
-sys.path.insert(1, '/Users/cazcullimore/Documents/ericksonLabCode/secondaryPythonScripts')
+sys.path.insert(1, '/Users/cazcullimore/dev/ericksonLabCode/secondaryPythonScripts')
 try:
     from secondaryPythonScripts.functions import *
 except ImportError:
@@ -16,7 +16,7 @@ except ImportError:
 class MyTestCase(unittest.TestCase):
 
     def testReadIn1ContigFasta(self):
-        fastaPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/unitTests/k-12.fasta"
+        fastaPath = DATA_DIR + "tests/unitTests/k-12.fasta"
         fileData = readInFastaAsList(fastaPath)
         print(len(fileData))
         with open(fastaPath) as file:
@@ -37,7 +37,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(fileData, [])# should be empty
 
     def testReadInAssemblyFasta(self):
-        fastaPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/tenAssembliesFromEachCategory/1465_SS_220.fasta"
+        fastaPath = TEST_DATA_DIR + "tenAssembliesFromEachCategory/1465_SS_220.fasta"
         fileData = readInFastaAsList(fastaPath)
         print(len(fileData))
         with open(fastaPath) as file:
@@ -57,8 +57,8 @@ class MyTestCase(unittest.TestCase):
 
 
     def testGetAssemblyContigs(self):
-        gbPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/unitTests/k-12.gbff"
-        fastaPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/unitTests/k-12.fasta"
+        gbPath = DATA_DIR + "tests/unitTests/k-12.gbff"
+        fastaPath = DATA_DIR + "tests/unitTests/k-12.fasta"
         index = 0
         gbContigs = getContigs(gbPath)
         fastaContigs = readInFastaAsList(fastaPath)[1:][::2]
@@ -72,14 +72,14 @@ class MyTestCase(unittest.TestCase):
                 raise Exception()
 
     def testGetFullGenomeContig(self):
-        gbPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/unitTests/k-12.gbff"
-        fastaPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/unitTests/k-12.fasta"
+        gbPath = DATA_DIR + "tests/unitTests/k-12.gbff"
+        fastaPath = DATA_DIR + "tests/unitTests/k-12.fasta"
         index = 0
         self.assertEqual(getContigs(gbPath), readInFastaAsList(fastaPath)[1:][::2])
 
     def testGetGenes(self): # test
         # this looks at if the genes are similar to what they should look like
-        testGbPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/scaffold_1465_SS_220.fasta.gbk"
+        testGbPath = TEST_DATA_DIR + "scaffold_1465_SS_220.fasta.gbk"
         
         genes = getGenesOnContigs(testGbPath, getContigs(testGbPath))
         geneAASeq = ""

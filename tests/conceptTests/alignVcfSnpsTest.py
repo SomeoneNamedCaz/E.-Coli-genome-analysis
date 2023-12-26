@@ -2,7 +2,7 @@ import re
 import unittest
 import sys
 import os
-sys.path.insert(1, '/Users/cazcullimore/Documents/ericksonLabCode/')
+sys.path.insert(1, '/Users/cazcullimore/dev/ericksonLabCode/')
 try: # so pycharm recognizes it
     from secondaryPythonScripts.functions import *
 except ImportError:
@@ -12,8 +12,8 @@ from alignVcfSnps import alignVcfSnps
 
 class MyTestCase(unittest.TestCase):
     def testSingleFile(self):
-        filePath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fake vcfs/test3.vcf"
-        outPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/snpAlign/singleFileSnps.afa"
+        filePath = TEST_DATA_DIR + "fake vcfs/test3.vcf"
+        outPath = TEST_DATA_DIR + "snpAlign/singleFileSnps.afa"
         expectedIndexes = ([308.0] + InsertIndexes(309,5) +
                            InsertIndexes(318,2) +
                            DeleteIndexes(319, 15) +
@@ -29,16 +29,16 @@ class MyTestCase(unittest.TestCase):
 
 
     def testInsertOverlap(self):
-        filePath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fake vcfs/insertOverlap*.vcf"
-        outPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/snpAlign/insertOverlap.afa"
+        filePath = TEST_DATA_DIR + "fake vcfs/insertOverlap*.vcf"
+        outPath = TEST_DATA_DIR + "snpAlign/insertOverlap.afa"
         indexFilePath = outPath[:-4] + "Indexes.txt"
         alignedSnps = alignVcfSnps(filePath, outFilePath=outPath, numSnpsRequired=1, ignoreRefSeq=True)
         self.assertEqual("ACCGTCGT",''.join(alignedSnps["insertOverlap2.vcf"]))
         self.assertEqual("ACCA----", ''.join(alignedSnps["insertOverlap1.vcf"]))
 
     def testInsertWithinDeletion(self):
-        filePath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fake vcfs/insertWithinDelete*.vcf"
-        outPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/snpAlign/insertWithinDelete.afa"
+        filePath = TEST_DATA_DIR + "fake vcfs/insertWithinDelete*.vcf"
+        outPath = TEST_DATA_DIR + "snpAlign/insertWithinDelete.afa"
         indexFilePath = outPath[:-4] + "Indexes.txt"
         alignedSnps = alignVcfSnps(filePath, outFilePath=outPath, numSnpsRequired=1, ignoreRefSeq=True)
         # test alignment
@@ -51,9 +51,9 @@ class MyTestCase(unittest.TestCase):
         self.assertListEqual(indexes, expectedIndexes)
 
     def testLotsOfFiles(self):
-        filePath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fake vcfs/test*.vcf"
-        # filePath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fakeScaffolds/gsAlignOutputs/test*.vcf"
-        outPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/snpAlign/lotsOfFIles.afa"
+        filePath = TEST_DATA_DIR + "fake vcfs/test*.vcf"
+        # filePath = TEST_DATA_DIR + "fakeScaffolds/gsAlignOutputs/test*.vcf"
+        outPath = TEST_DATA_DIR + "snpAlign/lotsOfFIles.afa"
         indexFilePath = outPath[:-4] + "Indexes.txt"
         alignedSnps = alignVcfSnps(filePath, outFilePath=outPath, numSnpsRequired=1, ignoreRefSeq=True)
         # test alignment
@@ -89,12 +89,12 @@ class MyTestCase(unittest.TestCase):
         self.assertListEqual(indexes, expectedIndexes)
         
     def testReferenceGenomeMatching(self):
-        gsAlignVCFs = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fake vcfs/test*.vcf"
-        # gsAlignVCFs = "/Users/cazcullimore/Documents/ericksonLabCode/AllAssembliesInOneFolder/ragtagOutputs/longestScaffoldFiles/gsAlignOutputs/*.vcf"#"/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/vcfsFromScaffolds/*.vcf"
-        alignedSnpPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/snpAlign/allSnps.afa"
+        gsAlignVCFs = TEST_DATA_DIR + "fake vcfs/test*.vcf"
+        # gsAlignVCFs = DATA_DIR + "AllAssembliesInOneFolder/ragtagOutputs/longestScaffoldFiles/gsAlignOutputs/*.vcf"#TEST_DATA_DIR + "vcfsFromScaffolds/*.vcf"
+        alignedSnpPath = TEST_DATA_DIR + "snpAlign/allSnps.afa"
         reRunAlignment = True
 
-        refSeq = readInFastaAsList("/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fakeScaffolds/testRef.fasta")[1]
+        refSeq = readInFastaAsList(TEST_DATA_DIR + "fakeScaffolds/testRef.fasta")[1]
         if not os.path.exists(alignedSnpPath) or reRunAlignment:
             alignVcfSnps(gsAlignVCFs,alignedSnpPath, numSnpsRequired=1)
         indexFilePath = alignedSnpPath[:-4] + "Indexes.txt"
@@ -129,16 +129,16 @@ class MyTestCase(unittest.TestCase):
         
     def testReconstructFakeGenomes(self):
         
-        pathToRefGenomeFasta = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fakeScaffolds/testRef.fasta"
-        # pathToRefGenomeGb = "/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.gbff"
+        pathToRefGenomeFasta = TEST_DATA_DIR + "fakeScaffolds/testRef.fasta"
+        # pathToRefGenomeGb = DATA_DIR + "refGenomes/k-12.gbff"
         namePrefix = "reconstructFakeGenomes"  # the name to give to start all the files created
-        genomeFastaFiles = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fakeScaffolds/*.fasta"
-        vcfFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fakeScaffolds/gsAlignOutputs/*.vcf"
+        genomeFastaFiles = TEST_DATA_DIR + "fakeScaffolds/*.fasta"
+        vcfFilePath = TEST_DATA_DIR + "fakeScaffolds/gsAlignOutputs/*.vcf"
         
-        normalAlignFastaPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/annotatedNormalAlignFiles/" + namePrefix + ".fasta"
+        normalAlignFastaPath = TEST_DATA_DIR + "annotatedNormalAlignFiles/" + namePrefix + ".fasta"
         
-        snpAlignPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/snpAlign/" + namePrefix + ".afa"
-        snpIndexPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/snpAlign/" + namePrefix + "Indexes.txt"
+        snpAlignPath = TEST_DATA_DIR + "snpAlign/" + namePrefix + ".afa"
+        snpIndexPath = TEST_DATA_DIR + "snpAlign/" + namePrefix + "Indexes.txt"
         
         # print("annotatedNormalAlignPath", annotatedNormalAlignPath)
         print("vcfFilePath", vcfFilePath)
@@ -161,15 +161,15 @@ class MyTestCase(unittest.TestCase):
             self.assertEqual(readInFastaAsList(file)[1], re.sub("-","", normalAlignNameToSeq[file.split("/")[-1]+".vcf"]))
 
     def testReconstructingSingleAlignement(self):
-        pathToRefGenomeFasta = "/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.fasta"
-        # pathToRefGenomeGb = "/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.gbff"
+        pathToRefGenomeFasta = DATA_DIR + "refGenomes/k-12.fasta"
+        # pathToRefGenomeGb = DATA_DIR + "refGenomes/k-12.gbff"
         namePrefix = "reconstructScaffold"  # the name to give to start all the files created
-        genomeFastaFile = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/scaffolds/longestScaffoldFiles/scaffold_1465_SS_220.fasta"
-        vcfFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/vcfsFromScaffolds/scaffold_1465_SS_220.fasta.vcf"
+        genomeFastaFile = TEST_DATA_DIR + "scaffolds/longestScaffoldFiles/scaffold_1465_SS_220.fasta"
+        vcfFilePath = TEST_DATA_DIR + "vcfsFromScaffolds/scaffold_1465_SS_220.fasta.vcf"
         
-        normalAlignFastaPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/annotatedNormalAlignFiles/" + namePrefix + ".fasta"
-        snpAlignPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/snpAlign/" + namePrefix + ".afa"
-        snpIndexPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/snpAlign/" + namePrefix + "Indexes.txt"
+        normalAlignFastaPath = TEST_DATA_DIR + "annotatedNormalAlignFiles/" + namePrefix + ".fasta"
+        snpAlignPath = TEST_DATA_DIR + "snpAlign/" + namePrefix + ".afa"
+        snpIndexPath = TEST_DATA_DIR + "snpAlign/" + namePrefix + "Indexes.txt"
         
         
         # print("annotatedNormalAlignPath", annotatedNormalAlignPath)

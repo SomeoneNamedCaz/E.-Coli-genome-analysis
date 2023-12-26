@@ -7,7 +7,7 @@
 # 		# megaCatsFile = "./megaCatsTestFile.tsv"
 # 		# snpGenomePath = "./testAlignment.afa"
 # 		# snpIndexesPath = "./testAlignmentIndexes.txt"
-# 		# refGenome = "/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.gbff"
+# 		# refGenome = DATA_DIR + "refGenomes/k-12.gbff"
 # 		# metaDataFilePath = "./testMetadata.tsv"
 # 		#
 # 		#

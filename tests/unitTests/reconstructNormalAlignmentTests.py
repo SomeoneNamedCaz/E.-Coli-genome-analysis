@@ -1,18 +1,18 @@
 import unittest
 import sys
-sys.path.insert(1, '/Users/cazcullimore/Documents/ericksonLabCode/')
+sys.path.insert(1, '/Users/cazcullimore/dev/ericksonLabCode/')
 from alignVcfSnps import *
 from megaCatsPythonVersion import *
 from parsingMegaCatsResults import *
 from reconstructNormalAlignment import *
 import unittest
-sys.path.insert(1, '/Users/cazcullimore/Documents/ericksonLabCode/secondaryPythonScripts')
+sys.path.insert(1, '/Users/cazcullimore/dev/ericksonLabCode/secondaryPythonScripts')
 from secondaryPythonScripts.functions import *
 
 class MyTestCase(unittest.TestCase):
 	def testAddRefNucs(self):
-		# testFastaPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fakeFastas/test2.fasta"
-		# refFastaPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fakeFastas/testRef.fasta"
+		# testFastaPath = TEST_DATA_DIR + "fakeFastas/test2.fasta"
+		# refFastaPath = TEST_DATA_DIR + "fakeFastas/testRef.fasta"
 		self.assertEqual(addRefNucs("ACTG", [1,2],"123456789"),"1AC456789")
 		self.assertEqual(addRefNucs("ACTG", [1, 2,6,9], "0123456789"), "0AC345T78G")
 		self.assertEqual(addRefNucs("ACTG", [1.0, 1.001,6,9],"0123456789"), "0AC2345T78G")
@@ -21,8 +21,8 @@ class MyTestCase(unittest.TestCase):
 
 	def testReconstructNormalAlignment(self):
 		self.maxDiff = None
-		testFastaPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fakeFastas/test2.fasta"
-		refFastaPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/fakeFastas/testRef.fasta"
+		testFastaPath = TEST_DATA_DIR + "fakeFastas/test2.fasta"
+		refFastaPath = TEST_DATA_DIR + "fakeFastas/testRef.fasta"
 		snpAlignText = "A----T"
 		snpGenomePath = "tempSnpAlign.afa"
 		snpIndexPath = "tempSnpAlignIndexes.txt"

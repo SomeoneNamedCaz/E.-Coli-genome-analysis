@@ -1,11 +1,11 @@
 import sys
-sys.path.insert(1, '/Users/cazcullimore/Documents/ericksonLabCode/')
+sys.path.insert(1, '/Users/cazcullimore/dev/ericksonLabCode/')
 from alignVcfSnps import *
 from megaCatsPythonVersion import *
 from parsingMegaCatsResults import *
 from reconstructNormalAlignment import *
 import unittest
-sys.path.insert(1, '/Users/cazcullimore/Documents/ericksonLabCode/secondaryPythonScripts')
+sys.path.insert(1, '/Users/cazcullimore/dev/ericksonLabCode/secondaryPythonScripts')
 try:
     from secondaryPythonScripts.functions import *
 except ImportError:
@@ -15,15 +15,15 @@ except ImportError:
 class MyTestCase(unittest.TestCase):
     def __init__(self, arg):
         super().__init__(arg)
-        self.annotatedRefGenomePath = "/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.gbff"
+        self.annotatedRefGenomePath = DATA_DIR + "refGenomes/k-12.gbff"
     def testSingleAlignment(self):
         pass
-        pathToRefGenomeFasta = "/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.fasta"
-        pathToRefGenomeGb = "/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.gbff"
+        pathToRefGenomeFasta = DATA_DIR + "refGenomes/k-12.fasta"
+        pathToRefGenomeGb = DATA_DIR + "refGenomes/k-12.gbff"
         namePrefix = "shortSingleAlignment"  # the name to give to start all the files created
-        # vcfFilePath = glob("/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/vcfsFromScaffolds/*.vcf")[0]
-        vcfFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/filesToReplicateSingleAignError/shortenedScaffold_1465_SS_220.vcf"
-        scaffoldDir = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/filesToReplicateSingleAignError/"
+        # vcfFilePath = glob(TEST_DATA_DIR + "vcfsFromScaffolds/*.vcf")[0]
+        vcfFilePath = TEST_DATA_DIR + "filesToReplicateSingleAignError/shortenedScaffold_1465_SS_220.vcf"
+        scaffoldDir = TEST_DATA_DIR + "filesToReplicateSingleAignError/"
         scaffoldName = "shortenedScaffold_1465_SS_220.fasta.gbk"
         scaffoldGb = scaffoldDir + scaffoldName
         annotateScaffoldFile = True
@@ -35,22 +35,22 @@ class MyTestCase(unittest.TestCase):
         self.reconstructAnnotateAndCompareGenomes(vcfFilePath,scaffoldGbs=scaffoldGb, namePrefix=namePrefix,reAlignSnps=True,redoNormalAligment= True,reAnnotate= True)
         
     def testTwoGenomeAlignmnet(self):
-        pathToRefGenomeFasta = "/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.fasta"
-        pathToRefGenomeGb = "/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.gbff"
+        pathToRefGenomeFasta = DATA_DIR + "refGenomes/k-12.fasta"
+        pathToRefGenomeGb = DATA_DIR + "refGenomes/k-12.gbff"
         namePrefix = "singleAlignment"  # the name to give to start all the files created
-        # vcfFilePath = glob("/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/vcfsFromScaffolds/*.vcf")[0]
-        genomeFastaFile = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/vcfsFromScaffolds/scaffold_1465_SS_220.fasta.vcf"
-        vcfFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/vcfsFromScaffolds/scaffold_1465_SS_220.fasta.vcf"
-        scaffoldGb = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/scaffold_1465_SS_220.fasta.gbk"
+        # vcfFilePath = glob(TEST_DATA_DIR + "vcfsFromScaffolds/*.vcf")[0]
+        genomeFastaFile = TEST_DATA_DIR + "vcfsFromScaffolds/scaffold_1465_SS_220.fasta.vcf"
+        vcfFilePath = TEST_DATA_DIR + "vcfsFromScaffolds/scaffold_1465_SS_220.fasta.vcf"
+        scaffoldGb = TEST_DATA_DIR + "scaffold_1465_SS_220.fasta.gbk"
         # reconstructAnnotateAndCompareGenomes(vcfFilePath, scaffoldGbs=scaffoldGb, namePrefix=namePrefix)
         # reconstructAnnotateAndCompareGenomes()
     def testMultiAlignment(self):
-        pathToRefGenomeFasta = "/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.fasta"
-        pathToRefGenomeGb = "/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.gbff"
+        pathToRefGenomeFasta = DATA_DIR + "refGenomes/k-12.fasta"
+        pathToRefGenomeGb = DATA_DIR + "refGenomes/k-12.gbff"
         namePrefix = "multiAlignment"  # the name to give to start all the files created
-        vcfFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/*.vcf"
-        scaffoldGb = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/scaffold_*.gbk"
-        scaffoldDir = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/"
+        vcfFilePath = TEST_DATA_DIR + "*.vcf"
+        scaffoldGb = TEST_DATA_DIR + "scaffold_*.gbk"
+        scaffoldDir = TEST_DATA_DIR + ""
         annotateScaffoldFiles = False
         if annotateScaffoldFiles:
             os.system(
@@ -60,21 +60,21 @@ class MyTestCase(unittest.TestCase):
             #         "${fileName%\".gbk\"} -unique -sen -one; mv output.vcf " + vcfFilePath)
         
         
-        self.reconstructAnnotateAndCompareGenomes(vcfFilePath, scaffoldGbs=scaffoldGb, namePrefix=namePrefix, normalAlignPath="/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/annotatedNormalAlignFiles/multiAlignNormalFiles/",
+        self.reconstructAnnotateAndCompareGenomes(vcfFilePath, scaffoldGbs=scaffoldGb, namePrefix=namePrefix, normalAlignPath=TEST_DATA_DIR + "annotatedNormalAlignFiles/multiAlignNormalFiles/",
                                                   reAlignSnps=False,redoNormalAligment= False,reAnnotate= False)
 
-    def reconstructAnnotateAndCompareGenomes(self,vcfs, scaffoldGbs, namePrefix, normalAlignPath="/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/annotatedNormalAlignFiles/",
+    def reconstructAnnotateAndCompareGenomes(self,vcfs, scaffoldGbs, namePrefix, normalAlignPath=TEST_DATA_DIR + "annotatedNormalAlignFiles/",
                                              reAlignSnps=True,redoNormalAligment= True,reAnnotate= True):
         
-        annotatedRefGenomePath = "/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.gbff"
+        annotatedRefGenomePath = DATA_DIR + "refGenomes/k-12.gbff"
         namePrefix = namePrefix  # the name to give to start all the files created
-        # vcfs = glob("/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/vcfsFromScaffolds/*.vcf")[0]
-        # scaffoldGb = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/annotatedNormalAlignFiles/scaffold_1465_SS_220.fasta.gbk"
+        # vcfs = glob(TEST_DATA_DIR + "vcfsFromScaffolds/*.vcf")[0]
+        # scaffoldGb = TEST_DATA_DIR + "annotatedNormalAlignFiles/scaffold_1465_SS_220.fasta.gbk"
         
         combinedNormalAlignFastaPath = normalAlignPath + namePrefix + ".fasta"
         
-        snpAlignPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/snpAlign/" + namePrefix + ".afa"
-        snpIndexPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/snpAlign/" + namePrefix + "Indexes.txt"
+        snpAlignPath = TEST_DATA_DIR + "snpAlign/" + namePrefix + ".afa"
+        snpIndexPath = TEST_DATA_DIR + "snpAlign/" + namePrefix + "Indexes.txt"
         
         print("scaffold gbs", scaffoldGbs)
         print("annotatedNormalAlignPath", combinedNormalAlignFastaPath)
@@ -235,27 +235,27 @@ class MyTestCase(unittest.TestCase):
                                  "nhaR", "product",True)]
         normalAlignGenes = {"scaffold_1466_SS_221.fasta.gbk":{"nhaR": Gene(18715,19615, 'ATGTCTCATATCAATTACAACCACTTGTATTACTTCTGGCATGTCTACAAAGAAGGTTCTGTGGTTGGCGCAGCGGAGGCGCTTTATTTAACACCACAAACCATTACCGGGCAGATCCGGGCGCTGGAAGAGCGCCTGCAAGGGAAACTATTTAAGCGTAAAGGACGTGGTCTGGAACCCAGCGAACTGGGGGAACTGGTCTATCGCTATGCCGATAAAATGTTCACCTTAAGCCAGGAAATGCTGGATATCGTCAACTATCGCAAAGAGTCCAACTTATTGTTTGATGTTGGTGTGGCAGATGCACTTTCCAAACGTCTGGTCAGCAGTGTTCTGGATGCCGCAGTTGTGGAAGACGAGCAGATCCATCTACGCTGTTTCGAATCGACGCACGAGATGCTTTTAGAGCAGTTGAGTCAGCATAAACTGGATATGATCATCTCTGACTGTCCGATCGATTCCACTCAGCAGGAAGGGCTGTTTTCCATGAAAATTGGCGAATGTGGTGTCAGTTTCTGGTGCACTAACCCACTACCAGAAAAGCCGTTTCCTGCCTGTCTTGAAGAGCGTCGTTTACTTATTCCGGGGCGTCGCTCAATGTTGGGGCGTAAACTATTAAACTGGTTTAACTCCCAGGGCTTGAACGTCGAAATTTTGGGTGAGTTTGATGATGCTGCGTTGATGAAAGCCTTTGGGGCGACGCATAACGCTATTTTCGTTGCACCTTCGCTTTACGCTAATGATTTCTATAACGATGACTCGGTTGTGGAGATAGGCCGTGTTGAGAACGTGATGGAAGAGTACCACGCGATTTTTGCCGAAAGGATGATTCAGCACCCGGCGGTACAGCGAATCTGCAATACGGATTATTCTGCGCTTTTTAGTCCAGCGGTGCGTTAA',
                                  "nhaR", "product",True)}}
-        vcfFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/*.vcf"
+        vcfFilePath = TEST_DATA_DIR + "*.vcf"
         snps = readInSnps(glob(vcfFilePath), refGenomeSeq=getContigs(self.annotatedRefGenomePath)[0], ignoreRefSeq=False)
         self.CompareGenomes(indexes, scaffoldGenesFromAllFiles, refGenes, normalAlignGenes, snps, {})
     def testCompareGenomesApaH(self):
-        snpIndexPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/snpAlign/MultiAlignmentIndexes.txt"
+        snpIndexPath = TEST_DATA_DIR + "snpAlign/MultiAlignmentIndexes.txt"
         scaffoldGenesFromAllFiles = {"scaffold_1466_SS_221.fasta.gbk":{"apaH": Gene(36990, 37839, 'ATGGCGACATACCTTATTGGCGACGTTCATGGTTGTTACGATGAACTGATCGCATTGCTGCATAAAGTAGAATTTACCCCTGGGAAAGATACCCTCTGGCTGACGGGCGATCTGGTCGCGCGCGGCCCGGGTTCGCTGGATGTTCTGCGCTATGTGAAATCCTTAGGCGACAGCGTACGTCTGGTGCTGGGTAATCACGATCTGCATCTGCTGGCGGTATTTGCCGGGATCAGCCGCAATAAACCGAAAGATCGCCTGACACCGCTGCTGGAAGCGCCGGATGCCGACGAGCTGCTTAACTGGCTGCGTCGCCAGCCTTTGCTGCAAATCGACGAAGAGAAAAAGTTGGTGATGGCCCACGCCGGGATCACGCCGCAGTGGGATCTGCAGACCGCCAAAGAGTGCGCGCGCGATGTAGAAGCGGTGCTGTCGAGTGACTCCTATCCCTTCTTTCTTGATGCCATGTACGGCGATATGCCAAATAACTGGTCACCGGAATTGCGGGGGCTGGGAAGACTGCGTTTTATCACCAACGCCTTTACCCGTATGCGTTTTTGCTTCCCGAACGGTCAACTGGATATGTACAGCAAAGAATCGCCGGAAGAGGCCCCTGCCCCACTGAAACCGTGGTTTGCGATTCCTGGCCCCGTCGCTGAAGAGTACAACATCGCCTTTGGTCACTGGGCATCGCTGGAAGGCAAAGGTACGCCGGAAGGTATTTACGCGCTGGATACCGGCTGCTGCTGGGGTGGTACATTAACCTGCCTGCGCTGGGAAGATAAACAGTATTTTGTCCAGCCGTCGAACCGGCATAAGGATTTGAGTGAGGGAGAGGCGGTAGCGTCTTAA',
                                  "apaH", "product",False)}}
         refGenes = [Gene(50379,51222, 'ATGGCGACATACCTTATTGGCGACGTTCATGGTTGTTACGATGAACTGATCGCATTGCTGCATAAAGTAGAATTTACCCCTGGGAAAGATACCCTCTGGCTGACGGGCGATCTGGTCGCGCGCGGGCCGGGTTCGCTGGATGTTCTGCGCTATGTGAAATCCTTAGGCGACAGCGTACGTCTGGTGCTGGGCAATCACGATCTGCATCTGCTGGCGGTATTTGCCGGGATCAGCCGCAATAAACCGAAAGATCGCCTGACACCGCTGCTGGAAGCGCCGGATGCCGACGAGCTGCTTAACTGGCTGCGGCGCCAGCCTCTGCTGCAAATCGACGAAGAGAAAAAGCTGGTGATGGCCCACGCAGGGATCACGCCGCAGTGGGATCTGCAGACCGCCAAAGAGTGCGCACGCGATGTAGAAGCGGTGCTATCGAGTGACTCCTATCCCTTCTTTCTTGATGCCATGTACGGCGATATGCCAAATAACTGGTCACCGGAATTGCGGGGGCTGGGAAGACTGCGTTTTATCACCAACGCTTTTACCCGTATGCGTTTTTGCTTCCCGAACGGTCAACTGGATATGTACAGCAAAGAATCGCCGGAAGAGGCCCCTGCCCCACTGAAACCGTGGTTTGCGATTCCTGGCCCTGTCGCTGAAGAATACAGCATCGCCTTTGGTCACTGGGCATCGCTGGAGGGCAAAGGTACGCCGGAAGGTATATACGCGCTGGATACCGGCTGCTGCTGGGGTGGTACATTAACCTGCCTGCGCTGGGAAGATAAACAGTATTTTGTCCAGCCGTCGAACCGGCATAAGGATTTGGGCGAAGCGGCGGCGTCTTAA',
                                  "apaH", "product",False)]
         normalAlignGenes = {"scaffold_1466_SS_221.fasta.gbk":{"apaH": Gene(50377,51220, 'ATGGCGACATACCTTATTGGCGACGTTCATGGTTGTTACGATGAACTGATCGCATTGCTGCATAAAGTAGAATTTACCCCTGGGAAAGATACCCTCTGGCTGACGGGCGATCTGGTCGCGCGCGGCCCGGGTTCGCTGGATGTTCTGCGCTATGTGAAATCCTTAGGCGACAGCGTACGTCTGGTGCTGGGTAATCACGATCTGCATCTGCTGGCGGTATTTGCCGGGATCAGCCGCAATAAACCGAAAGATCGCCTGACACCGCTGCTGGAAGCGCCGGATGCCGACGAGCTGCTTAACTGGCTGCGTCGCCAGCCTTTGCTGCAAATCGACGAAGAGAAAAAGTTGGTGATGGCCCACGCCGGGATCACGCCGCAGTGGGATCTGCAGACCGCCAAAGAGTGCGCGCGCGATGTAGAAGCGGTGCTGTCGAGTGACTCCTATCCCTTCTTTCTTGATGCCATGTACGGCGATATGCCAAATAACTGGTCACCGGAATTGCGGGGGCTGGGAAGACTGCGTTTTATCACCAACGCCTTTACCCGTATGCGTTTTTGCTTCCCGAACGGTCAACTGGATATGTACAGCAAAGAATCGCCGGAAGAGGCCCCTGCCCCACTGAAACCGTGGTTTGCGATTCCTGGCCCCGTCGCTGAAGAGTACAACATCGCCTTTGGTCACTGGGCATCGCTGGAAGGCAAAGGTACGCCGGAAGGTATTTACGCGCTGGATACCGGCTGCTGCTGGGGTGGTACATTAACCTGCCTGCGCTGGGAAGATAAACAGTATTTTGTCCAGCCGTCGAACCGGCATAAGGATTTGGGCGAAGCGGCGGCGTCTTAA',
                                  "apaH", "product",False)}}
-        vcfFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/*.vcf"
+        vcfFilePath = TEST_DATA_DIR + "*.vcf"
         snps = readInSnps(glob(vcfFilePath), refGenomeSeq=getContigs(self.annotatedRefGenomePath)[0], ignoreRefSeq=False)
         with open(snpIndexPath) as indexes:
             self.CompareGenomes(indexes, scaffoldGenesFromAllFiles, refGenes, normalAlignGenes, snps, {})
     def testSnpAlignMatchesScaffold(self): #doesn't work because doesn't start from the same place and any indels mess it up
-        pathToRefGenomeFasta = "/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.fasta"
-        pathToRefGenomeGb = "/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.gbff"
+        pathToRefGenomeFasta = DATA_DIR + "refGenomes/k-12.fasta"
+        pathToRefGenomeGb = DATA_DIR + "refGenomes/k-12.gbff"
         namePrefix = "snpAlignMatchesScaffold"  # the name to give to start all the files created
-        vcfFilePath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/output.vcf"
-        scaffoldFastaPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/scaffold_1465_SS_220.fasta"
+        vcfFilePath = TEST_DATA_DIR + "output.vcf"
+        scaffoldFastaPath = TEST_DATA_DIR + "scaffold_1465_SS_220.fasta"
         refSeq = readInFastaAsList(pathToRefGenomeFasta)[1]
         snpAlign, indexes, frameShifts = alignVCFSnpsHelper([vcfFilePath],refSeq=refSeq,thingsToSkip=[],ignoreRefSeq=False,numSnpsRequired=1)
         scaffoldSeq = readInFastaAsList(scaffoldFastaPath)[1]

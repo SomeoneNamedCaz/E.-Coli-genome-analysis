@@ -11,8 +11,8 @@ def makeMLData(snpAlign, metadata):
 
 
 if __name__ == "__main__":
-	metadataPath = "/Users/cazcullimore/Documents/ericksonLabCode/metaDataForMetaCatsWithExtraMastitis.tsv"
-	snpAlignPath = "/Users/cazcullimore/Documents/ericksonLabCode/RedoingEverything/SnpAlign/50jM.afa"
+	metadataPath = DATA_DIR + "metaDataForMetaCatsWithExtraMastitis.tsv"
+	snpAlignPath = DATA_DIR + "RedoingEverything/SnpAlign/50jM.afa"
 	outFilePath = "/Users/cazcullimore/Documents/mlData.csv"
 	snpAlign = readInFastaAsDict(snpAlignPath)
 	metadata = readMetaDataAsDict(metadataPath)

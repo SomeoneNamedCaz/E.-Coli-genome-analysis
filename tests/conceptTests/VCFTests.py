@@ -6,9 +6,9 @@ class MyTestCase(unittest.TestCase):
 
 
     def testForWeirdThingsInVCFFiles(self):
-        fastaPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/unitTests/k-12.fasta"
-        gbPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/unitTests/k-12.gbff"
-        vcfPaths = "/Users/cazcullimore/Documents/ericksonLabCode/k-12RefGenomeAnalysisFiles/AllAssemblies/APEC_assemblies/ragtagOutputs/longestScaffoldFiles/carefulGsAlign/*.vcf"
+        fastaPath = DATA_DIR + "tests/unitTests/k-12.fasta"
+        gbPath = DATA_DIR + "tests/unitTests/k-12.gbff"
+        vcfPaths = DATA_DIR + "k-12RefGenomeAnalysisFiles/AllAssemblies/APEC_assemblies/ragtagOutputs/longestScaffoldFiles/carefulGsAlign/*.vcf"
 
         indexOfRefColumn = 3
         indexOfPositionColumn = 1
@@ -27,9 +27,9 @@ class MyTestCase(unittest.TestCase):
                         print(filePath,"is lying")
                         print("vcf ref nucs", refNucs,"at", snpPositionIndex, "aren't", genomeDNA[snpPositionIndex:len(refNucs) + snpPositionIndex])
     def testByParseVCFs(self):
-        refFastaPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/unitTests/k-12.fasta"
+        refFastaPath = DATA_DIR + "tests/unitTests/k-12.fasta"
         refGenomeSeq = readInFastaAsList(refFastaPath)[1]
-        vcfs = glob("/Users/cazcullimore/Documents/ericksonLabCode/k-12RefGenomeAnalysisFiles/AllAssemblies/APEC_assemblies/ragtagOutputs/longestScaffoldFiles/carefulGsAlign/*.vcf")
+        vcfs = glob(DATA_DIR + "k-12RefGenomeAnalysisFiles/AllAssemblies/APEC_assemblies/ragtagOutputs/longestScaffoldFiles/carefulGsAlign/*.vcf")
         snps = readInSnps(vcfs, refGenomeSeq, ignoreRefSeq=True)
         snps.sort(key=lambda a: a[1])
         lastPos = -1

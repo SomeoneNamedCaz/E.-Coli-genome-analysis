@@ -264,7 +264,7 @@ def alignVCFSnpsHelper(gsAlignFiles, refSeq, thingsToSkip=[], numSnpsRequired=10
     indexesToWrite += newIndexes
     return dataToWrite, indexesToWrite, frameShiftsToWrite
 
-def alignVcfSnps(gsAlignPathString, outFilePath, thingsToSkip=[], numSnpsRequired=10, debug = False, refSeqPath="/Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.fasta", ignoreRefSeq=False, includeGenomeWithoutAnySnps=True):
+def alignVcfSnps(gsAlignPathString, outFilePath, thingsToSkip=[], numSnpsRequired=10, debug = False, refSeqPath=DATA_DIR + "refGenomes/k-12.fasta", ignoreRefSeq=False, includeGenomeWithoutAnySnps=True):
 
     if gsAlignPathString.split(":")[0] == "MatchFile": # MatchFile:<file to match>:<pathPrefix>
         # this block is for using the same input files that were used in a previous run of this program
