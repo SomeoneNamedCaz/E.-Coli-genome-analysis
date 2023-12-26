@@ -87,6 +87,8 @@ def doMegaCatsStats(alignedFilePath, metadataFilePath, outFilePath, matchMegacat
                 # nameOfNucCounter = "".join(seqNameToMetaDataType[nameOfSeq])
     
                 for i in range(len(possibleClassValues)):
+                    if nameOfSeq == "genomeWithoutAnySnps":
+                        continue
                     nameOfNucCounter = seqNameToMetaDataType[nameOfSeq][i]
                     charIndex = -1
                     for char in line:
@@ -153,9 +155,10 @@ def doMegaCatsStats(alignedFilePath, metadataFilePath, outFilePath, matchMegacat
                 else:
                     residueDiversity = currentNucCounter1.nameOfGroup + str(dist1) + "|" + currentNucCounter2.nameOfGroup + str(dist2)
                 sparseTable = "N"
-                outFile.write("\t".join([str(nucIndex+int(matchMegacatsStyle)),str(chi2),str(pVal),str(degOfFreedom), sparseTable,
-                    residueDiversity, classNames[metaDataCategoryIndex]]))
-                outFile.write("\n")
+                if pVal < 0.05:
+                    outFile.write("\t".join([str(nucIndex+int(matchMegacatsStyle)),str(chi2),str(pVal),str(degOfFreedom), sparseTable,
+                        residueDiversity, classNames[metaDataCategoryIndex]]))
+                    outFile.write("\n")
                 
                 
 if __name__ == "__main__":
