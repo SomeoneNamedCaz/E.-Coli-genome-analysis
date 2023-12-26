@@ -17,6 +17,26 @@ def addRefNucs(seq, indexes, referenceSeq):
     nucsToInsert = referenceSeq[int(lastIndex) + 1:]
     alignedSeq.append(nucsToInsert)
     return "".join(alignedSeq)
+
+def reconstructNormalAlignmentHelper(refSeq, snpIndexes, alignedSnps, ):
+    
+    numThreads = 1
+    t1 = time()
+    pool = ThreadPoolExecutor(numThreads)
+    futures = []
+    
+    for key in alignedSnps.keys():
+        futures.append((key, pool.submit(addRefNucs, alignedSnps[key], snpIndexes, refSeq)))
+    
+    i = 0
+    alignedGenomes = {}
+    for keyAndfuture in futures:
+        alignedGenomes[keyAndfuture[0]] = keyAndfuture[1].result()
+        i += 1
+    print(numThreads, "threads took", time() - t1, "seconds")
+    
+    
+    return alignedGenomes
 def reconstructNormalAlignment(snpGenomePath, snpIndexesPath, refGenomePath, outputPath):
     print("snp genome path", snpGenomePath)
     print("index path", snpIndexesPath)
@@ -37,7 +57,7 @@ def reconstructNormalAlignment(snpGenomePath, snpIndexesPath, refGenomePath, out
             snpIndexes.append(line)
     
     # load snp genomes
-    alignedGenomes = {}
+    alignedSnps = {}
     with open(snpGenomePath) as file:
         fileName = "somethingBroke" # should be written to first
         for line in file:
@@ -45,26 +65,12 @@ def reconstructNormalAlignment(snpGenomePath, snpIndexesPath, refGenomePath, out
             if line[0] == ">":
                 fileName = line[1:]
             else:
-                alignedGenomes[fileName] = line
+                alignedSnps[fileName] = line
 
+    alignedGenomes = reconstructNormalAlignmentHelper(refSeq, snpIndexes, alignedSnps)
     
-    numThreads = 1
-    t1 = time()
-    pool = ThreadPoolExecutor(numThreads)
-    futures = []
-    
-    for key in alignedGenomes.keys():
-        futures.append((key,pool.submit(addRefNucs,alignedGenomes[key], snpIndexes, refSeq)))
-    
-    i = 0
-    for keyAndfuture in futures:
-        alignedGenomes[keyAndfuture[0]] = keyAndfuture[1].result()
-        # print("i: ", i)
-        i += 1
-    print(numThreads,"threads took", time() - t1, "seconds")
-    
-    if not os.path.exists("/".join(outputPath.split("/")[-1:])) and outputPath.count("/") != 0:
-        os.mkdir("/".join(outputPath.split("/")[-1:]))
+    if not os.path.exists("/".join(outputPath.split("/")[:-1])) and outputPath.count("/") != 0:
+        os.mkdir("/".join(outputPath.split("/")[:-1]))
     
     with open(outputPath,"w") as outFile:
         for key in alignedGenomes.keys():

@@ -79,28 +79,51 @@ class MyTestCase(unittest.TestCase):
 
     def testGetGenes(self): # test
         # this looks at if the genes are similar to what they should look like
-        testGb = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/gbks/1465_SS_220.fasta.gbk"
+        testGbPath = "/Users/cazcullimore/Documents/ericksonLabCode/tests/testFiles/scaffold_1465_SS_220.fasta.gbk"
         
-        genes = getGenesOnContigs(testGb, getContigs(testGb))
-        for geneName, geneSeq in genes.items():
-            blastResult = NCBIWWW.qblast("blastn", "nt", geneSeq, alignments=10)
-            parsedResult = NCBIXML.parse(blastResult)
-            item = next(parsedResult)
-            seq_record = SeqIO.read(item, "gb")
-            nucleotide_accession = seq_record.annotations["db_source"]
-
-            nucl_id = nucleotide_accession.split()[-1]
-
-            for alignment in item.alignments:
-                for hsp in alignment.hsps:
-                    print(hsp)
-            # blastResult
-            handle = efetch(db="nucleotide", id=item.alignments[0].hit_id, rettype="gb",retmode="text", query_key="aroC", email="cazvash9.student.byu.edu")
-            # for xmlLine in blastResult:
-            #     if "<Hsp_hseq>" in xmlLine:
-            #         re.findall(r"<Hsp_hseq>(.+)</Hsp_hseq>")
-            # print("".join(blastResult))
-        print("done")
+        genes = getGenesOnContigs(testGbPath, getContigs(testGbPath))
+        geneAASeq = ""
+        inFeatures = False
+        inCDS = False
+        inTranslation = False
+        with open(testGbPath) as testGb:
+            geneName = "no name"
+            for line in testGb:
+                line = line.strip()
+                cols = line.split()
+                if len(cols) == 0:
+                    continue
+                if cols[0] == "FEATURES":
+                    inFeatures = True
+                elif line == 'ORIGIN':
+                    inCDS = False
+                elif inFeatures:  # if in annotations
+                    if cols[0] == "CDS":
+                        inCDS = True
+                        inTranslation = False
+                    elif cols[0] == "gene":
+                        inCDS = False
+                        inTranslation = False
+                        try:
+                            print("\n"+genes[geneName].sequence)
+                            print(geneName, geneAASeq)
+                            print(translate(genes[geneName].sequence, makeCodonDictionary()))
+                            self.assertEqual(geneAASeq[1:], translate(genes[geneName].sequence, makeCodonDictionary())[1:])
+                            # exit(0)
+                            geneName = "no name"
+                        except KeyError:
+                            pass
+                    elif inCDS:
+                        if line[:7] == '/gene="':
+                            geneName = re.sub('/gene="', "", line)[:-1]
+                        if "/translation=\"" in line:
+                            inTranslation = True
+                            geneAASeq = re.sub("(/translation=\")|\"", "", line)
+                        elif inTranslation:
+                            geneAASeq += re.sub('"', "",line)
+                            if '"' in line:
+                                inTranslation = False
+        
 
     # def testTwoFilesHaveSameInfo(self):
     #     filesContainTheSameInformation()
