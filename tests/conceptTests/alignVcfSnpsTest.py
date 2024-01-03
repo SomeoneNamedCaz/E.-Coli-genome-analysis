@@ -75,7 +75,7 @@ class MyTestCase(unittest.TestCase):
                            + InsertIndexes(318, 8)
                            + DeleteIndexes(319, 15)
                            + DeleteIndexes(340, 6)
-                           + InsertIndexes(439, 18)  #
+                           + InsertIndexes(439, 18)
                            + DeleteIndexes(440, 2)
                            + InsertIndexes(442, 6)
                            + DeleteIndexes(443, 3)

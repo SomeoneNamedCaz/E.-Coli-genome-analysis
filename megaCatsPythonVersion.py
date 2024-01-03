@@ -4,7 +4,7 @@ import sys
 from scipy import stats
 import numpy as np
 import copy
-def doMegaCatsStats(alignedFilePath, metadataFilePath, outFilePath, matchMegacatsStyle=True):
+def calculateMegaCatsStats(alignedFilePath, metadataFilePath, outFilePath, matchMegacatsStyle=True):
     charToIndex = {"A": 0, "T": 1, "C": 2, "G": 3, "-": 4, "N": 5}
     indexToChar = {}
     for k,v in charToIndex.items():
@@ -155,6 +155,8 @@ def doMegaCatsStats(alignedFilePath, metadataFilePath, outFilePath, matchMegacat
                 else:
                     residueDiversity = currentNucCounter1.nameOfGroup + str(dist1) + "|" + currentNucCounter2.nameOfGroup + str(dist2)
                 sparseTable = "N"
+                if sum([elt < 5 and elt != 0 for elt in dist1]) > 0 or sum([elt < 5 and elt != 0 for elt in dist2]) > 0:
+                    sparseTable = "Y"
                 if pVal < 0.05:
                     outFile.write("\t".join([str(nucIndex+int(matchMegacatsStyle)),str(chi2),str(pVal),str(degOfFreedom), sparseTable,
                         residueDiversity, classNames[metaDataCategoryIndex]]))
@@ -166,4 +168,4 @@ if __name__ == "__main__":
     metadataFilePath = sys.argv[2]
     outFilePath = sys.argv[3]
     matchMegacatsStyle = bool(sys.argv[4])
-    doMegaCatsStats(snpAlignmentFilePath, metadataFilePath, outFilePath, matchMegacatsStyle)
+    calculateMegaCatsStats(snpAlignmentFilePath, metadataFilePath, outFilePath, matchMegacatsStyle)

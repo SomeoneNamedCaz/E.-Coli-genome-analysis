@@ -90,7 +90,7 @@ if __name__ == "__main__":
     print("snp genome path", snpGenomePath)
     print("index path", snpIndexesPath)
     
-    refGenomePath = sys.argv[3]  # .gbff file
+    refGenomePath = sys.argv[3]  # .gbff phylogroupSnpFile
     
-    outputPath = sys.argv[4]  # with file
+    outputPath = sys.argv[4]  # with phylogroupSnpFile
     reconstructNormalAlignment(snpGenomePath, snpIndexesPath, refGenomePath, outputPath)

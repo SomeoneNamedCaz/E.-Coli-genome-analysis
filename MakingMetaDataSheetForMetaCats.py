@@ -9,7 +9,7 @@ catagoryPaths.append("./DownloadingFilesFromNCBI/MissedMastitisCombinedFastas/*.
 
 with open(metadataPath, "w") as file:
     # for catagoryPath in catagoryPaths:
-    #     file.write(catagoryPath.split("/")[-2] + "\t")
+    #     phylogroupSnpFile.write(catagoryPath.split("/")[-2] + "\t")
 
     file.write("strainName\tanimal\tpathogenicity\n")
     for catagoryPath in catagoryPaths:

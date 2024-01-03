@@ -16,9 +16,9 @@ for fileName in glob(pathBeginning + "/ragtagOutputs/*/ragtag.scaffolds.fasta"):
 
 # for fileName in glob("./AllAssemblies/GCF_003018575.1_ASM301857v1_genomicCopy.fna"):
 #     uniqueName = fileName.split("/")[-1]
-#     with open(fileName) as file, open("./AllAssemblies/refSeqGCF_003018575.1_ASM301857JustChromosome.fna", "w") as outFile:
+#     with open(fileName) as phylogroupSnpFile, open("./AllAssemblies/refSeqGCF_003018575.1_ASM301857JustChromosome.fna", "w") as outFile:
 #         firstLine = True
-#         for line in file:
+#         for line in phylogroupSnpFile:
 #             outFile.write(line)
 #             if line[0] == ">" and not firstLine:
 #                 # longestContig = line

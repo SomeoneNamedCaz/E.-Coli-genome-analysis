@@ -10,8 +10,8 @@ try:
     from secondaryPythonScripts.functions import *
 except ImportError:
     from functions import *
-
-# this doesn't work because it the gbk file isn't aligned
+# hscC is weird
+# this doesn't work because it the gbk phylogroupSnpFile isn't aligned
 class MyTestCase(unittest.TestCase):
     def __init__(self, arg):
         super().__init__(arg)
@@ -26,15 +26,15 @@ class MyTestCase(unittest.TestCase):
         scaffoldDir = TEST_DATA_DIR + "filesToReplicateSingleAignError/"
         scaffoldName = "shortenedScaffold_1465_SS_220.fasta.gbk"
         scaffoldGb = scaffoldDir + scaffoldName
-        annotateScaffoldFile = True
+        annotateScaffoldFile = False
         if annotateScaffoldFile:
             os.system(
                 "cd " + scaffoldDir + "; for fileName in *.fasta; do conda run -n prokkaEnv prokka $fileName --force --centre X --compliant; cp */*.gbk " + scaffoldGb + "; rm -r PROKKA*/;done;")
             os.system("cd " + scaffoldDir + "; conda run -n gsAlign gsAlign -r /Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.fasta -q " + re.sub("\.gbk", "",scaffoldName) + " -unique -sen -one; mv output.vcf " + vcfFilePath)
 
-        self.reconstructAnnotateAndCompareGenomes(vcfFilePath,scaffoldGbs=scaffoldGb, namePrefix=namePrefix,reAlignSnps=True,redoNormalAligment= True,reAnnotate= True)
+        self.reconstructAnnotateAndCompareGenomes(vcfFilePath,scaffoldGbs=scaffoldGb, namePrefix=namePrefix,reAlignSnps=True,redoNormalAligment= True,reAnnotate= False)
         
-    def testTwoGenomeAlignmnet(self):
+    def testTwoGenomeAlignment(self):
         pathToRefGenomeFasta = DATA_DIR + "refGenomes/k-12.fasta"
         pathToRefGenomeGb = DATA_DIR + "refGenomes/k-12.gbff"
         namePrefix = "singleAlignment"  # the name to give to start all the files created
@@ -48,25 +48,26 @@ class MyTestCase(unittest.TestCase):
         pathToRefGenomeFasta = DATA_DIR + "refGenomes/k-12.fasta"
         pathToRefGenomeGb = DATA_DIR + "refGenomes/k-12.gbff"
         namePrefix = "multiAlignment"  # the name to give to start all the files created
-        vcfFilePath = TEST_DATA_DIR + "*.vcf"
-        scaffoldGb = TEST_DATA_DIR + "scaffold_*.gbk"
-        scaffoldDir = TEST_DATA_DIR + ""
-        annotateScaffoldFiles = False
+        vcfDir = DATA_DIR + "k-12RefGenomeAnalysisFiles/AllAssemblies/allBovineScaffolds/gsAlignOutput/"
+        vcfFilePath = vcfDir + "*.vcf"
+        scaffoldDir = DATA_DIR + "k-12RefGenomeAnalysisFiles/AllAssemblies/allBovineScaffolds/"
+        scaffoldGb = scaffoldDir + "*.gbk"
+        annotateScaffoldFiles = True
         if annotateScaffoldFiles:
             os.system(
-                "cd " + scaffoldDir + "; for fileName in *.fasta; do conda run -n prokkaEnv prokka $fileName --force --centre X --compliant; cp PROKKA*/*.gbk ./$fileName.gbk; rm -r PROKKA*/;done;")
-            # os.system(
-            #     "cd " + scaffoldDir + "; for fileName in *.fasta; do conda run -n gsAlign gsAlign -r /Users/cazcullimore/Documents/ericksonLabCode/refGenomes/k-12.fasta -q " +
-            #         "${fileName%\".gbk\"} -unique -sen -one; mv output.vcf " + vcfFilePath)
+                "cd " + scaffoldDir + "; for fileName in *.fasta; do conda run -n prokkaEnv prokka $fileName --force --centre X --compliant; cp PROKKA*/*.gbk ./$fileName.gbk; rm -r PROKKA*/; done;")
+            os.system(
+                "cd " + scaffoldDir + "; for fileName in *.fasta; do conda run -n gsAlign gsAlign -r /Users/cazcullimore/dev/data/refGenomes/k-12.fasta -q " +
+                    "${fileName%\".gbk\"} -unique -sen -one; mv output.vcf " + vcfDir + "$fileName.vcf")
         
         
         self.reconstructAnnotateAndCompareGenomes(vcfFilePath, scaffoldGbs=scaffoldGb, namePrefix=namePrefix, normalAlignPath=TEST_DATA_DIR + "annotatedNormalAlignFiles/multiAlignNormalFiles/",
-                                                  reAlignSnps=False,redoNormalAligment= False,reAnnotate= False)
+                                                  reAlignSnps=True,redoNormalAligment=True,reAnnotate= True)
 
     def reconstructAnnotateAndCompareGenomes(self,vcfs, scaffoldGbs, namePrefix, normalAlignPath=TEST_DATA_DIR + "annotatedNormalAlignFiles/",
                                              reAlignSnps=True,redoNormalAligment= True,reAnnotate= True):
         
-        annotatedRefGenomePath = DATA_DIR + "refGenomes/k-12.gbff"
+        annotatedRefGenomePath = "/Users/cazcullimore/dev/ericksonLabCode/tests/unitTests/k-12.fasta.gbk"
         namePrefix = namePrefix  # the name to give to start all the files created
         # vcfs = glob(TEST_DATA_DIR + "vcfsFromScaffolds/*.vcf")[0]
         # scaffoldGb = TEST_DATA_DIR + "annotatedNormalAlignFiles/scaffold_1465_SS_220.fasta.gbk"
@@ -119,6 +120,10 @@ class MyTestCase(unittest.TestCase):
         scaffoldGenesFromAllFIles = {}
         for file in glob(scaffoldGbs):
             genomeName = re.sub("(.fasta)+|(.vcf)+", "", file.split("/")[-1])
+            scaffoldGenesFromAllFIles[genomeName] = []
+            
+        for file in glob(scaffoldGbs):
+            genomeName = re.sub("(.fasta)+|(.vcf)+", "", file.split("/")[-1])
             def x(genomeName, file):
                 scaffoldGenesFromAllFIles[genomeName] = getGenesOnContigs(file, getContigs(file))
             
@@ -140,21 +145,29 @@ class MyTestCase(unittest.TestCase):
         with open(snpIndexPath) as indexFile:
             self.CompareGenomes(indexFile, scaffoldGenesFromAllFIles, refGenes, normalAlignGenes, snps, snpAlign)
     
-    def CompareGenomes(self, indexes, scaffoldGenesFromAllFIles, refGenes, normalAlignGenes, snps, snpAlign):
-        for genomeNamePath, scaffoldGenes in scaffoldGenesFromAllFIles.items():
-            lineOfIndexfile = -1
-            for index in indexes:
-                lineOfIndexfile += 1
+    def CompareGenomes(self, indexes, scaffoldGenesFromAllFiles, refGenes, normalAlignGenes, snps, snpAlign):
+        lineOfIndexfile = -1
+        genomeNameToMetadata = readMetaDataAsDict(DATA_DIR + "metaDataForMetaCatsWithExtraMastitis.tsv")
+        for index in indexes:
+            lineOfIndexfile += 1
+            geneDistributions = {"pathogen": {"A": 0, "T": 0, "C": 0, "G": 0},
+                                 "commensal": {"A": 0, "T": 0, "C": 0, "G": 0}, "cow": {"A": 0, "T": 0, "C": 0, "G": 0},
+                                 "chicken": {"A": 0, "T": 0, "C": 0, "G": 0}}
+            for genomeNamePath, scaffoldGenes in scaffoldGenesFromAllFiles.items():
                 index = index.strip()
                 snpPos = int(float(index))
                 genomeName = genomeNamePath.split("/")[-1]
+                print("genomeName", genomeName)
                 for i in range(len(refGenes)):
                     try:
                         refGene = refGenes[i]
-                        scaffoldGene = scaffoldGenes[refGene.name]
-                        
-                        normalAlignGene = normalAlignGenes[genomeName][refGene.name]
                         if refGene.name.count("_") != 0 or refGene.name == "unnamed":
+                            continue
+                        try:
+                            scaffoldGene = scaffoldGenes[refGene.name]
+                            
+                            normalAlignGene = normalAlignGenes[genomeName][refGene.name]
+                        except KeyError:
                             continue
                         if refGene.startPos <= snpPos and refGene.stopPos > snpPos:
                             print("index", index, "genome", genomeName)
@@ -167,12 +180,14 @@ class MyTestCase(unittest.TestCase):
                                 scaffoldSeq = reverseComplement(scaffoldSeq)
                             if not refGene.isForward:
                                 refSeq = reverseComplement(refGene.sequence)
-                                diffStart = len(scaffoldSeq) - len(refSeq)
+                                diffScaffoldStart = len(refSeq) - len(scaffoldSeq)
+                                diffNormalStart = len(refSeq) - len(normalSeq)
                             else:
-                                diffStart = len(refSeq) - len(scaffoldSeq)
+                                diffScaffoldStart = len(refSeq) - len(scaffoldSeq)
+                                diffNormalStart = len(refSeq) - len(normalSeq)
                             if not normalAlignGene.isForward:
                                 normalSeq = reverseComplement(normalSeq)
-                            # if normalSeq[snpPosInGene + diffStart] != scaffoldSeq[snpPosInGene + diffStart]:
+                            # if normalSeq[snpPosInGene + diffScaffoldStart] != scaffoldSeq[snpPosInGene + diffScaffoldStart]:
                             #
                             #     numDeletesBeforeSnp = 0
                             #     numDeletesAfterSnp = 0
@@ -184,23 +199,48 @@ class MyTestCase(unittest.TestCase):
                             #         if snpPos < snp[1] and refGene.stopPos > snp[1]:
                             #             if snp[4] != "SUBSTITUTE":
                             #                 numDeletesAfterSnp += len(snp[2]) - len(snp[3])
-                            #     # diffStart = numDeletesBeforeSnp
-                            print(refGene.name + "\nnorm\n" + str(normalAlignGene.startPos) + "\t", end="")
-                            printNearbyNucs(normalSeq, snpPosInGene - diffStart, 10)
+                            #     # diffScaffoldStart = numDeletesBeforeSnp
+                            print(refGene.name + " index within gene " + str(snpPosInGene) + "\nnorm\n" + str(normalAlignGene.startPos) + "\t", end="")
+                            printNearbyNucs(normalSeq, snpPosInGene - diffNormalStart, 10)
                             print("scaff\n" + str(scaffoldGene.startPos) + "\t", end="")
-                            printNearbyNucs(scaffoldSeq, snpPosInGene - diffStart, 10)
-                            print("shifted scaf\n" + str(scaffoldGene.startPos) + "\t", end="")
-                            printNearbyNucs(scaffoldSeq, snpPosInGene + diffStart, 10)
+                            printNearbyNucs(scaffoldSeq, snpPosInGene - diffScaffoldStart, 10)
+                            # print("shifted scaf\n" + str(scaffoldGene.startPos) + "\t", end="")
+                            # printNearbyNucs(scaffoldSeq, snpPosInGene + diffScaffoldStart, 10)
                             print("ref\n" + str(refGene.startPos) + "\t", end="")
                             printNearbyNucs(refSeq, snpPosInGene, 10)
                             # print("snpAlign\t\t", end="")
                             print("refGene.isForward",refGene.isForward)
                             print("normal",normalAlignGene.isForward)
                             print("scaffold",scaffoldGene.isForward)
-                            
-                            if normalSeq[snpPosInGene + diffStart] != scaffoldSeq[snpPosInGene + diffStart]:
-                                
+                            print("genomeNameToMetadata[genomeName]][scaffoldSeq[snpPosInGene - diffScaffoldStart]",
+                                  genomeNameToMetadata[re.sub(".gbk","",genomeName) + ".fasta.vcf"])
+                            print("print success")
+                            if normalSeq[snpPosInGene - diffNormalStart] == scaffoldSeq[snpPosInGene - diffScaffoldStart]:
+                                print("diffStart")
+                                geneDistributions[genomeNameToMetadata[re.sub(".gbk","",genomeName) + ".fasta.vcf"][-1]][scaffoldSeq[snpPosInGene - diffScaffoldStart]] += 1
+                            else:
+                                print("not diffStart")
+                                if normalSeq[snpPosInGene] == scaffoldSeq[snpPosInGene]:
+                                    print("otherOneWorks")
+                                    geneDistributions[genomeNameToMetadata[re.sub(".gbk","",genomeName) + ".fasta.vcf"][-1]][scaffoldSeq[snpPosInGene]] += 1
+                                else:
+                                    print("broken alignment not added to counts")
                                 print('something weird happened')
+                                print("trying without shift")
+                                print(refGene.name + " index within gene " + str(snpPosInGene) + "\nnorm\n" + str(
+                                    normalAlignGene.startPos) + "\t", end="")
+                                printNearbyNucs(normalSeq, snpPosInGene, 10)
+                                print("scaff\n" + str(scaffoldGene.startPos) + "\t", end="")
+                                printNearbyNucs(scaffoldSeq, snpPosInGene, 10)
+                                # print("shifted scaf\n" + str(scaffoldGene.startPos) + "\t", end="")
+                                # printNearbyNucs(scaffoldSeq, snpPosInGene + diffScaffoldStart, 10)
+                                print("ref\n" + str(refGene.startPos) + "\t", end="")
+                                printNearbyNucs(refSeq, snpPosInGene, 10)
+                                # print("snpAlign\t\t", end="")
+                                print("refGene.isForward", refGene.isForward)
+                                print("normal", normalAlignGene.isForward)
+                                print("scaffold", scaffoldGene.isForward)
+                                
                                 numDeletesBeforeSnp = 0
                                 numDeletesAfterSnp = 0
                                 for snp in snps:
@@ -210,11 +250,6 @@ class MyTestCase(unittest.TestCase):
                                     if snpPos < snp[1] and refGene.stopPos > snp[1]:
                                         if snp[4] != "SUBSTITUTE":
                                            numDeletesAfterSnp += len(snp[2]) - len(snp[3])
-                                if refGene.isForward:
-                                    # thought process: if it didn't match the first time it means that it has prepended
-                                    # nucleotides and hopefully not appended nucleotides
-                                    ref = "ACTGFGAGAGATAGAGAGARRGR"
-                                    scaf =            "AGAGAGARRGR"
                                     
                                 print("normalSeq v scaffold", geneSimilarity(normalAlignGene.sequence, scaffoldGene.sequence))
                                 print("scaffold v ref", geneSimilarity(scaffoldGene.sequence, refGene.sequence))
@@ -225,8 +260,9 @@ class MyTestCase(unittest.TestCase):
                             print("--------------")
                     except IndexError:
                         print("INDEX ERROR")
-                    except KeyError:
-                        pass
+                    except KeyError as err:
+                        print("KEY ERROR",err)
+            print(geneDistributions)
     def testCompareGenomesNhaR(self):
         indexes = ["18767", " 18779", " 18812", " 18830", " 18836", " 18839", " 18863", " 18867", " 18875", " 18878", " 18881", " 18893", " 18905", " 18911", " 18971", " 18974", " 18989", " 18995", " 19007", " 19013", " 19019", " 19037", " 19046", " 19049", " 19052", " 19055", " 19056", " 19058", " 19067", " 19070", " 19075", " 19081", " 19082", " 19085", " 19091", " 19097", " 19106", " 19109", " 19115", " 19121", " 19122", " 19124", " 19130", " 19133", " 19160", " 19175", " 19178", " 19181", " 19184", " 19196", " 19202", " 19206", " 19210", " 19226", " 19229", " 19241", " 19244", " 19247", " 19252", " 19262", " 19268", " 19271", " 19274", " 19280", " 19286", " 19289", " 19292", " 19293", " 19295", " 19296", " 19298", " 19304", " 19310", " 19313", " 19322", " 19328", " 19332", " 19334", " 19335", " 19337", " 19358", " 19361", " 19367", " 19373", " 19374", " 19376", " 19379", " 19394", " 19397", " 19409", " 19415", " 19420", " 19424", " 19427", " 19430", " 19433", " 19442", " 19445", " 19446", " 19454", " 19457", " 19458", " 19463", " 19466", " 19470", " 19471", " 19476", " 19478", " 19479", " 19481", " 19484", " 19487", " 19490", " 19493", " 19496", " 19499", " 19502", " 19508", " 19526", " 19529", " 19538", " 19541", " 19542", "19612"]
         scaffoldGenesFromAllFiles = {"scaffold_1466_SS_221.fasta.gbk":{"nhaR": Gene(5872, 6772, 'ATGTCTCATATCAATTACAACCACTTGTATTACTTCTGGCATGTCTACAAAGAAGGTTCTGTGGTTGGCGCAGCGGAGGCGCTTTATTTAACACCACAAACCATTACCGGGCAGATCCGGGCGCTGGAAGAGCGCCTGCAAGGGAAACTATTTAAGCGTAAAGGACGTGGTCTGGAACCCAGCGAACTGGGGGAACTGGTCTATCGCTATGCCGATAAAATGTTCACCTTAAGCCAGGAAATGCTGGATATCGTCAACTATCGCAAAGAGTCCAACTTATTGTTTGATGTTGGTGTGGCAGATGCACTTTCCAAACGTCTGGTCAGCAGTGTTCTGGATGCCGCAGTTGTGGAAGACGAGCAGATCCATCTACGCTGTTTCGAATCGACGCACGAGATGCTTTTAGAGCAGTTGAGTCAGCATAAACTGGATATGATCATCTCTGACTGTCCGATCGATTCCACTCAGCAGGAAGGGCTGTTTTCCATGAAAATTGGCGAATGTGGTGTCAGTTTCTGGTGCACTAACCCACTACCAGAAAAGCCGTTTCCTGCCTGTCTTGAAGAGCGTCGTTTACTTATTCCGGGGCGTCGCTCAATGTTGGGGCGTAAACTATTAAACTGGTTTAACTCCCAGGGCTTGAACGTCGAAATTTTGGGTGAGTTTGATGATGCTGCGTTGATGAAAGCCTTTGGGGCGACGCATAACGCTATTTTCGTTGCACCTTCGCTTTACGCTAATGATTTCTATAACGATGACTCGGTTGTGGAGATAGGCCGTGTTGAGAACGTGATGGAAGAGTACCACGCGATTTTTGCCGAAAGGATGATTCAGCACCCTGCAGTACAGCGTATCTGCAATACAGACTATTCTGCGCTGTTTACTCCAGCTTCAAAATAA',

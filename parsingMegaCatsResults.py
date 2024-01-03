@@ -69,7 +69,7 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
             for line in frameShiftFile:
                 indexesOfFrameShiftSnps.add(int(line))
     except FileNotFoundError:
-        print("no frame shifted index file found. Frame shifts won't be analyzed")
+        print("no frame shifted index phylogroupSnpFile found. Frame shifts won't be analyzed")
         pass
 
     t1 = time.time()
@@ -292,8 +292,8 @@ if __name__ == "__main__":
 
 
     if len(sys.argv) < 7:
-        print("""please give arguments: combined megaCats file, file with the snp genomes, file with the snp indexes, the suffix you want for output files,
-              the reference genome file, the metadata used for megaCats, optional: whether or not you want to remove the sparce entries (true by default),
+        print("""please give arguments: combined megaCats phylogroupSnpFile, phylogroupSnpFile with the snp genomes, phylogroupSnpFile with the snp indexes, the suffix you want for output files,
+              the reference genome phylogroupSnpFile, the metadata used for megaCats, optional: whether or not you want to remove the sparce entries (true by default),
                the output directory (current directory by default)""")
         exit(1)
 

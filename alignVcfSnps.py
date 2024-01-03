@@ -235,7 +235,7 @@ def alignVCFSnpsHelper(gsAlignFiles, refSeq, thingsToSkip=[], numSnpsRequired=10
 
             # add the snp nucs
             for char in snp[3]:
-                dataToWrite[snp[0]].append(char) # add snp to entry for file
+                dataToWrite[snp[0]].append(char) # add snp to entry for phylogroupSnpFile
             maxLenOfSnpGenome = max(maxLenOfSnpGenome, len(dataToWrite[snp[0]]))
             if snpType == "DELETE":
                 for i in range(len(refNucs) - len(altNucs)):
@@ -266,10 +266,10 @@ def alignVCFSnpsHelper(gsAlignFiles, refSeq, thingsToSkip=[], numSnpsRequired=10
 
 def alignVcfSnps(gsAlignPathString, outFilePath, thingsToSkip=[], numSnpsRequired=10, debug = False, refSeqPath=DATA_DIR + "refGenomes/k-12.fasta", ignoreRefSeq=False, includeGenomeWithoutAnySnps=True):
 
-    if gsAlignPathString.split(":")[0] == "MatchFile": # MatchFile:<file to match>:<pathPrefix>
+    if gsAlignPathString.split(":")[0] == "MatchFile": # MatchFile:<phylogroupSnpFile to match>:<pathPrefix>
         # this block is for using the same input files that were used in a previous run of this program
-        # (if you say the file to match is the snp alignment output file)
-        print("matching file")
+        # (if you say the phylogroupSnpFile to match is the snp alignment output phylogroupSnpFile)
+        print("matching phylogroupSnpFile")
         gsAlignFiles = []
         with open(gsAlignPathString.split(":")[1]) as file:
             for line in file:
@@ -311,7 +311,7 @@ def alignVcfSnps(gsAlignPathString, outFilePath, thingsToSkip=[], numSnpsRequire
     return dataToWrite
 if __name__ == "__main__":
     if len(sys.argv) < 3:  # when you do args need ""
-        print("requires a path to all of the vcf files like *.vcf and a output file name with path !use quotes!\n"
+        print("requires a path to all of the vcf files like *.vcf and a output phylogroupSnpFile name with path !use quotes!\n"
               "you may add a list of the types of snps to skip and the cutoff to remove infrequent snps")
         exit(1)
 

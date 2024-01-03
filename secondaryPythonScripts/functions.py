@@ -241,7 +241,7 @@ def translate(validSeq, codonsToAminoAcids):
 
 def makeCodonDictionary():
     codonsToAminoAcids = {}
-    with open(DATA_DIR + "secondaryPythonScripts/codons.txt") as codonFile:
+    with open(DATA_DIR + "codons.txt") as codonFile:
         for codonLine in codonFile:
             codonLine = codonLine.strip()
             cols = codonLine.split("\t")
@@ -265,7 +265,7 @@ def hypotheticalProteinsAreTheSame(seq1, seq2, cutoff=0.8):
 def getSeqFilesNamesFromMasterFiles(masterFileName):
     """
     :param masterFileName:
-    :return: list of seqFileNames that the master file refers to
+    :return: list of seqFileNames that the master phylogroupSnpFile refers to
     """
     seqFilesNames = []
     onFirstLine = True
@@ -380,7 +380,7 @@ def filesContainTheSameInformation(fileName1, fileName2):
     return True
 
 def separateGenomesFromSingleFastaFile(filePath):
-    # the file needs to have >LOCUS_NAME other stuff for each contig
+    # the phylogroupSnpFile needs to have >LOCUS_NAME other stuff for each contig
     # LOCUS_Name needs to be one word
     # sequences can span multiple lines
     # other stuff needs to contain "complete genome" if it is a complete genome or "whole genome shotgun sequence"
@@ -577,7 +577,7 @@ def getSnpInfo(nucInfo, numRequiredGenomesForGroupToBeConsidered= -10):
     needs a binary metadata category with possible errors (like with path)
 
 
-    :param nucInfo: string col[5] of megacats file
+    :param nucInfo: string col[5] of megacats phylogroupSnpFile
     :param numRequiredGenomesForGroupToBeConsidered: int to fix the pathogenicity error that has a 3 group for some reason
     :return: oldnuc, newnuc, bool
     """

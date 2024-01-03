@@ -134,6 +134,7 @@
 /SNPInsertAndDeleteGenomes/
 /substSNPcombinedGenomes/
 /.idea/
+/tests/testFiles/
 .DS_Store
 NZ_BIEN01000.fasta
 __pycache__/
@@ -162,9 +163,7 @@ secondaryPythonScripts/comparingCoreGenomesMyWay.py
 secondaryPythonScripts/comparingPanGenomesFromRoaryFiles.py
 secondaryPythonScripts/concatenateContigs.py
 secondaryPythonScripts/diffOnRoaryAnalyses.py
-secondaryPythonScripts/divideGenomesByPhylogroup.py
 secondaryPythonScripts/fastaFileContainsContigsOfAnother.py
-secondaryPythonScripts/findNamesOfGroups.py
 secondaryPythonScripts/findingOddGenomeOut.py
 secondaryPythonScripts/fixingPathogenicityFile.py
 secondaryPythonScripts/getGenomeWithSNP.py
@@ -223,3 +222,4 @@ tests/unitTests/k-12.fasta.gbk
 tests/unitTests/k-12.gbff
 tests/unitTests/k-12.pac
 tests/unitTests/k-12.sa
+

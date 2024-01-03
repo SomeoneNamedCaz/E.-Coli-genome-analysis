@@ -10,7 +10,7 @@ except ImportError:
     pass
 from functions import *
 if len(sys.argv) < 3:
-    print("please provide the paths to the gbks and the path to the file of snps sorted by significance from parsingMegacatsResults.py")
+    print("please provide the paths to the gbks and the path to the phylogroupSnpFile of snps sorted by significance from parsingMegacatsResults.py")
     exit(1)
 
 pathToGBFiles = sys.argv[1]#DATA_DIR + "filesToTestMultiAlign/normalAlignedGenomes/gbks/*.gbk"
@@ -90,11 +90,11 @@ with open(snpFilePath) as snpFile:
                         geneSeq = reverseComplement(geneSeq)
                     nuc = geneSeq[snpIndex]
                     # if i % 50 == 0:
-                    print("scaf ",end="")
+                    print("scaf forward:",end="")
                     print(gene.isForward, "\t", geneSeq[snpIndex - 5:snpIndex],
                           geneSeq[snpIndex],
                           geneSeq[snpIndex + 1:snpIndex + 5])
-                    print("ref  ", end="")
+                    print("ref  forward:", end="")
                     print(refGenes[geneName].isForward, "\t", refSeq[snpIndex - 5:snpIndex],
                           refSeq[snpIndex],
                           refSeq[snpIndex + 1:snpIndex + 5])

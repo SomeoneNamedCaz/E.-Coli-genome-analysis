@@ -1,5 +1,7 @@
-from functions import *
-
+try:
+	from functions import *
+except ModuleNotFoundError:
+	pass
 
 def makeMLData(snpAlign, metadata):
 	mlData = []
@@ -13,7 +15,7 @@ def makeMLData(snpAlign, metadata):
 if __name__ == "__main__":
 	metadataPath = DATA_DIR + "metaDataForMetaCatsWithExtraMastitis.tsv"
 	snpAlignPath = DATA_DIR + "RedoingEverything/SnpAlign/50jM.afa"
-	outFilePath = "/Users/cazcullimore/Documents/mlData.csv"
+	outFilePath = DATA_DIR + "mlData.csv"
 	snpAlign = readInFastaAsDict(snpAlignPath)
 	metadata = readMetaDataAsDict(metadataPath)
 	for key in metadata.keys():
