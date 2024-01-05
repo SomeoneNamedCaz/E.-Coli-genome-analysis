@@ -579,7 +579,7 @@ def getSnpInfo(nucInfo, numRequiredGenomesForGroupToBeConsidered= -10):
 
     :param nucInfo: string col[5] of megacats phylogroupSnpFile
     :param numRequiredGenomesForGroupToBeConsidered: int to fix the pathogenicity error that has a 3 group for some reason
-    :return: oldnuc, newnuc, bool
+    :return: oldnuc, newnuc, index of Snp group
     """
 
     nucsOfGroups = getNumsOfNucs(nucInfo)
@@ -588,42 +588,27 @@ def getSnpInfo(nucInfo, numRequiredGenomesForGroupToBeConsidered= -10):
         if sum(nucsOfGroups[numofNucsIndex].values()) < numRequiredGenomesForGroupToBeConsidered:
             numGroupsDeleted += 1
             del nucsOfGroups[numofNucsIndex]
-    #     else:
-    #         maxvalsKey = keymax(nucsOfGroups[numofNucsIndex])
-    #         maxVal = nucsOfGroups[numofNucsIndex][maxvalsKey]
-    #         if maxVal > highestNum:
-    #             secondHighestNum = highestNum
-    #             secondHighestNuc = highestNuc
-    #             highestNum = maxVal
-    #             highestNuc = maxvalsKey
-    #         elif maxVal > secondHighestNum:
-    #             secondHighestNum = maxVal
-    #             secondHighestNuc = maxvalsKey
     indexOfHighestProportionOfANuc = argmax(nucsOfGroups, key=lambda a: valmax(a)/sum(a.values()))
 
     indexOfNonSnpGroup = indexOfHighestProportionOfANuc
     indexOfSnpGroup = 1 - indexOfNonSnpGroup
     oldNuc = keymax(nucsOfGroups[indexOfNonSnpGroup])
-    # print(nucsOfGroups, nucsOfGroups)
-    # print(indexOfSnpGroup)
-    # print(nucInfo)
+    
     try:
         nucsOfGroups[indexOfSnpGroup].pop(oldNuc)
     except KeyError:
         print("didn't find old nuc in other group, check things")
     try:
         newNuc = keymax(nucsOfGroups[indexOfSnpGroup])
-        snpProportion = nucsOfGroups[indexOfSnpGroup][newNuc] / nucsOfGroups[indexOfNonSnpGroup][oldNuc]
     except KeyError:
         newNuc = "N/A" # if the first pathogenicity group has the snp
-        snpProportion = 0
 
 
 
     # print("indexOfSnpGroup", indexOfSnpGroup, "indexOfNonSnpGroup", indexOfNonSnpGroup)
     # print("highest nuc", oldNuc, "secondHighestNuc", newNuc, "prop", snpProportion)
     # print("_________")
-    return oldNuc, newNuc, indexOfSnpGroup + numGroupsDeleted, snpProportion
+    return oldNuc, newNuc, indexOfSnpGroup + numGroupsDeleted
 
 
 def fastaFilesContainSameContigs(file1Name, file2Name):

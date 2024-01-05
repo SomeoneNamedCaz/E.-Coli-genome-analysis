@@ -14,11 +14,9 @@ pathToRefGenomeFasta = DATA_DIR + "refGenomes/k-12.fasta"
 pathToRefGenomeGb = DATA_DIR + "refGenomes/k-12.gbff"
 
 
-namePrefix = "fullScript" # the name to give to start all the files created
-pathsToGsAlignVCFs = "/".join(pathToAssemblies.split("/")[:-1]) + "/ragtagOutputs/longestScaffoldFiles/gsAlignOutputs/*.vcf"
-# pathsToGsAlignVCFs = "./AllAssembliesInOneFolder/carefulAssemblyGsAlign/*.vcf"
-# snpAlignPath = DATA_DIR + "RedoingEverything/SnpAlign/all.afa"
-# pathsToGsAlignVCFs = TEST_DATA_DIR + "vcfsFromScaffolds/*.vcf"
+namePrefix = "justMastitis" # the name to give to start all the files created
+pathsToGsAlignVCFs = DATA_DIR + "k-12RefGenomeAnalysisFiles/justCowVCFs/*.vcf"
+
 snpAlignPath = DATA_DIR + "RedoingEverything/SnpAlign/" + namePrefix +".afa"
 snpIndexPath = DATA_DIR + "RedoingEverything/SnpAlign/" + namePrefix +"Indexes.txt"
 
@@ -34,7 +32,7 @@ normalAlignPath = DATA_DIR + "RedoingEverything/" + namePrefix + "normalAlign.af
 reRunScaffoldAndGsAlign = False
 reAlignSnps = False
 reRunPhylogroups = False
-divideByPhylogroup = True
+divideByPhylogroup = False
 reDoPlinkFiles = False
 runPlink = False
 runMegaCats = True
@@ -94,10 +92,13 @@ if runMegaCats:
 	for phylogroupSnpFile in glob(phylogroupSnpAlignPrefix + "Phylogroup*.afa"):
 		fileName = re.sub("\.afa", "",phylogroupSnpFile.split("/")[-1])
 		megaCatStatsPhylogroupPath = "/".join(megaCatStatsFilePath.split("/")[:-1]) + fileName + ".tsv"
-		parseMegaCatsFile(megaCatsFile=megaCatStatsPhylogroupPath, snpGenomePath=phylogroupSnpFile, snpIndexesPath=snpIndexPath,
-		                  suffix=fileName, metaDataFilePath=metadataFilePath,
-		                  annotatedRefGenomePath=pathToRefGenomeGb,
-		                  removeSparce=True, outputDirectory=DATA_DIR + "RedoingEverything")
+		try:
+			parseMegaCatsFile(megaCatsFile=megaCatStatsPhylogroupPath, snpGenomePath=phylogroupSnpFile, snpIndexesPath=snpIndexPath,
+			                  suffix=fileName, metaDataFilePath=metadataFilePath,
+			                  annotatedRefGenomePath=pathToRefGenomeGb,
+			                  removeSparce=True, outputDirectory=DATA_DIR + "RedoingEverything")
+		except Exception:
+			print("no data found exception handled")
 	
 if runNormalAlignment:
 	reconstructNormalAlignment(snpGenomePath=snpAlignPath, snpIndexesPath=snpIndexPath, refGenomePath=pathToRefGenomeGb, outputPath=normalAlignPath)

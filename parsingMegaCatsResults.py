@@ -1,7 +1,6 @@
 from secondaryPythonScripts.functions import *
 from secondaryPythonScripts.findNamesOfGroups import findNamesOfGroups
 
-
 def loadIndexes(indexFilePath):
     snpLocations = []  # [snplocation1, ...]
     with open(indexFilePath) as file:
@@ -10,31 +9,138 @@ def loadIndexes(indexFilePath):
             line = round((line - int(line)) * 1000 + int(line))
             snpLocations.append(line)
     return snpLocations
-def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaDataFilePath, annotatedRefGenomePath, removeSparce=True, outputDirectory="."):
+    
+def getMutationType(gene, snp,indexesOfFrameShiftSnps):
     codonsToAminoAcids = makeCodonDictionary()
+    seqWithoutSNP = gene.sequence[snp.location - (snp.location % 3): snp.location + 3 - (snp.location % 3)]
+    # seqWithoutSNP[snp.location] = snp.oldNuc
+    seqWithoutSNP = list(seqWithoutSNP)
+    seqWithSNP = seqWithoutSNP
+    seqWithSNP[snp.location % 3] = snp.newNuc
+    seqWithSNP = "".join(seqWithSNP)  # because strings are immutable
+    seqWithoutSNP[snp.location % 3] = snp.oldNuc  # in case the ref has the snp too
+    seqWithoutSNP = "".join(seqWithoutSNP)  # because strings are immutable
+    
+    if not indexesOfFrameShiftSnps.isdisjoint({snp.location + gene.startPos}):
+        snp.mutationType = SNP.mutationType.frameShift
+    else:
+        # I actually can't do a nuc by nuc analysis of inserts and deletes to check for nonsynonymous mutations
+        try:
+            newAA = translate(seqWithSNP, codonsToAminoAcids)
+            if newAA != translate(seqWithoutSNP, codonsToAminoAcids):
+                if newAA == "*":
+                    snp.mutationType = SNP.mutationType.earlyStop
+                else:
+                    snp.mutationType = SNP.mutationType.missSense
+            else:
+                snp.mutationType = SNP.mutationType.silent
+        except KeyError:  # i.e. if it's an indel
+            snp.mutationType = SNP.mutationType.missSense  # all indels are missense or frameshift
+    return snp.mutationType
+
+
+def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaDataFilePath, annotatedRefGenomePath, removeSparce=True, outputDirectory="."):
+    
     # add FrameShiftedToIndexPath
     snpIndexesFrameShiftedPath = ".".join(snpIndexesPath.split(".")[:-1]) + "FrameShifted." + snpIndexesPath.split(".")[-1]
     # hard-coded parameters for output
     numGenesToInclude = 10000
     numSnpsToIncludeForMostSigSnps = 10_000_000
     percentSNPsCutOffForPercentSNPs = 0.02 # for pathway analysis
-    significanceLevel = 0.5#0.05/len(snpLocations)  # can change initial P-value cutoff if wanted
+    snpLocations = loadIndexes(snpIndexesPath)
+    significanceLevel = 0.05/len(snpLocations)  # can change initial P-value cutoff if wanted
 
     # outputs
     snpsFileWithCorrectPosPath = outputDirectory + "/sigSNPsByPosOnRefGenome" + suffix + ".txt" # created and then read
     snpsSortedBySignificancePath = outputDirectory + "/snpsSortedBySignificanceWithGenesContainingThem" + suffix # created (extension added later)
     numSnpsWithinGenesPath = outputDirectory + "/numSnpsWithinGenes"
+    
+    def writeOutputToFiles(listOfGenes, metadataCategory, snpsForCurrentMetadataCategory, weights,numGenesToInclude):
+        # make file that looks at the most snpped genes
+        with open(numSnpsWithinGenesPath + metadataCategory[0].upper() + metadataCategory[1:] + suffix + ".tsv",
+                  "w") as outFile:
+            # header line
+            outFile.write(
+                """Name\tProduct\tweight\tPercent Of Nucleotides That Are Significant SNPs\tgene Sequence\tPercent Nucleotides That Can Be Significant NonSynonymous Mutations\tNon-synonymous SNP Indexes\tSynonymous SNP Indexes\tgeneStartPositionInGenome\tfraction of genes in pathway with high number of snps\tnum frame shifted\tframshift location\n""")
+            # find out if there are other genes in the pathway
+            geneNameToNumInPathway = {}
+            geneNameToNumSignificantlySnpedInPathway = {}
+            for gene in listOfGenes:
+                
+                if not gene.name[:3] in geneNameToNumInPathway.keys():
+                    geneNameToNumInPathway[gene.name[:3]] = 1
+                else:
+                    geneNameToNumInPathway[gene.name[:3]] += 1
+                if len(gene.snps) / len(gene.sequence) > percentSNPsCutOffForPercentSNPs:
+                    if not gene.name[:3] in geneNameToNumSignificantlySnpedInPathway.keys():
+                        geneNameToNumSignificantlySnpedInPathway[gene.name[:3]] = 1
+                    else:
+                        geneNameToNumSignificantlySnpedInPathway[gene.name[:3]] += 1
+            # data
+            for i in range(min(numGenesToInclude, len(listOfGenes))):
+                gene = listOfGenes[i]
+                nonSynSnpPositions = []
+                synSnpPositions = []
+                frameShiftPositions = []
+                
+                for snp in gene.snps:
+                    snp.mutationType = getMutationType(gene.sequence, snp)
+                    if snp.mutationType == SNP.mutationType.frameShift:
+                        frameShiftPositions.append(str(snp.location))
+                        nonSynSnpPositions.append(str(snp.location))
+                    elif snp.mutationType == SNP.mutationType.silent:
+                        synSnpPositions.append(str(snp.location))
+                    else:
+                        nonSynSnpPositions.append(str(snp.location))
+                
+                outFile.write(gene.name + "\t" +
+                              gene.product + "\t" +
+                              str(weights[gene]) + "\t" +
+                              str(gene.counter / len(gene.sequence)) + "\t" +
+                              gene.sequence + "\t" +
+                              str(len(nonSynSnpPositions) / len(gene.sequence)) + "\t" +
+                              " ".join(nonSynSnpPositions) + "\t" +
+                              " ".join(synSnpPositions) + "\t" + str(gene.startPos) + "\t")
+                try:
+                    outFile.write(str(geneNameToNumSignificantlySnpedInPathway[gene.name[:3]])
+                                  + "/" + str(geneNameToNumInPathway[gene.name[:3]]) + "\t")
+                except KeyError:  # if no sig snps in pathway
+                    outFile.write("0/" + str(geneNameToNumInPathway[gene.name[:3]]) + "\t")
+                outFile.write(str(len(frameShiftPositions) / len(gene.sequence)) + "\t" +
+                              " ".join(frameShiftPositions) + "\n")
+        
+        """ This segment looks at the most significant snps and the genes that contain them
+        """
+        snpsForCurrentMetadataCategory.sort(key=lambda snp: snp.pValue)
+        with open(snpsSortedBySignificancePath + metadataCategory[0].upper() + metadataCategory[1:] + ".tsv",
+                  "w") as outFile:
+            outFile.write(
+                "SNP pValue\tGroupEnrichedInSNP\tSNPlocation\tgeneName\tnewNuc\tsnpGroupDistribution\toldNuc\tWildTypeDistribution\tmutationType(frameShiftRecordedOnlyOnFirstNucOfIndel)\tgeneSequence\n")  # add category and move to the output function
+            for snp in snpsForCurrentMetadataCategory[:numSnpsToIncludeForMostSigSnps]:
+                #                                this is the index of the group more likely to have snp
+                snpGroupDistribution = snp.allNucCounts[
+                    namesOfGroups[metadataCategory].index(snp.nameOfGroupMoreLikelyToHaveSNP)]
+                nonSnpGroupDistribution = snp.allNucCounts[
+                    1 - namesOfGroups[metadataCategory].index(snp.nameOfGroupMoreLikelyToHaveSNP)]
+                outFile.write(
+                    str(snp.pValue) + "\t" +
+                    snp.nameOfGroupMoreLikelyToHaveSNP + "\t" +
+                    str(snp.location) + "\t" + snp.geneContainingSnp.name + "\t" +
+                    snp.newNuc + "\t" +
+                    str(snpGroupDistribution) + "\t" +
+                    snp.oldNuc + "\t" +
+                    str(nonSnpGroupDistribution) + "\t" +
+                    str(snp.mutationType.name) + "\t" +
+                    snp.geneContainingSnp.sequence + "\n")
 
 
-    namesOfGroups = findNamesOfGroups(metaDataFilePath, snpGenomePath, megaCatsFile)#{'animal': ['chicken','cow'], 'pathogenicity':['commensal', "pathogen"], 'deadliness':['commensal', "pathogen"]}
+
+
+    namesOfGroups = findNamesOfGroups(megaCatsFile)#{'animal': ['chicken','cow'], 'pathogenicity':['commensal', "pathogen"], 'deadliness':['commensal', "pathogen"]}
     print(namesOfGroups)
     print("\n\n\n\n\n")
 
-
-
     snpsForCurrentMetadataCategory = []
-
-    snpLocations = loadIndexes(snpIndexesPath)
 
     if abs(len(getFirstDataLine(snpGenomePath)) - len(snpLocations)) > 10_000:
         raise Exception("indexes are probably off")
@@ -69,107 +175,13 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
             for line in frameShiftFile:
                 indexesOfFrameShiftSnps.add(int(line))
     except FileNotFoundError:
-        print("no frame shifted index phylogroupSnpFile found. Frame shifts won't be analyzed")
+        print("no frame shifted index snp file found. Frame shifts won't be analyzed")
         pass
 
     t1 = time.time()
     contigs = getContigs(annotatedRefGenomePath)
     genes = getGenesOnContigsByPosition(annotatedRefGenomePath, contigs)
     print(time.time()-t1)
-    def outputFunction(listOfGenes, metadataCategory, weights):
-        with open(numSnpsWithinGenesPath + metadataCategory[0].upper() + metadataCategory[1:] + suffix + ".tsv", "w") as outFile:
-            # header line
-            outFile.write("""Name\tProduct\tweight\tPercent Of Nucleotides That Are Significant SNPs\tgene Sequence\tPercent Nucleotides That Can Be Significant NonSynonymous Mutations\tNon-synonymous SNP Indexes\tSynonymous SNP Indexes\tgeneStartPositionInGenome\tfraction of genes in pathway with high number of snps\tnum frame shifted\tframshift location\n""")
-            # find out if there are other genes in the pathway
-            geneNameToNumInPathway = {}
-            geneNameToNumSignificantlySnpedInPathway = {}
-            for gene in genes:
-
-                if not gene.name[:3] in geneNameToNumInPathway.keys():
-                    geneNameToNumInPathway[gene.name[:3]] = 1
-                else:
-                    geneNameToNumInPathway[gene.name[:3]] += 1
-                if len(gene.snps)/len(gene.sequence) > percentSNPsCutOffForPercentSNPs:
-                    if not gene.name[:3] in geneNameToNumSignificantlySnpedInPathway.keys():
-                        geneNameToNumSignificantlySnpedInPathway[gene.name[:3]] = 1
-                    else:
-                        geneNameToNumSignificantlySnpedInPathway[gene.name[:3]] += 1
-            # data
-            for i in range(min(numGenesToInclude, len(listOfGenes))):
-                gene = listOfGenes[i]
-                numNonSyn = 0
-                nonSynSnpPositions = []
-                synSnpPositions = []
-                frameShiftPositions = []
-                # print(gene.snps)
-                for snp in gene.snps:
-
-                    # print("positionInGenome - gene.startPos", snp.location)
-                    # print(len(gene.sequence))
-                    seqWithoutSNP = gene.sequence[snp.location - (snp.location % 3) : snp.location+3-(snp.location % 3)]
-                    # seqWithoutSNP[snp.location] = snp.oldNuc
-                    seqWithoutSNP = list(seqWithoutSNP)
-                    seqWithSNP = seqWithoutSNP
-                    seqWithSNP[snp.location % 3] = snp.newNuc
-                    seqWithSNP = "".join(seqWithSNP)  # because strings are immutable
-                    seqWithoutSNP[snp.location % 3] = snp.oldNuc # in case if ref has the snp too
-                    seqWithoutSNP = "".join(seqWithoutSNP)  # because strings are immutable
-
-                    if not indexesOfFrameShiftSnps.isdisjoint({snp.location + gene.startPos}):
-                        snp.mutationType = SNP.mutationType.frameShift
-                        frameShiftPositions.append(str(snp.location))
-                    else:
-                        # I actually can't do a nuc by nuc analysis of inserts and deletes to check for nonsynonymous mutations
-                        try:
-                            newAA = translate(seqWithSNP, codonsToAminoAcids)
-                            if newAA != translate(seqWithoutSNP, codonsToAminoAcids):
-                                if newAA == "*":
-                                    snp.mutationType = SNP.mutationType.earlyStop
-                                else:
-                                    snp.mutationType = SNP.mutationType.missSense
-                                numNonSyn += 1
-                                nonSynSnpPositions.append(str(snp.location))
-                            else:
-                                snp.mutationType = SNP.mutationType.silent
-                                synSnpPositions.append(str(snp.location))
-                        except KeyError: # i.e. if it's an indel
-                            snp.mutationType = SNP.mutationType.missSense # all indels are missense or frameshift
-                # print(gene.counter, len(gene.snps))
-                outFile.write(gene.name + "\t" + gene.product + "\t" + str(weights[gene]) + "\t" + str(gene.counter /
-                              len(gene.sequence)) + "\t" +
-                              gene.sequence + "\t" + str(numNonSyn / len(gene.sequence)) + "\t" +
-                              " ".join(nonSynSnpPositions) + "\t" + " ".join(synSnpPositions) +
-                              "\t" + str(gene.startPos) + "\t")
-                try:
-                    outFile.write(str(geneNameToNumSignificantlySnpedInPathway[gene.name[:3]])
-                                  + "/" + str(geneNameToNumInPathway[gene.name[:3]]) + "\t")
-                except KeyError: # if no sig snps in pathway
-                    outFile.write("0/" + str(geneNameToNumInPathway[gene.name[:3]]) + "\t")
-                outFile.write(str(len(frameShiftPositions) / len(gene.sequence)) + "\t" +
-                              " ".join(frameShiftPositions) + "\n")
-
-
-        """ This segment looks at the most significant snps and the genes that contain them
-        """
-        # mostSignificantSnps = []  # sorted, most significance first
-
-        # for gene in listOfGenes:
-        #     for snp in gene.snps:
-        #         mostSignificantSnps.append((snp, gene))
-        # mostSignificantSnps.sort(key=lambda snpAndGene: snpAndGene[0].pValue)
-        snpsForCurrentMetadataCategory.sort(key=lambda snp:snp.pValue)
-        with open(snpsSortedBySignificancePath + metadataCategory[0].upper() + metadataCategory[1:] + ".tsv", "w") as outFile:
-            outFile.write("SNP pValue\tGroupEnrichedInSNP\tSNPlocation\tgeneName\tnewNuc\tsnpGroupDistribution\toldNuc\tWildTypeDistribution\tmutationType(frameShiftRecordedOnlyOnFirstNucOfIndel)\tgeneSequence\n")  # add category and move to the output function
-            for snp in snpsForCurrentMetadataCategory[:numSnpsToIncludeForMostSigSnps]:
-                #                                this is the index of the group more likely to have snp
-                snpGroupDistribution = snp.allNucCounts[namesOfGroups[metadataCategory].index(snp.nameOfGroupMoreLikelyToHaveSNP)]
-                nonSnpGroupDistribution = snp.allNucCounts[1-namesOfGroups[metadataCategory].index(snp.nameOfGroupMoreLikelyToHaveSNP)]
-                outFile.write(
-                    str(snp.pValue) + "\t" + snp.nameOfGroupMoreLikelyToHaveSNP + "\t" + str(snp.location) + "\t" + snp.geneContainingSnp.name + "\t"
-                    + snp.newNuc + "\t" + str(snpGroupDistribution) + "\t" + snp.oldNuc + "\t" + str(nonSnpGroupDistribution) + "\t" + str(snp.mutationType.name) + "\t" + snp.geneContainingSnp.sequence + "\n")
-
-
-
 
     # import cProfile
     # prof = cProfile.Profile()
@@ -178,7 +190,7 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
 
     if len(snpsFileWithCorrectPosData) == 0:
         print("no significant snps found")
-        exit(10)
+        raise Exception("no data found")
 
     lastMetaDataColName = ""
     indexOfLastGene = 0
@@ -198,9 +210,7 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
         positionInGenome = int(cols[0])
         nucInfo = cols[5]
 
-        groups = nucInfo.split("|")
-        oldNuc, newNuc, indexOfMostSnpedGroup, _ = getSnpInfo(nucInfo)
-
+        oldNuc, newNuc, indexOfMostSnpedGroup = getSnpInfo(nucInfo)
 
         otherNucs = set()
         numsAndNucs = getNumsOfNucs(nucInfo)
@@ -208,8 +218,6 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
             otherNucs = otherNucs.union(numAndNuc.keys())
         otherNucs.remove(oldNuc)
         otherNucs.remove(newNuc)
-
-
         # group index is the index of the higher group with the snps
 
         if positionInGenome + 3000 < lastSNPpos: # if it went backwards by a lot then we know we are starting a new metadata category
@@ -218,8 +226,10 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
             print(lastMetaDataColName)
             print("_-----")
             indexOfLastGene = 0
-            # genes.sort(key=lambda gene: 1 - gene.counter/len(gene.sequence))
+            
             weights = {}
+            
+            # calculate weight for genes based on number of snps and snp significance
             for gene in genes:
                 weight = 0
                 for snp in gene.snps:
@@ -228,8 +238,8 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
             def sortFunc(geneArg):
                 return weights[geneArg]
             genes.sort(key=sortFunc)
-            # genes.reverse()
-            outputFunction(genes, lastMetaDataColName,weights)
+            
+            writeOutputToFiles(genes,lastMetaDataColName,snpsForCurrentMetadataCategory,weights, numGenesToInclude)
             # reset counts
             for gene in genes:
                 gene.counter = 0
@@ -243,16 +253,12 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
 
         minDistance = 1e30
         nearestGene = ""
-        snpGroup = namesOfGroups[currMetaDataColName.strip()][indexOfMostSnpedGroup]
+        snpGroup = namesOfGroups[currMetaDataColName.strip()][0]
         for gene in genes:#
             index += 1
-
             # if in right gene
             if gene.stopPos > positionInGenome and gene.startPos < positionInGenome:
                 gene.counter += 1
-                #   this doesn't necessarily capture the case where group1(336_A,_75_G,_49_T)|group2(367_A,_18_G,_98_T)
-                # print("currMetaDataColName\n\n", "'"+ currMetaDataColName + "'", "\n\n\n")
-
                 newSnp = SNP(positionInGenome - gene.startPos, oldNuc, newNuc, numsAndNucs, pval, snpGroup, gene)
                 gene.snps.append(newSnp)
                 snpsForCurrentMetadataCategory.append(newSnp)
@@ -268,7 +274,6 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
             nearestGeneCopy.name = "NearestGeneIs:" + nearestGeneCopy.name
             snp = SNP(positionInGenome - nearestGene.startPos, oldNuc, newNuc, numsAndNucs, pval, snpGroup,nearestGeneCopy)
             snp.mutationType = SNP.mutationType.notWithinAGene
-            # print(snp.mutationType.name)
             snpsForCurrentMetadataCategory.append(snp)
 
     weights = {}
@@ -280,9 +285,8 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
     def sortFunc(geneArg):
         return weights[geneArg]
     genes.sort(key=sortFunc)
-    # genes.sort(key=lambda gene: 1 - gene.counter/len(gene.sequence)) # to sort by ascending proportion
     print(lastMetaDataColName)
-    outputFunction(genes, lastMetaDataColName, weights) # "Animal"
+    writeOutputToFiles(genes, lastMetaDataColName, snpsForCurrentMetadataCategory, weights, numGenesToInclude)
 
 if __name__ == "__main__":
     """
