@@ -1,5 +1,6 @@
 import unittest
 import sys
+from parsingMegaCatsResults import getMutationType
 
 from Bio import SeqIO
 from Bio.Blast import NCBIWWW
@@ -8,15 +9,12 @@ from Bio.Blast import NCBIXML
 from Bio.Entrez import *
 import re
 sys.path.insert(1, '/Users/cazcullimore/dev/ericksonLabCode/secondaryPythonScripts')
-try:
-    from secondaryPythonScripts.functions import *
-except ImportError:
-    pass
+from secondaryPythonScripts.functions import *
 
 class MyTestCase(unittest.TestCase):
 
     def testReadIn1ContigFasta(self):
-        fastaPath = DATA_DIR + "tests/unitTests/k-12.fasta"
+        fastaPath = TEST_DATA_DIR + "unitTests/k-12.fasta"
         fileData = readInFastaAsList(fastaPath)
         print(len(fileData))
         with open(fastaPath) as file:
@@ -57,8 +55,8 @@ class MyTestCase(unittest.TestCase):
 
 
     def testGetAssemblyContigs(self):
-        gbPath = DATA_DIR + "tests/unitTests/k-12.gbff"
-        fastaPath = DATA_DIR + "tests/unitTests/k-12.fasta"
+        gbPath = TEST_DATA_DIR + "unitTests/k-12.gbff"
+        fastaPath = TEST_DATA_DIR + "unitTests/k-12.fasta"
         index = 0
         gbContigs = getContigs(gbPath)
         fastaContigs = readInFastaAsList(fastaPath)[1:][::2]
@@ -72,8 +70,8 @@ class MyTestCase(unittest.TestCase):
                 raise Exception()
 
     def testGetFullGenomeContig(self):
-        gbPath = DATA_DIR + "tests/unitTests/k-12.gbff"
-        fastaPath = DATA_DIR + "tests/unitTests/k-12.fasta"
+        gbPath = DATA_DIR + "unitTests/k-12.gbff"
+        fastaPath = DATA_DIR + "unitTests/k-12.fasta"
         index = 0
         self.assertEqual(getContigs(gbPath), readInFastaAsList(fastaPath)[1:][::2])
 
@@ -127,7 +125,40 @@ class MyTestCase(unittest.TestCase):
 
     # def testTwoFilesHaveSameInfo(self):
     #     filesContainTheSameInformation()
-
+    
+    def testGetSnpInfo(self):
+        print(getSnpInfo("pathogen(24_A,160_T)|commensal(2_A,86_T)"))
+        self.assertEqual(("T","A",0), getSnpInfo("pathogen(24_A,160_T)|commensal(2_A,86_T)"))
+        self.assertEqual(("T", "A", 0), getSnpInfo("pathogen(24_A,160_T)|commensal(2_A,86_T)"))
+    
+    def testGetMutationTypeSilent(self):
+        testGene = Gene(0,10,"ACTGACTGACT","testGene", "testProduct", isForward=True)
+        testSnp = SNP(2,"T","C",{},0,"group1", "testGene")
+        indexesOfFrameshifts = set()
+        self.assertEqual(SNP.mutationType.silent,getMutationType(testGene,testSnp,indexesOfFrameshifts))
+    def testGetMutationTypeMisSense(self):
+        testGene = Gene(0, 10, "ACTGACTGACT", "testGene", "testProduct", isForward=True)
+        testSnp = SNP(1, "C", "A", {}, 0, "group1", "testGene")
+        indexesOfFrameshifts = set()
+        self.assertEqual(SNP.mutationType.misSense, getMutationType(testGene, testSnp, indexesOfFrameshifts))
+        
+    def testGetMutationTypeSilentBackwards(self):
+        testGene = Gene(0, 10, "ACTGACTGACT", "testGene", "testProduct", isForward=False)
+        testSnp = SNP(0, "A", "G", {}, 0, "group1", "testGene")
+        indexesOfFrameshifts = set()
+        self.assertEqual(SNP.mutationType.silent, getMutationType(testGene, testSnp, indexesOfFrameshifts))
+        
+    def testGetMutationTypeMisSenseBackwards(self):
+        testGene = Gene(0, 10, "ACTGACTGACT", "testGene", "testProduct", isForward=False)
+        testSnp = SNP(1, "G", "C", {}, 0, "group1", "testGene")
+        indexesOfFrameshifts = set()
+        self.assertEqual(SNP.mutationType.misSense, getMutationType(testGene, testSnp, indexesOfFrameshifts))
+        
+    def testGetMutationTypeFrameShiftBackwards(self):
+        testGene = Gene(0, 10, "ACTGACTGACT", "testGene", "testProduct", isForward=False)
+        testSnp = SNP(1, "G", "-", {}, 0, "group1", "testGene")
+        indexesOfFrameshifts = {1}
+        self.assertEqual(SNP.mutationType.frameShift, getMutationType(testGene, testSnp, indexesOfFrameshifts))
 
 if __name__ == '__main__':
     unittest.main()

@@ -36,7 +36,7 @@ divideByPhylogroup = False
 reDoPlinkFiles = False
 runPlink = False
 runMegaCats = True
-reDoMegaCatsStats = True
+reDoMegaCatsStats = False
 runNormalAlignment = False
 runMLAnalysis = True
 

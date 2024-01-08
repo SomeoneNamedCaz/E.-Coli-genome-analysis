@@ -63,7 +63,45 @@ def getContigs(fileName):
         return contigs
 
 def getGenesOnContigs(fileName, contigs): #TODO: doesn't do such a good job on <,>, or num..num,num..num
-    genes = {}
+    geneList = getGenesOnContigsByPosition(fileName,contigs)
+    geneDict = {}
+    for gene in geneList:
+        geneDict[gene.name] = gene
+    return geneDict
+class SNP:
+    class mutationType(Enum):
+        misSense = 0
+        silent = 1
+        frameShift = 2 # nonSense
+        earlyStop = 3
+        insertMissSense = 4
+        notWithinAGene = 5
+
+    def __init__(self, location, oldNuc, newNuc, allNucCounts, pValue, nameOfGroupMoreLikelyToHaveSNP, geneContainingSnp, typeOfMutation=mutationType.silent):
+        self.location = location
+        self.oldNuc = oldNuc
+        self.newNuc = newNuc
+        self.allNucCounts = allNucCounts
+        self.pValue = pValue
+        self.typeOfMutation = typeOfMutation
+        self.nameOfGroupMoreLikelyToHaveSNP = nameOfGroupMoreLikelyToHaveSNP
+        self.geneContainingSnp = geneContainingSnp
+
+class Gene:
+    def __init__(self, startPos, stopPos, sequence, name, product, isForward=True):
+        self.startPos = startPos
+        self.stopPos = stopPos
+        self.sequence = sequence
+        self.name = name
+        self.product = product
+        self.snps = [] # list of SNP objects
+        self.counter = 0
+        self.isForward = isForward
+
+
+def getGenesOnContigsByPosition(fileName, contigs):
+    """":returns list of gene info ordered by position elements are of the gene class"""
+    genes = []
     with (open(fileName) as file):
         contig = ""
         inContig = False
@@ -103,14 +141,12 @@ def getGenesOnContigs(fileName, contigs): #TODO: doesn't do such a good job on <
                     if not geneIsForward[geneIndex]:
                         geneSeq = reverseComplement(geneSeq)
                     try:
-                        genes[geneNames[geneIndex]] = \
-                            Gene(geneStartPos, geneStopPos, geneSeq, geneNames[geneIndex], geneProducts[geneIndex],
-                                 geneIsForward[geneIndex])
+                        genes.append(Gene(geneStartPos, geneStopPos, geneSeq, geneNames[geneIndex],
+                                          geneProducts[geneIndex], geneIsForward[geneIndex]))
                         if geneProducts[geneIndex] == "hypothetical protein":
                             numHypotheticalProteins += 1
                     except IndexError:
-                        
-                        print("noname or product")
+                        print("no name or product")
                 geneStartPoses = []
                 geneStopPoses = []
                 geneIsForward = []
@@ -143,42 +179,6 @@ def getGenesOnContigs(fileName, contigs): #TODO: doesn't do such a good job on <
                         geneNames[-1] = re.sub('/gene="', "", line)[:-1]
                     elif line[:10] == '/product="':
                         geneProducts[-1] = re.sub('/product="', "", line)[:-1]
-    return genes
-class SNP:
-    class mutationType(Enum):
-        missSense = 0
-        silent = 1
-        frameShift = 2 # nonSense
-        earlyStop = 3
-        insertMissSense = 4
-        notWithinAGene = 5
-
-    def __init__(self, location, oldNuc, newNuc, allNucCounts, pValue, nameOfGroupMoreLikelyToHaveSNP, geneContainingSnp, typeOfMutation=mutationType.silent):
-        self.location = location
-        self.oldNuc = oldNuc
-        self.newNuc = newNuc
-        self.allNucCounts = allNucCounts
-        self.pValue = pValue
-        self.typeOfMutation = typeOfMutation
-        self.nameOfGroupMoreLikelyToHaveSNP = nameOfGroupMoreLikelyToHaveSNP
-        self.geneContainingSnp = geneContainingSnp
-
-class Gene:
-    def __init__(self, startPos, stopPos, sequence, name, product, isForward=True):
-        self.startPos = startPos
-        self.stopPos = stopPos
-        self.sequence = sequence
-        self.name = name
-        self.product = product
-        self.snps = [] # list of SNP objects
-        self.counter = 0
-        self.isForward = isForward
-
-
-def getGenesOnContigsByPosition(fileName, contigs):
-    """":returns list of gene info ordered by position elements are of the gene class"""
-    genes = list(getGenesOnContigs(fileName, contigs).values())
-    genes.sort(key=lambda a: a.startPos)
     return genes
 
 def geneSimilarity(seq1, seq2):

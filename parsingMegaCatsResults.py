@@ -1,6 +1,6 @@
+from concurrent.futures import *
 from secondaryPythonScripts.functions import *
 from secondaryPythonScripts.findNamesOfGroups import findNamesOfGroups
-
 def loadIndexes(indexFilePath):
     snpLocations = []  # [snplocation1, ...]
     with open(indexFilePath) as file:
@@ -10,16 +10,59 @@ def loadIndexes(indexFilePath):
             snpLocations.append(line)
     return snpLocations
     
+def calcNumGenomesWithoutGene(refGenes, pathOfAnnotatedScaffolds):
+    numGenomesWithoutGene = {} # [gene][metadata] = numberOfgenes
+    scaffoldFutures = []
+    scaffoldGenesFromAllFiles = {}
+    pool = ThreadPoolExecutor(8)
+    for file in glob(pathOfAnnotatedScaffolds):
+        
+        def x(file):
+            return getGenesOnContigs(file, getContigs(file))
+        
+        scaffoldFutures.append((file, pool.submit(x, file)))
+        
+    genomeNameToMetadata = readMetaDataAsDict(DATA_DIR + "metaDataForMetaCatsWithExtraMastitis.tsv")
+    for gene in refGenes:
+        numGenomesWithoutGene[gene.name] = {}
+        for metadataList in genomeNameToMetadata.values():
+            for value in metadataList:
+                numGenomesWithoutGene[gene.name][value] = 0
+    
+    for future in scaffoldFutures:
+        genomeName = future[0].split("/")[-1]
+        metadataForGenome = genomeNameToMetadata[re.sub("(.fasta)|(.gbk)","",genomeName) + ".fasta.vcf"]
+        scafGenes = future[1].result()
+        for gene in refGenes:
+                try:
+                    scafGenes[gene.name]
+                except KeyError:
+                    for metadata in metadataForGenome:
+                        numGenomesWithoutGene[gene.name][metadata] += 1
+    return numGenomesWithoutGene
 def getMutationType(gene, snp,indexesOfFrameShiftSnps):
     codonsToAminoAcids = makeCodonDictionary()
-    seqWithoutSNP = gene.sequence[snp.location - (snp.location % 3): snp.location + 3 - (snp.location % 3)]
+    if gene.isForward:
+        seqWithoutSNP = gene.sequence[snp.location - (snp.location % 3): snp.location + 3 - (snp.location % 3)]
+    else:
+        seqWithoutSNP = gene.sequence[len(gene.sequence) - (snp.location - (snp.location % 3)) - 3:
+                                                         len(gene.sequence) - (snp.location - (snp.location % 3))]
     # seqWithoutSNP[snp.location] = snp.oldNuc
     seqWithoutSNP = list(seqWithoutSNP)
-    seqWithSNP = seqWithoutSNP
-    seqWithSNP[snp.location % 3] = snp.newNuc
+    seqWithSNP = deepcopy(seqWithoutSNP)
+    if gene.isForward:
+        seqWithSNP[snp.location % 3] = snp.newNuc
+    else:
+        seqWithSNP[2 - snp.location % 3] = reverseComplement(snp.newNuc)
+    
     seqWithSNP = "".join(seqWithSNP)  # because strings are immutable
-    seqWithoutSNP[snp.location % 3] = snp.oldNuc  # in case the ref has the snp too
+    
+    if gene.isForward:
+        seqWithoutSNP[snp.location % 3] = snp.oldNuc  # in case the ref has the snp too
+    else:
+        seqWithoutSNP[2 - snp.location % 3] = reverseComplement(snp.oldNuc)
     seqWithoutSNP = "".join(seqWithoutSNP)  # because strings are immutable
+    
     
     if not indexesOfFrameShiftSnps.isdisjoint({snp.location + gene.startPos}):
         snp.mutationType = SNP.mutationType.frameShift
@@ -31,15 +74,15 @@ def getMutationType(gene, snp,indexesOfFrameShiftSnps):
                 if newAA == "*":
                     snp.mutationType = SNP.mutationType.earlyStop
                 else:
-                    snp.mutationType = SNP.mutationType.missSense
+                    snp.mutationType = SNP.mutationType.misSense
             else:
                 snp.mutationType = SNP.mutationType.silent
         except KeyError:  # i.e. if it's an indel
-            snp.mutationType = SNP.mutationType.missSense  # all indels are missense or frameshift
+            snp.mutationType = SNP.mutationType.misSense  # all indels are missense or frameshift
     return snp.mutationType
 
 
-def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaDataFilePath, annotatedRefGenomePath, removeSparce=True, outputDirectory="."):
+def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaDataFilePath, annotatedRefGenomePath, removeSparce=True, outputDirectory=".", pathOfAnnotatedScaffolds="/Users/cazcullimore/dev/data/k-12RefGenomeAnalysisFiles/AllAssemblies/allBovineScaffolds/*.gbk"):
     
     # add FrameShiftedToIndexPath
     snpIndexesFrameShiftedPath = ".".join(snpIndexesPath.split(".")[:-1]) + "FrameShifted." + snpIndexesPath.split(".")[-1]
@@ -55,7 +98,7 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
     snpsSortedBySignificancePath = outputDirectory + "/snpsSortedBySignificanceWithGenesContainingThem" + suffix # created (extension added later)
     numSnpsWithinGenesPath = outputDirectory + "/numSnpsWithinGenes"
     
-    def writeOutputToFiles(listOfGenes, metadataCategory, snpsForCurrentMetadataCategory, weights,numGenesToInclude):
+    def writeOutputToFiles(listOfGenes, metadataCategory, snpsForCurrentMetadataCategory, weights,numGenesToInclude,numGenomesWithoutGene):
         # make file that looks at the most snpped genes
         with open(numSnpsWithinGenesPath + metadataCategory[0].upper() + metadataCategory[1:] + suffix + ".tsv",
                   "w") as outFile:
@@ -84,7 +127,7 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
                 frameShiftPositions = []
                 
                 for snp in gene.snps:
-                    snp.mutationType = getMutationType(gene.sequence, snp)
+                    snp.mutationType = getMutationType(gene, snp, indexesOfFrameShiftSnps=indexesOfFrameShiftSnps)
                     if snp.mutationType == SNP.mutationType.frameShift:
                         frameShiftPositions.append(str(snp.location))
                         nonSynSnpPositions.append(str(snp.location))
@@ -122,12 +165,18 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
                     namesOfGroups[metadataCategory].index(snp.nameOfGroupMoreLikelyToHaveSNP)]
                 nonSnpGroupDistribution = snp.allNucCounts[
                     1 - namesOfGroups[metadataCategory].index(snp.nameOfGroupMoreLikelyToHaveSNP)]
+                genomesWithoutGene = "no gene found"
+                try:
+                    genomesWithoutGene = str(numGenomesWithoutGene[snp.geneContainingSnp.name.split(":")[-1]])
+                except KeyError:
+                    pass
                 outFile.write(
                     str(snp.pValue) + "\t" +
-                    snp.nameOfGroupMoreLikelyToHaveSNP + "\t" +
+                    snp.nameOfGroupMoreLikelyToHaveSNP  + "\t" +
                     str(snp.location) + "\t" + snp.geneContainingSnp.name + "\t" +
                     snp.newNuc + "\t" +
                     str(snpGroupDistribution) + "\t" +
+                    genomesWithoutGene + "\t" +
                     snp.oldNuc + "\t" +
                     str(nonSnpGroupDistribution) + "\t" +
                     str(snp.mutationType.name) + "\t" +
@@ -144,13 +193,14 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
 
     if abs(len(getFirstDataLine(snpGenomePath)) - len(snpLocations)) > 10_000:
         raise Exception("indexes are probably off")
+    
+    
 
-
-    print("length of snp genomes", len(getFirstDataLine(snpGenomePath)))
+    print("length of snp genomes", len(getFirstDataLine(snpGenomePath).strip()))
     print("length of snp indexes",len(snpLocations))
 
     snpsFileWithCorrectPosData = []
-    with open(megaCatsFile) as file, open(snpsFileWithCorrectPosPath, "w") as outFile:
+    with open(megaCatsFile) as file:
         for line in file:
             line = line.strip()
             cols = line.split("\t")
@@ -165,7 +215,6 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
                 print(positionInSnpGenome-1, "is too far")
             if pval < significanceLevel and (not removeSparce or cols[4].strip() == "N"):
                 dataToWrite = str(posInRefGenome) + "\t" + "\t".join(cols[1:]) + "\n"
-                outFile.write(dataToWrite)
                 snpsFileWithCorrectPosData.append(dataToWrite)
         print("last megaCats pos",positionInSnpGenome)
 
@@ -181,6 +230,8 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
     t1 = time.time()
     contigs = getContigs(annotatedRefGenomePath)
     genes = getGenesOnContigsByPosition(annotatedRefGenomePath, contigs)
+    numGenomesWithoutGene = calcNumGenomesWithoutGene(genes,pathOfAnnotatedScaffolds)
+    print(numGenomesWithoutGene)
     print(time.time()-t1)
 
     # import cProfile
@@ -239,7 +290,7 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
                 return weights[geneArg]
             genes.sort(key=sortFunc)
             
-            writeOutputToFiles(genes,lastMetaDataColName,snpsForCurrentMetadataCategory,weights, numGenesToInclude)
+            writeOutputToFiles(genes,lastMetaDataColName,snpsForCurrentMetadataCategory,weights, numGenesToInclude,numGenomesWithoutGene)
             # reset counts
             for gene in genes:
                 gene.counter = 0
@@ -253,7 +304,7 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
 
         minDistance = 1e30
         nearestGene = ""
-        snpGroup = namesOfGroups[currMetaDataColName.strip()][0]
+        snpGroup = namesOfGroups[currMetaDataColName.strip()][indexOfMostSnpedGroup]
         for gene in genes:#
             index += 1
             # if in right gene
@@ -286,7 +337,7 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
         return weights[geneArg]
     genes.sort(key=sortFunc)
     print(lastMetaDataColName)
-    writeOutputToFiles(genes, lastMetaDataColName, snpsForCurrentMetadataCategory, weights, numGenesToInclude)
+    writeOutputToFiles(genes, lastMetaDataColName, snpsForCurrentMetadataCategory, weights, numGenesToInclude, numGenomesWithoutGene)
 
 if __name__ == "__main__":
     """
