@@ -105,8 +105,8 @@ class MyTestCase(unittest.TestCase):
                         try:
                             print("\n"+genes[geneName].sequence)
                             print(geneName, geneAASeq)
-                            print(translate(genes[geneName].sequence, makeCodonDictionary()))
-                            self.assertEqual(geneAASeq[1:], translate(genes[geneName].sequence, makeCodonDictionary())[1:])
+                            print(translate(genes[geneName].sequence))
+                            self.assertEqual(geneAASeq[1:], translate(genes[geneName].sequence)[1:])
                             # exit(0)
                             geneName = "no name"
                         except KeyError:

@@ -41,7 +41,6 @@ def calcNumGenomesWithoutGene(refGenes, pathOfAnnotatedScaffolds):
                         numGenomesWithoutGene[gene.name][metadata] += 1
     return numGenomesWithoutGene
 def getMutationType(gene, snp,indexesOfFrameShiftSnps):
-    codonsToAminoAcids = makeCodonDictionary()
     if gene.isForward:
         seqWithoutSNP = gene.sequence[snp.location - (snp.location % 3): snp.location + 3 - (snp.location % 3)]
     else:
@@ -69,8 +68,8 @@ def getMutationType(gene, snp,indexesOfFrameShiftSnps):
     else:
         # I actually can't do a nuc by nuc analysis of inserts and deletes to check for nonsynonymous mutations
         try:
-            newAA = translate(seqWithSNP, codonsToAminoAcids)
-            if newAA != translate(seqWithoutSNP, codonsToAminoAcids):
+            newAA = translate(seqWithSNP)
+            if newAA != translate(seqWithoutSNP):
                 if newAA == "*":
                     snp.mutationType = SNP.mutationType.earlyStop
                 else:
@@ -98,7 +97,7 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
     snpsSortedBySignificancePath = outputDirectory + "/snpsSortedBySignificanceWithGenesContainingThem" + suffix # created (extension added later)
     numSnpsWithinGenesPath = outputDirectory + "/numSnpsWithinGenes"
     
-    def writeOutputToFiles(listOfGenes, metadataCategory, snpsForCurrentMetadataCategory, weights,numGenesToInclude,numGenomesWithoutGene):
+    def writeOutputToFiles(listOfGenes, metadataCategory, snpsForCurrentMetadataCategory, weights,numGenesToInclude,numGenomesWithoutGene, namesOfGroups):
         # make file that looks at the most snpped genes
         with open(numSnpsWithinGenesPath + metadataCategory[0].upper() + metadataCategory[1:] + suffix + ".tsv",
                   "w") as outFile:
@@ -154,12 +153,16 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
         
         """ This segment looks at the most significant snps and the genes that contain them
         """
+        
         snpsForCurrentMetadataCategory.sort(key=lambda snp: snp.pValue)
         with open(snpsSortedBySignificancePath + metadataCategory[0].upper() + metadataCategory[1:] + ".tsv",
                   "w") as outFile:
             outFile.write(
-                "SNP pValue\tGroupEnrichedInSNP\tSNPlocation\tgeneName\tnewNuc\tsnpGroupDistribution\toldNuc\tWildTypeDistribution\tmutationType(frameShiftRecordedOnlyOnFirstNucOfIndel)\tgeneSequence\n")  # add category and move to the output function
+                "SNP pValue\tGroupEnrichedInSNP\tSNPdistanceFromGeneStartPos\tSnpIndexInGene\tgeneName\tnewNuc\tsnpGroupDistribution\toldNuc\tWildTypeDistribution\tmutationType(frameShiftRecordedOnlyOnFirstNucOfIndel)\tgeneSequence\n")  # add category and move to the output function
             for snp in snpsForCurrentMetadataCategory[:numSnpsToIncludeForMostSigSnps]:
+                snpIndexInGene = snp.location
+                if not snp.geneContainingSnp.isForward:
+                    snpIndexInGene = len(snp.geneContainingSnp.sequence) - snp.location
                 #                                this is the index of the group more likely to have snp
                 snpGroupDistribution = snp.allNucCounts[
                     namesOfGroups[metadataCategory].index(snp.nameOfGroupMoreLikelyToHaveSNP)]
@@ -170,17 +173,19 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
                     genomesWithoutGene = str(numGenomesWithoutGene[snp.geneContainingSnp.name.split(":")[-1]])
                 except KeyError:
                     pass
-                outFile.write(
-                    str(snp.pValue) + "\t" +
-                    snp.nameOfGroupMoreLikelyToHaveSNP  + "\t" +
-                    str(snp.location) + "\t" + snp.geneContainingSnp.name + "\t" +
-                    snp.newNuc + "\t" +
-                    str(snpGroupDistribution) + "\t" +
-                    genomesWithoutGene + "\t" +
-                    snp.oldNuc + "\t" +
-                    str(nonSnpGroupDistribution) + "\t" +
-                    str(snp.mutationType.name) + "\t" +
-                    snp.geneContainingSnp.sequence + "\n")
+                if snp.mutationType != SNP.mutationType.silent:
+                    outFile.write(
+                        str(snp.pValue) + "\t" +
+                        snp.nameOfGroupMoreLikelyToHaveSNP + "\t" +
+                        str(snp.location) + "\t" +
+                        str(snpIndexInGene) + "\t" + snp.geneContainingSnp.name + "\t" +
+                        snp.newNuc + "\t" +
+                        str(snpGroupDistribution) + "\t" +
+                        genomesWithoutGene + "\t" +
+                        snp.oldNuc + "\t" +
+                        str(nonSnpGroupDistribution) + "\t" +
+                        str(snp.mutationType.name) + "\t" +
+                        snp.geneContainingSnp.sequence + "\n")
 
 
 
@@ -290,7 +295,7 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
                 return weights[geneArg]
             genes.sort(key=sortFunc)
             
-            writeOutputToFiles(genes,lastMetaDataColName,snpsForCurrentMetadataCategory,weights, numGenesToInclude,numGenomesWithoutGene)
+            writeOutputToFiles(genes,lastMetaDataColName,snpsForCurrentMetadataCategory,weights, numGenesToInclude,numGenomesWithoutGene, namesOfGroups)
             # reset counts
             for gene in genes:
                 gene.counter = 0
@@ -337,7 +342,7 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
         return weights[geneArg]
     genes.sort(key=sortFunc)
     print(lastMetaDataColName)
-    writeOutputToFiles(genes, lastMetaDataColName, snpsForCurrentMetadataCategory, weights, numGenesToInclude, numGenomesWithoutGene)
+    writeOutputToFiles(genes, lastMetaDataColName, snpsForCurrentMetadataCategory, weights, numGenesToInclude, numGenomesWithoutGene,namesOfGroups)
 
 if __name__ == "__main__":
     """

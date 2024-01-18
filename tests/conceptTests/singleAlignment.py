@@ -152,7 +152,7 @@ class MyTestCase(unittest.TestCase):
         for index in indexes:
             index = index.strip()
             snpPos = int(float(index))
-            if snpPos < 4431321 + 569:#4433164 + 740:#4512411 + 630: #1570645: #
+            if snpPos < 4434622+1030: #4431321 + 569:#4433164 + 740:#4512411 + 630: #1570645: #
                 continue
             lineOfIndexfile += 1
             geneDistributions = {"pathogen": {"A": 0, "T": 0, "C": 0, "G": 0, "noGene":0},
@@ -187,6 +187,7 @@ class MyTestCase(unittest.TestCase):
                             refSeq = refGene.sequence
                             normalSeq = normalAlignGene.sequence
                             scaffoldSeq = scaffoldGene.sequence
+                            # note: if one genome has the gene forwards and the other has it backwards, it should be right at the nucleotide but not right anywhere elsee
                             if not scaffoldGene.isForward:
                                 scaffoldSeq = reverseComplement(scaffoldSeq)
                             if not refGene.isForward:
