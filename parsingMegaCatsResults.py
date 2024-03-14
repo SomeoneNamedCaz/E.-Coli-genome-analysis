@@ -185,6 +185,7 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
                         snp.oldNuc + "\t" +
                         str(nonSnpGroupDistribution) + "\t" +
                         str(snp.mutationType.name) + "\t" +
+                        str(snp.geneContainingSnp.startPos) + "\t" +
                         snp.geneContainingSnp.sequence + "\n")
 
 

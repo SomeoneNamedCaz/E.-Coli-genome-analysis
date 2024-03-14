@@ -16,15 +16,15 @@ from secondaryPythonScripts.divideGenomesByPhylogroup import *
 #
 # namePrefix = "M12RefGenome" # the name to give to start all the files created
 # pathsToGsAlignVCFs = assemblyDir + "/ragtagOutputs/longestScaffoldFiles/gsAlignOutputs/*.vcf"
-pathToAssemblies = DATA_DIR + "m-12RefGenomeAnalysisFiles/allBovineScaffolds/*.fasta"
+# pathToAssemblies = DATA_DIR + "m-12RefGenomeAnalysisFiles/allBovineScaffolds/*.fasta"
 pathOfAnnotatedScaffolds = "/Users/cazcullimore/dev/data/k-12RefGenomeAnalysisFiles/AllAssemblies/allBovineScaffolds/*.gbk"
-# pathToAssemblies = DATA_DIR + "k-12RefGenomeAnalysisFiles/AllAssemblies/allBovineScaffolds/*.fasta"
+pathToAssemblies = DATA_DIR + "k-12RefGenomeAnalysisFiles/AllAssemblies/allBovineScaffolds/*.fasta"
 # pathToAssemblies = TEST_DATA_DIR + "tenAssembliesFromEachCategory/*.fasta"
-pathToRefGenomeFasta = DATA_DIR + "refGenomes/M12 closed genome (1).fasta"#k-12.fasta"
-pathToRefGenomeGb = DATA_DIR + "refGenomes/M12.gbk"#k-12.gbff"
+pathToRefGenomeFasta = DATA_DIR + "refGenomes/k-12.fasta"#M12 closed genome (1).fasta"#
+pathToRefGenomeGb = DATA_DIR + "refGenomes/k-12.gbff" #M12.gbk"#
 
 assemblyDir = "/".join(pathToAssemblies.split("/")[:-1])
-namePrefix = "M12RefGenome" #"K12RefGenome"## the name to give to start all the files created
+namePrefix = "K12RefGenome"#"M12RefGenome"# the name to give to start all the files created
 pathsToGsAlignVCFs = assemblyDir + "/ragtagOutputs/longestScaffoldFiles/gsAlignOutputs/*.vcf"
 
 snpAlignPath = DATA_DIR + "RedoingEverything/SnpAlign/" + namePrefix +".afa"
@@ -40,15 +40,15 @@ megaCatStatsFilePath = DATA_DIR + "RedoingEverything/" + namePrefix + "megaCatsS
 normalAlignPath = DATA_DIR + "RedoingEverything/" + namePrefix + "normalAlign.afa"
 
 reRunScaffoldAndGsAlign = False
-reAlignSnps = True
-reRunPhylogroups = False
+reAlignSnps = False
+reRunEzclermont = False
 divideByPhylogroup = False
 reDoPlinkFiles = False
 runPlink = False
-runMegaCats = True
-reDoMegaCatsStats = True
-runNormalAlignment = False
-runMLAnalysis = True
+runMegaCats = False
+reDoMegaCatsStats = False
+runNormalAlignment = True
+runMLAnalysis = False
 
 typesOfSnpsToSkipDuringAlignment = []#["INSERT", "DELETE"]
 
@@ -65,7 +65,7 @@ pedFilePath = plinkOutputPath + namePrefix + ".ped"
 covFilePath = plinkOutputPath + namePrefix + ".cov"
 mapFilePath = plinkOutputPath + namePrefix + ".map"
 
-if reRunPhylogroups:
+if reRunEzclermont:
 	os.system("rm " + genomeNameToPhylogroupPath + "; for fileName in " + pathToAssemblies + "; do conda run -n ezclermontEnv ezclermont $fileName >> " + genomeNameToPhylogroupPath + "; done;")
 
 

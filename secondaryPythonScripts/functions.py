@@ -181,7 +181,7 @@ def getGenesOnContigsByPosition(fileName, contigs):
                         geneProducts[-1] = re.sub('/product="', "", line)[:-1]
     return genes
 
-def geneSimilarity(seq1, seq2):
+def geneSimilarity(seq1, seq2, quiet=False):
     numSame = 0
     printedError = False
     seq1 = seq1.upper()
@@ -192,7 +192,7 @@ def geneSimilarity(seq1, seq2):
             if seq1[i] == seq2[i]:
                 numSame += 1
         except IndexError:
-            if not printedError:
+            if not printedError and not quiet:
                 print("different Gene lengths")
                 printedError = True
     return numSame / max(len(seq1),len(seq2))

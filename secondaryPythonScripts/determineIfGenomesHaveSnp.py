@@ -48,31 +48,44 @@ for position in positions:
 	index += 1
 	printSnp = not printOnlySnpsThatBothGenomesSatisfy
 	geneName = snpLines[index].split("\t")[4]
-	if "NearestGeneIs:" in geneName or "unnamed" in geneName:# or geneName != "gadB":
+	if "NearestGeneIs:" in geneName or geneName != "cpdB":
 		continue
+	refSeq = snpLines[index].split("\t")[-1]
 	
 	try:
-		if refGenes[geneName].isForward:
-			try:
-				m12Nuc = m12Genes[geneName].sequence[position]
-			except KeyError:
-				m12Nuc = "no gene"
-			try:
-				k12Nuc = k12Genes[geneName].sequence[position]
-			except KeyError:
-				k12Nuc = "no gene"
-		else:
-			try:
-				m12Nuc = reverseComplement(m12Genes[geneName].sequence)[position]
-			except KeyError:
-				m12Nuc = "no gene"
-			try:
-				k12Nuc = reverseComplement(k12Genes[geneName].sequence)[position]
-			except KeyError:
-				k12Nuc = "no gene"
-		if m12Nuc == pathogenicNucs[index] and k12Nuc == commensalNucs[index]:
-			printSnp = True
+		if "unnamed" in geneName:
 			
+			m12Nuc = "not found"
+			k12Nuc = "not found"
+			for gene in getGenesOnContigsByPosition(m12Path,getContigs(m12Path)):
+				if geneSimilarity(gene.sequence, refSeq,quiet=True) > 0.9:
+					m12Nuc = gene.sequence[position]
+			
+			for gene in getGenesOnContigsByPosition(k12Path, getContigs(k12Path)):
+				if geneSimilarity(gene.sequence, refSeq,quiet=True) > 0.9:
+					k12Nuc = gene.sequence[position]
+		else:
+			if refGenes[geneName].isForward:
+				try:
+					m12Nuc = m12Genes[geneName].sequence[position]
+				except KeyError:
+					m12Nuc = "no gene"
+				try:
+					k12Nuc = k12Genes[geneName].sequence[position]
+				except KeyError:
+					k12Nuc = "no gene"
+			else:
+				try:
+					m12Nuc = reverseComplement(m12Genes[geneName].sequence)[position]
+				except KeyError:
+					m12Nuc = "no gene"
+				try:
+					k12Nuc = reverseComplement(k12Genes[geneName].sequence)[position]
+				except KeyError:
+					k12Nuc = "no gene"
+			if m12Nuc == pathogenicNucs[index] and k12Nuc == commensalNucs[index]:
+				printSnp = True
+				
 		if printSnp:
 			print(snpLines[index])
 			print(position)

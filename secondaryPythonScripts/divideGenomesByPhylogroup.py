@@ -1,3 +1,5 @@
+import re
+
 from secondaryPythonScripts.functions import *
 
 def divideGenomesByPhylogroup(alignedSnpsPath, phylogroupsPath, metadataPath="./metaDataForMetaCatsWithExtraMastitis.tsv", outDir="./"):
@@ -19,9 +21,9 @@ def divideGenomesByPhylogroup(alignedSnpsPath, phylogroupsPath, metadataPath="./
                 continue
             # populate phylogroupToGenomes
             if not cols[1] in phylogroupToGenomes.keys():
-                phylogroupToGenomes[cols[1]] = {"scaffold_" + cols[0] + ".fasta.vcf"}
+                phylogroupToGenomes[cols[1]] = {"scaffold_" + re.sub("scaffold_|.fasta.vcf","", cols[0]) + ".fasta.vcf"}
             else:
-                phylogroupToGenomes[cols[1]].add("scaffold_" + cols[0] + ".fasta.vcf")
+                phylogroupToGenomes[cols[1]].add("scaffold_" + re.sub("scaffold_|.fasta.vcf","", cols[0]) + ".fasta.vcf")
     
     genomeToMetadata = {}
     with open(metadataPath) as file:
