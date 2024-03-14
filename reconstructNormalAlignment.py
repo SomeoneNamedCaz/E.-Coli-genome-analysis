@@ -48,13 +48,8 @@ def reconstructNormalAlignment(snpGenomePath, snpIndexesPath, refGenomePath, out
             "ref genome has more than one contig, this is not a problem as long as the first contig is the chromosome")
     refSeq = refGenomeContigs[0]
     
-    snpIndexes = []
-    # load indexes
-    with open(snpIndexesPath) as file:
+    snpIndexes = readIndexes(snpIndexesPath)
     
-        for line in file:  # special stuff here to adjust for float method that was added
-            line = float(line.strip())
-            snpIndexes.append(line)
     
     # load snp genomes
     alignedSnps = {}

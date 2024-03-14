@@ -4,107 +4,73 @@
 # ACTAGATAGAGCATAGAGTACCTAGATAGAGCATAGAGTA
 #                     |SNP misSense T->K
 from functions import *
-# from reconstructNormalAlignment import *
+from reconstructNormalAlignment import *
 
 
+# if there's a dash in the genome that doesn't have any snps then we know there was an insert so if we account
+# for all the inserts we can figure out where the genes and snps should be
 
-from secondaryPythonScripts.functions import *
-from concurrent.futures import *
-from time import time
-
-
-def addRefNucs(seq, indexes, referenceSeq):
-	lastIndex = -1
-	indexInSnpGenome = 0
-	alignedSeq = []
-	for indexOfSNPInRefSeq in indexes:
-		nucsToInsert = referenceSeq[int(lastIndex) + 1:int(indexOfSNPInRefSeq)]
-		alignedSeq.append(nucsToInsert)
-		alignedSeq.append(seq[indexInSnpGenome])
-		lastIndex = indexOfSNPInRefSeq
-		indexInSnpGenome += 1
-	
-	nucsToInsert = referenceSeq[int(lastIndex) + 1:]
-	alignedSeq.append(nucsToInsert)
-	return "".join(alignedSeq)
-
-
-def reconstructNormalAlignmentHelper(refSeq, snpIndexes, alignedSnps, ):
-	numThreads = 1
-	t1 = time()
-	pool = ThreadPoolExecutor(numThreads)
-	futures = []
-	
-	for key in alignedSnps.keys():
-		futures.append((key, pool.submit(addRefNucs, alignedSnps[key], snpIndexes, refSeq)))
-	
-	i = 0
-	alignedGenomes = {}
-	for keyAndfuture in futures:
-		alignedGenomes[keyAndfuture[0]] = keyAndfuture[1].result()
-		i += 1
-	print(numThreads, "threads took", time() - t1, "seconds")
-	
-	return alignedGenomes
-
-
-def reconstructNormalAlignment(snpGenomePath, snpIndexesPath, refGenomePath, outputPath):
-	print("snp genome path", snpGenomePath)
-	print("index path", snpIndexesPath)
-	print("refGenomePath", refGenomePath)
-	print("output path", outputPath)
+def mapsSnps(refGenomePath, snpIndexes, alignedSnps, significantSnps):
 	refGenomeContigs = getContigs(refGenomePath)
 	if len(refGenomeContigs) > 1:
-		print(
-			"ref genome has more than one contig, this is not a problem as long as the first contig is the chromosome")
-	refSeq = refGenomeContigs[0]
-	
-	snpIndexes = []
-	# load indexes
-	with open(snpIndexesPath) as file:
+		raise Exception("ref genome has more than one contig, this is not a problem as long as the first contig is the chromosome")
 		
-		for line in file:  # special stuff here to adjust for float method that was added
-			line = float(line.strip())
-			snpIndexes.append(line)
+	refSeq = refGenomeContigs[0]
+	refGenes = getGenesOnContigsByPosition(refGenomePath, refGenomeContigs)
+	print("pre align")
+	alignedGenomes = reconstructNormalAlignmentHelper(refSeq, snpIndexes, {"genomeWithoutAnySnps":alignedSnps["genomeWithoutAnySnps"]})
+	print("post align")
 	
-	# load snp genomes
-	alignedSnps = {}
-	with open(snpGenomePath) as file:
-		fileName = "somethingBroke"  # should be written to first
-		for line in file:
-			line = line.strip()
-			if line[0] == ">":
-				fileName = line[1:]
+	# significantSnps
+	
+	insertIndexes = []
+	numShifts = 0
+	indexThatMatchesOriginalSeq = 0 # this is index not counting the inserts
+	nextGeneIndex = 0
+	annotationLine = ""#[] # change to list of chars if slow
+	snpLine = ""
+	index = 0
+	indexOfNextSnpLocation = 0
+	for nuc in alignedGenomes["genomeWithoutAnySnps"]:
+		if indexThatMatchesOriginalSeq == refGenes[nextGeneIndex].startPos:
+			stuffToAdd = " " * (index - len(annotationLine) - 2 - len(refGenes[nextGeneIndex].name)) + refGenes[nextGeneIndex].name + "->|<-"
+			if refGenes[nextGeneIndex].isForward:
+				annotationLine += stuffToAdd + " start"
 			else:
-				alignedSnps[fileName] = line
+				annotationLine += stuffToAdd + " end (gene is on complement strand)"
+		elif indexThatMatchesOriginalSeq == refGenes[nextGeneIndex].stopPos:
+			stuffToAdd = " " * (index - len(annotationLine) - 2 - len(refGenes[nextGeneIndex].name)) + refGenes[nextGeneIndex].name + "->|<-"
+			if refGenes[nextGeneIndex].isForward:
+				annotationLine += stuffToAdd + " end"
+			else:
+				annotationLine += stuffToAdd + " start (gene is on complement strand)"
+			if nextGeneIndex != len(refGenes) - 1:
+				nextGeneIndex += 1
+		if indexThatMatchesOriginalSeq == significantSnps[indexOfNextSnpLocation][10]:
+			snpLine += " " * (index - len(snpLine) - 2) + "->|<-" + " ".join(significantSnps[indexOfNextSnpLocation])
+			indexOfNextSnpLocation += 1
+		if nuc != "-":
+			indexThatMatchesOriginalSeq += 1
+		index += 1
 	
-	alignedGenomes = reconstructNormalAlignmentHelper(refSeq, snpIndexes, alignedSnps)
+	return annotationLine, alignedGenomes, snpLine
 	
-	if not os.path.exists("/".join(outputPath.split("/")[:-1])) and outputPath.count("/") != 0:
-		os.mkdir("/".join(outputPath.split("/")[:-1]))
-	
-	with open(outputPath, "w") as outFile:
-		for key in alignedGenomes.keys():
-			outFile.write(">" + key + "\n")
-			outFile.write(alignedGenomes[key] + "\n")
-			if len(refSeq) + sum([index != int(index) for index in snpIndexes]) != len(alignedGenomes[key]):
-				print("PROBLEM ALIGNED GENOME IS THE WRONG SIZE")
-
+	# for index in range(len()):
 
 if __name__ == "__main__":
-	if len(sys.argv) < 5:
+	try:
+		snpGenomePath = sys.argv[1]
+		snpIndexesPath = sys.argv[2]
+		print("snp genome path", snpGenomePath)
+		print("index path", snpIndexesPath)
+		
+		refGenomePath = sys.argv[3]  # .gbff
+		
+		outputPath = sys.argv[4]
+	except IndexError:
 		print("\nplease provide the path to the snp genome, the corresponding indexes, the reference sequence (.gb)")
 		print("and the output path output path")
 		exit(1)
-	
-	snpGenomePath = sys.argv[1]
-	snpIndexesPath = sys.argv[2]
-	print("snp genome path", snpGenomePath)
-	print("index path", snpIndexesPath)
-	
-	refGenomePath = sys.argv[3]  # .gbff phylogroupSnpFile
-	
-	outputPath = sys.argv[4]  # with phylogroupSnpFile
 	reconstructNormalAlignment(snpGenomePath, snpIndexesPath, refGenomePath, outputPath)
 
 

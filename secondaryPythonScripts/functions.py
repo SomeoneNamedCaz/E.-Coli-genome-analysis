@@ -702,3 +702,12 @@ def readMetaDataAsDict(metadataFilePath):
             else:
                 seqNameToMetaDataType[cols[0]] = cols[1:]
     return seqNameToMetaDataType
+
+def readIndexes(snpIndexesPath):
+    # load indexes
+    snpIndexes = []
+    with open(snpIndexesPath) as file:
+        for line in file:  # special stuff here to adjust for float method that was added
+            line = float(line.strip())
+            snpIndexes.append(line)
+    return snpIndexes
