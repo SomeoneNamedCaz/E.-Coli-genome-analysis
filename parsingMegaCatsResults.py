@@ -78,7 +78,7 @@ def getMutationType(gene, snp,indexesOfFrameShiftSnps):
                 snp.mutationType = SNP.mutationType.silent
         except KeyError:  # i.e. if it's an indel
             snp.mutationType = SNP.mutationType.misSense  # all indels are missense or frameshift
-    return snp.mutationType
+    return snp.mutationType, (translate(seqWithoutSNP), newAA)
 
 
 def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaDataFilePath, annotatedRefGenomePath, removeSparce=True, outputDirectory=".", pathOfAnnotatedScaffolds="/Users/cazcullimore/dev/data/k-12RefGenomeAnalysisFiles/AllAssemblies/allBovineScaffolds/*.gbk"):
@@ -126,7 +126,7 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
                 frameShiftPositions = []
                 
                 for snp in gene.snps:
-                    snp.mutationType = getMutationType(gene, snp, indexesOfFrameShiftSnps=indexesOfFrameShiftSnps)
+                    snp.mutationType = getMutationType(gene, snp, indexesOfFrameShiftSnps=indexesOfFrameShiftSnps)[0]
                     if snp.mutationType == SNP.mutationType.frameShift:
                         frameShiftPositions.append(str(snp.location))
                         nonSynSnpPositions.append(str(snp.location))

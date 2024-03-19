@@ -135,30 +135,30 @@ class MyTestCase(unittest.TestCase):
         testGene = Gene(0,10,"ACTGACTGACT","testGene", "testProduct", isForward=True)
         testSnp = SNP(2,"T","C",{},0,"group1", "testGene")
         indexesOfFrameshifts = set()
-        self.assertEqual(SNP.mutationType.silent,getMutationType(testGene,testSnp,indexesOfFrameshifts))
+        self.assertEqual(SNP.mutationType.silent,getMutationType(testGene,testSnp,indexesOfFrameshifts)[0])
     def testGetMutationTypeMisSense(self):
         testGene = Gene(0, 10, "ACTGACTGACT", "testGene", "testProduct", isForward=True)
         testSnp = SNP(1, "C", "A", {}, 0, "group1", "testGene")
         indexesOfFrameshifts = set()
-        self.assertEqual(SNP.mutationType.misSense, getMutationType(testGene, testSnp, indexesOfFrameshifts))
+        self.assertEqual(SNP.mutationType.misSense, getMutationType(testGene, testSnp, indexesOfFrameshifts)[0])
         
     def testGetMutationTypeSilentBackwards(self):
         testGene = Gene(0, 10, "ACTGACTGACT", "testGene", "testProduct", isForward=False)
         testSnp = SNP(0, "A", "G", {}, 0, "group1", "testGene")
         indexesOfFrameshifts = set()
-        self.assertEqual(SNP.mutationType.silent, getMutationType(testGene, testSnp, indexesOfFrameshifts))
+        self.assertEqual(SNP.mutationType.silent, getMutationType(testGene, testSnp, indexesOfFrameshifts)[0])
         
     def testGetMutationTypeMisSenseBackwards(self):
         testGene = Gene(0, 10, "ACTGACTGACT", "testGene", "testProduct", isForward=False)
         testSnp = SNP(1, "G", "C", {}, 0, "group1", "testGene")
         indexesOfFrameshifts = set()
-        self.assertEqual(SNP.mutationType.misSense, getMutationType(testGene, testSnp, indexesOfFrameshifts))
+        self.assertEqual(SNP.mutationType.misSense, getMutationType(testGene, testSnp, indexesOfFrameshifts)[0])
         
     def testGetMutationTypeFrameShiftBackwards(self):
         testGene = Gene(0, 10, "ACTGACTGACT", "testGene", "testProduct", isForward=False)
         testSnp = SNP(1, "G", "-", {}, 0, "group1", "testGene")
         indexesOfFrameshifts = {1}
-        self.assertEqual(SNP.mutationType.frameShift, getMutationType(testGene, testSnp, indexesOfFrameshifts))
+        self.assertEqual(SNP.mutationType.frameShift, getMutationType(testGene, testSnp, indexesOfFrameshifts)[0])
 
 if __name__ == '__main__':
     unittest.main()
