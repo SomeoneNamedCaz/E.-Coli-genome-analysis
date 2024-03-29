@@ -42,6 +42,7 @@ def calculateMegaCatsStats(alignedFilePath, metadataFilePath, outFilePath, match
                 isFirstLine = False
             else:
                 seqNameToMetaDataType[cols[0]] = cols[1:]
+                print(cols)
                 for colIndex in range(len(cols[1:])):
                     # try:
                     possibleClassValues[colIndex].add(cols[colIndex + 1])

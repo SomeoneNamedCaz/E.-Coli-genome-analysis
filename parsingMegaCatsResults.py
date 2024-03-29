@@ -62,14 +62,16 @@ def getMutationType(gene, snp,indexesOfFrameShiftSnps):
         seqWithoutSNP[2 - snp.location % 3] = reverseComplement(snp.oldNuc)
     seqWithoutSNP = "".join(seqWithoutSNP)  # because strings are immutable
     
-    
+    newAA = "n/a"
+    oldAA = "n/a"
     if not indexesOfFrameShiftSnps.isdisjoint({snp.location + gene.startPos}):
         snp.mutationType = SNP.mutationType.frameShift
     else:
         # I actually can't do a nuc by nuc analysis of inserts and deletes to check for nonsynonymous mutations
         try:
             newAA = translate(seqWithSNP)
-            if newAA != translate(seqWithoutSNP):
+            oldAA = translate(seqWithoutSNP)
+            if newAA != oldAA:
                 if newAA == "*":
                     snp.mutationType = SNP.mutationType.earlyStop
                 else:
@@ -78,7 +80,7 @@ def getMutationType(gene, snp,indexesOfFrameShiftSnps):
                 snp.mutationType = SNP.mutationType.silent
         except KeyError:  # i.e. if it's an indel
             snp.mutationType = SNP.mutationType.misSense  # all indels are missense or frameshift
-    return snp.mutationType, (translate(seqWithoutSNP), newAA)
+    return snp.mutationType, oldAA, newAA
 
 
 def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaDataFilePath, annotatedRefGenomePath, removeSparce=True, outputDirectory=".", pathOfAnnotatedScaffolds="/Users/cazcullimore/dev/data/k-12RefGenomeAnalysisFiles/AllAssemblies/allBovineScaffolds/*.gbk"):
@@ -158,7 +160,7 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
         with open(snpsSortedBySignificancePath + metadataCategory[0].upper() + metadataCategory[1:] + ".tsv",
                   "w") as outFile:
             outFile.write(
-                "SNP pValue\tGroupEnrichedInSNP\tSNPdistanceFromGeneStartPos\tSnpIndexInGene\tgeneName\tnewNuc\tsnpGroupDistribution\toldNuc\tWildTypeDistribution\tmutationType(frameShiftRecordedOnlyOnFirstNucOfIndel)\tgeneSequence\n")  # add category and move to the output function
+                "SNP pValue\tGroupEnrichedInSNP\tSNPdistanceFromGeneStartPos\tUncorrectedIndexInGene\tSnpIndexInGene\tgeneName\tnewNuc\tsnpGroupDistribution\toldNuc\tWildTypeDistribution\tmutationType(frameShiftRecordedOnlyOnFirstNucOfIndel)\tgeneSequence\n")  # add category and move to the output function
             for snp in snpsForCurrentMetadataCategory[:numSnpsToIncludeForMostSigSnps]:
                 snpIndexInGene = snp.location
                 if not snp.geneContainingSnp.isForward:

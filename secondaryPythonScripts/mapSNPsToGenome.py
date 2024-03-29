@@ -28,7 +28,7 @@ def moveToNextGene(nextGeneIndex,refGenes, onlyForward=True ):
 			nextGeneIndex += 1
 	return nextGeneIndex
 
-def mapsSnps(refGenomePath, snpIndexes, alignedSnps, significantSnps):
+def mapsSnps(refGenomePath, snpIndexes, alignedSnps, significantSnps, metadataPath=DATA_DIR + "metaDataForMetaCatsWithExtraMastitis.tsv"):
 	refGenomeContigs = getContigs(refGenomePath)
 	if len(refGenomeContigs) > 1:
 		raise Exception("ref genome has more than one contig, this is not a problem as long as the first contig is the chromosome")
@@ -37,7 +37,7 @@ def mapsSnps(refGenomePath, snpIndexes, alignedSnps, significantSnps):
 	refGenes = getGenesOnContigsByPosition(refGenomePath, refGenomeContigs)
 	print("len(refGenes)",len(refGenes))
 	print("pre align")
-	alignedGenomes = reconstructNormalAlignmentHelper(refSeq, snpIndexes, {"genomeWithoutAnySnps":alignedSnps["genomeWithoutAnySnps"]})
+	alignedGenomes = reconstructNormalAlignmentHelper(refSeq, snpIndexes, alignedSnps)#{"genomeWithoutAnySnps":alignedSnps["genomeWithoutAnySnps"], "scaffold_k-12.fasta.vcf":alignedSnps["scaffold_k-12.fasta.vcf"]})
 	print("len align", len(alignedGenomes["genomeWithoutAnySnps"]))
 	print("post align")
 	
@@ -46,11 +46,12 @@ def mapsSnps(refGenomePath, snpIndexes, alignedSnps, significantSnps):
 	insertIndexes = []
 	numShifts = 0
 	indexThatMatchesOriginalSeq = 0 # this is index not counting the inserts
-	nextForwardGeneIndex = 0
-	nextReverseGeneIndex = 0
+	nextForwardGeneIndex = moveToNextGene(-1,refGenes,onlyForward=True)
+	nextReverseGeneIndex = moveToNextGene(-1, refGenes, onlyForward=False)
 	forwardGeneLine = ""#[] # change to list of chars if slow
 	reverseGeneLine = ""
-	snpLine = ""
+	firstSnpLine = ""
+	secondSnpLine = ""
 	index = 0
 	estimatedSNPPosition = 0
 	# indexOfNextSnpLocation = 0
@@ -79,10 +80,13 @@ def mapsSnps(refGenomePath, snpIndexes, alignedSnps, significantSnps):
 				# getMutationType()
 				shortenedSnp = [significantSnps[indexOfNextSnpLocation][0],
 				                                            significantSnps[indexOfNextSnpLocation][2],
-				                                            "pathogen nuc:", significantSnps[indexOfNextSnpLocation][indexOfPathogenGroup],
-				                                            "commensal nuc:", significantSnps[indexOfNextSnpLocation][indexOfCommensalGroup],
+				                                            "pathogenic nuc is", significantSnps[indexOfNextSnpLocation][indexOfPathogenGroup] + ",",
+				                                            "commensal nuc is", significantSnps[indexOfNextSnpLocation][indexOfCommensalGroup] + ",",
 				                                            significantSnps[indexOfNextSnpLocation][-2]]
-				snpLine = format(snpLine, " ".join(shortenedSnp), index)
+				if estimatedSNPPosition % 2 == 0:
+					firstSnpLine = format(firstSnpLine, " ".join(shortenedSnp), index)
+				else:
+					secondSnpLine = format(secondSnpLine, " ".join(shortenedSnp), index)
 				# indexOfNextSnpLocation += 1
 				estimatedSNPPosition += 1
 		# except IndexError:
@@ -91,9 +95,78 @@ def mapsSnps(refGenomePath, snpIndexes, alignedSnps, significantSnps):
 			indexThatMatchesOriginalSeq += 1
 		index += 1
 	
-	return forwardGeneLine,reverseGeneLine, alignedGenomes["genomeWithoutAnySnps"], snpLine
+	metadata = readMetaDataAsDict(metadataPath)
+
+	shift = ""#len("commensal") * " "
+	blacklist = {"genomeWithoutAnySnps","scaffold_k-12.fasta.vcf"}
+	allgenomesWithoutK12M12 = [value for key, value in alignedGenomes.items() if key not in blacklist]
 	
-	# for index in range(len()):
+	geneLines = [forwardGeneLine,reverseGeneLine]
+	snpLines = [firstSnpLine, secondSnpLine]
+	return geneLines, alignedGenomes, snpLines
+	
+def writeMappedSnps():
+	namePrefix = "M12RefGenome"  # "M12RefGenome"
+	if namePrefix == "K12RefGenome":
+		refGenomePath = DATA_DIR + "refGenomes/k-12.gbff"
+	elif namePrefix == "M12RefGenome":
+		refGenomePath = DATA_DIR + "refGenomes/M12.gbk"
+	snpAlignPath = DATA_DIR + "RedoingEverything/SnpAlign/" + namePrefix + ".afa"
+	snpIndexPath = DATA_DIR + "RedoingEverything/SnpAlign/" + namePrefix + "Indexes.txt"
+	sigSnpsPath = DATA_DIR + "RedoingEverything/snpsSortedBySignificanceWithGenesContainingThem" + namePrefix + "Pathogenicity.tsv"
+	if namePrefix == "K12RefGenome":
+		outFilePath = "k12RefGenomeMappedSNPs.txt"
+	elif namePrefix == "M12RefGenome":
+		outFilePath = "M12RefGenomeMappedSNPsAllGenomes.txt"
+	
+	metadataPath = DATA_DIR + "metaDataForMetaCatsWithExtraMastitis.tsv"
+	
+	print(sigSnpsPath)
+	alignedSnps = readInFastaAsDict(snpAlignPath)
+	indexes = readIndexes(snpIndexPath)
+	
+	significantSnps = []
+	with open(sigSnpsPath) as file:
+		isFirstLine = True
+		for line in file:
+			if isFirstLine:
+				isFirstLine = False
+				continue
+			lineData = line.split("\t")[:12]
+			pos = lineData[11]
+			
+			significantSnps.append(lineData)
+	
+	significantSnps.sort(key=lambda x: (int(x[11]) + int(x[2])))
+	print(significantSnps[1])
+	geneLines, alignedGenomes, snpLines = mapsSnps(refGenomePath=refGenomePath, snpIndexes=indexes, alignedSnps=alignedSnps,
+	                   significantSnps=significantSnps)
+	
+	metadata = readMetaDataAsDict(metadataPath)
+	
+	shift = len("commensal") * " "
+	blacklist = {"genomeWithoutAnySnps", "scaffold_k-12.fasta.vcf"}
+	allgenomesWithoutK12M12 = {key: value for key, value
+	                           in alignedGenomes.items() if key not in blacklist}
+	
+	with open(outFilePath, "w") as file:
+		nCharsToWrite = 150
+		for x in range(0, len(alignedGenomes["genomeWithoutAnySnps"]) - nCharsToWrite, nCharsToWrite):
+			for geneLine in geneLines:
+				file.write(shift + geneLine[x:x + nCharsToWrite] + "\n")
+			for snpLine in snpLines:
+				file.write(shift + snpLine[x:x + nCharsToWrite] + "\n")
+			file.write("M12:     " + alignedGenomes["genomeWithoutAnySnps"][x:x + nCharsToWrite] + "\n")
+			file.write("K12:     " + alignedGenomes["scaffold_k-12.fasta.vcf"][x:x + nCharsToWrite] + "\n")
+			for genomeName, seq in allgenomesWithoutK12M12.items():
+				genomeShift = (metadata[genomeName][1]) + (" " if metadata[genomeName][1] == "pathogen" else "")
+				file.write(genomeShift + seq[x:x + nCharsToWrite] + "\n")
+			file.write("#" * (nCharsToWrite + len(shift)))
+			
+	# file.write(dataline + "\n")
+	# for dataline in outData:
+	# file.write(dataline[x:] + "\n")
+	print("wrote out data to:", outFilePath)
 
 if __name__ == "__main__":
 	try:

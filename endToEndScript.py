@@ -17,14 +17,22 @@ from secondaryPythonScripts.divideGenomesByPhylogroup import *
 # namePrefix = "M12RefGenome" # the name to give to start all the files created
 # pathsToGsAlignVCFs = assemblyDir + "/ragtagOutputs/longestScaffoldFiles/gsAlignOutputs/*.vcf"
 # pathToAssemblies = DATA_DIR + "m-12RefGenomeAnalysisFiles/allBovineScaffolds/*.fasta"
-pathOfAnnotatedScaffolds = "/Users/cazcullimore/dev/data/k-12RefGenomeAnalysisFiles/AllAssemblies/allBovineScaffolds/*.gbk"
-pathToAssemblies = DATA_DIR + "k-12RefGenomeAnalysisFiles/AllAssemblies/allBovineScaffolds/*.fasta"
-# pathToAssemblies = TEST_DATA_DIR + "tenAssembliesFromEachCategory/*.fasta"
-pathToRefGenomeFasta = DATA_DIR + "refGenomes/k-12.fasta"#M12 closed genome (1).fasta"#
-pathToRefGenomeGb = DATA_DIR + "refGenomes/k-12.gbff" #M12.gbk"#
+namePrefix = "M12RefGenome"# the name to give to start all the files created
+if namePrefix == "K12RefGenome":
+	pathOfAnnotatedScaffolds = "/Users/cazcullimore/dev/data/k-12RefGenomeAnalysisFiles/AllAssemblies/allBovineScaffolds/*.gbk"
+	pathToAssemblies = DATA_DIR + "k-12RefGenomeAnalysisFilesWithM12/AllAssemblies/allBovineScaffolds/*.fasta"
+	# pathToAssemblies = TEST_DATA_DIR + "tenAssembliesFromEachCategory/*.fasta"
+	pathToRefGenomeFasta = DATA_DIR + "refGenomes/k-12.fasta"#M12 closed genome (1).fasta"#
+	pathToRefGenomeGb = DATA_DIR + "refGenomes/k-12.gbff" #M12.gbk"#
+elif namePrefix == "M12RefGenome":
+	pathOfAnnotatedScaffolds = "/Users/cazcullimore/dev/data/k-12RefGenomeAnalysisFiles/AllAssemblies/allBovineScaffolds/*.gbk"
+	pathToAssemblies = DATA_DIR + "m-12RefGenomeAnalysisFilesWithK12/allBovineScaffolds/*.fasta"
+	
+	pathToRefGenomeFasta = DATA_DIR + "refGenomes/M12_closed_genome.fasta"
+	pathToRefGenomeGb = DATA_DIR + "refGenomes/M12.gbk"
 
 assemblyDir = "/".join(pathToAssemblies.split("/")[:-1])
-namePrefix = "K12RefGenome"#"M12RefGenome"# the name to give to start all the files created
+
 pathsToGsAlignVCFs = assemblyDir + "/ragtagOutputs/longestScaffoldFiles/gsAlignOutputs/*.vcf"
 
 snpAlignPath = DATA_DIR + "RedoingEverything/SnpAlign/" + namePrefix +".afa"
@@ -45,7 +53,7 @@ reRunEzclermont = False
 divideByPhylogroup = False
 reDoPlinkFiles = False
 runPlink = False
-runMegaCats = False
+runMegaCats = True
 reDoMegaCatsStats = False
 runNormalAlignment = True
 runMLAnalysis = False
@@ -92,13 +100,16 @@ if runMegaCats:
 			fileName = phylogroupSnpFile.split("/")[-1]
 			megaCatStatsPhylogroupPath = "/".join(megaCatStatsFilePath.split("/")[:-1]) + re.sub("\.afa","",fileName) + ".tsv"
 			print("megaCatStatsPhylogroupPath",megaCatStatsPhylogroupPath)
-			calculateMegaCatsStats(alignedFilePath=phylogroupSnpFile, metadataFilePath=metadataFilePath,
-			                       outFilePath=megaCatStatsPhylogroupPath,
-			                       matchMegacatsStyle=True)
+			try:
+				calculateMegaCatsStats(alignedFilePath=phylogroupSnpFile, metadataFilePath=metadataFilePath,
+				                       outFilePath=megaCatStatsPhylogroupPath,
+				                       matchMegacatsStyle=True)
+			except ZeroDivisionError:
+				print("no genomes found in this phylogroup:",phylogroupSnpFile)
 			
 	parseMegaCatsFile(megaCatsFile=megaCatStatsFilePath, snpGenomePath=snpAlignPath, snpIndexesPath=snpIndexPath,
 	                  suffix=namePrefix, metaDataFilePath=metadataFilePath, annotatedRefGenomePath=pathToRefGenomeGb,
-	                  removeSparce=True, outputDirectory=DATA_DIR + "RedoingEverything",
+	                  removeSparce=True, outputDirectory=DATA_DIR + "RedoingEverything/",
 	                  pathOfAnnotatedScaffolds=pathOfAnnotatedScaffolds)
 	
 	for phylogroupSnpFile in glob(phylogroupSnpAlignPrefix + "Phylogroup*.afa"):
@@ -108,7 +119,7 @@ if runMegaCats:
 			parseMegaCatsFile(megaCatsFile=megaCatStatsPhylogroupPath, snpGenomePath=phylogroupSnpFile, snpIndexesPath=snpIndexPath,
 			                  suffix=fileName, metaDataFilePath=metadataFilePath,
 			                  annotatedRefGenomePath=pathToRefGenomeGb,
-			                  removeSparce=True, outputDirectory=DATA_DIR + "RedoingEverything",
+			                  removeSparce=True, outputDirectory=DATA_DIR + "RedoingEverything/",
 			                  pathOfAnnotatedScaffolds=pathOfAnnotatedScaffolds)
 		except Exception:
 			print("no-data-found exception handled")
