@@ -3,6 +3,8 @@
 # ACTAGATAGAGCATAGAGTAACTAGATAGAGCATAGAGTA
 # ACTAGATAGAGCATAGAGTACCTAGATAGAGCATAGAGTA
 #                     |SNP misSense T->K
+import re
+
 from functions import *
 from reconstructNormalAlignment import *
 from parsingMegaCatsResults import getMutationType
@@ -144,7 +146,9 @@ def writeMappedSnps():
 	
 	metadata = readMetaDataAsDict(metadataPath)
 	
-	shift = len("commensal") * " "
+	patternToShortenGenomes = "scaffold_|.fasta|.vcf|.result"
+	longestGenomeNameLen = max([len(re.sub(patternToShortenGenomes, "",name)) for name in alignedGenomes.keys()])
+	shift = longestGenomeNameLen * " "
 	blacklist = {"genomeWithoutAnySnps", "scaffold_k-12.fasta.vcf"}
 	allgenomesWithoutK12M12 = {key: value for key, value
 	                           in alignedGenomes.items() if key not in blacklist}
@@ -156,12 +160,13 @@ def writeMappedSnps():
 				file.write(shift + geneLine[x:x + nCharsToWrite] + "\n")
 			for snpLine in snpLines:
 				file.write(shift + snpLine[x:x + nCharsToWrite] + "\n")
-			file.write("M12:     " + alignedGenomes["genomeWithoutAnySnps"][x:x + nCharsToWrite] + "\n")
-			file.write("K12:     " + alignedGenomes["scaffold_k-12.fasta.vcf"][x:x + nCharsToWrite] + "\n")
+			file.write(("M12:" + " " * (longestGenomeNameLen - len("M12:"))) + alignedGenomes["genomeWithoutAnySnps"][x:x + nCharsToWrite] + "\n")
+			file.write(("K12:" + " " * (longestGenomeNameLen - len("K12:"))) + alignedGenomes["scaffold_k-12.fasta.vcf"][x:x + nCharsToWrite] + "\n")
 			for genomeName, seq in allgenomesWithoutK12M12.items():
-				genomeShift = (metadata[genomeName][1]) + (" " if metadata[genomeName][1] == "pathogen" else "")
+				genomeName = re.sub(patternToShortenGenomes, "",genomeName)
+				genomeShift = genomeName + " " * (longestGenomeNameLen - len(genomeName))
 				file.write(genomeShift + seq[x:x + nCharsToWrite] + "\n")
-			file.write("#" * (nCharsToWrite + len(shift)))
+			file.write("#" * (nCharsToWrite + len(shift)) + "\n")
 			
 	# file.write(dataline + "\n")
 	# for dataline in outData:
