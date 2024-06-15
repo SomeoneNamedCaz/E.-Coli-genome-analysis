@@ -92,7 +92,7 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
     numSnpsToIncludeForMostSigSnps = 10_000_000
     percentSNPsCutOffForPercentSNPs = 0.02 # for pathway analysis
     snpLocations = loadIndexes(snpIndexesPath)
-    significanceLevel = 0.05/len(snpLocations)  # can change initial P-value cutoff if wanted
+    significanceLevel = 1# for manhattan plot 0.05/len(snpLocations)  # can change initial P-value cutoff if wanted
 
     # outputs
     snpsFileWithCorrectPosPath = outputDirectory + "/sigSNPsByPosOnRefGenome" + suffix + ".txt" # created and then read
@@ -160,7 +160,19 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
         with open(snpsSortedBySignificancePath + metadataCategory[0].upper() + metadataCategory[1:] + ".tsv",
                   "w") as outFile:
             outFile.write(
-                "SNP pValue\tGroupEnrichedInSNP\tSNPdistanceFromGeneStartPos\tUncorrectedIndexInGene\tSnpIndexInGene\tgeneName\tnewNuc\tsnpGroupDistribution\toldNuc\tWildTypeDistribution\tmutationType(frameShiftRecordedOnlyOnFirstNucOfIndel)\tgeneSequence\n")  # add category and move to the output function
+                "SNP pValue\t"
+                "GroupEnrichedInSNP\t"
+                "SNPdistanceFromGeneStartPos\t"
+                "UncorrectedIndexInGene\t"
+                "geneName\t"
+                "newNuc\t"
+                "snpGroupDistribution\t"
+                "numGenomesMissingGene\t"
+                "oldNuc\t"
+                "WildTypeDistribution\t"
+                "mutationType(frameShiftRecordedOnlyOnFirstNucOfIndel)\t"
+                "IndexOfGeneStart\t"
+                "geneSequence\n")  # add category and move to the output function
             for snp in snpsForCurrentMetadataCategory[:numSnpsToIncludeForMostSigSnps]:
                 snpIndexInGene = snp.location
                 if not snp.geneContainingSnp.isForward:

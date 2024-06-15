@@ -42,7 +42,11 @@ def mapsSnps(refGenomePath, snpIndexes, alignedSnps, significantSnps, metadataPa
 	alignedGenomes = reconstructNormalAlignmentHelper(refSeq, snpIndexes, alignedSnps)#{"genomeWithoutAnySnps":alignedSnps["genomeWithoutAnySnps"], "scaffold_k-12.fasta.vcf":alignedSnps["scaffold_k-12.fasta.vcf"]})
 	print("len align", len(alignedGenomes["genomeWithoutAnySnps"]))
 	print("post align")
-	
+	print(alignedGenomes)
+	cpdBStart = -1
+	cdpBEnd = -1
+	# {name: seq[] for name, seq in alignedGenomes.items()}
+	# exit(0)
 	# significantSnps
 	
 	insertIndexes = []
@@ -52,16 +56,34 @@ def mapsSnps(refGenomePath, snpIndexes, alignedSnps, significantSnps, metadataPa
 	nextReverseGeneIndex = moveToNextGene(-1, refGenes, onlyForward=False)
 	forwardGeneLine = ""#[] # change to list of chars if slow
 	reverseGeneLine = ""
-	firstSnpLine = ""
-	secondSnpLine = ""
+	# firstSnpLine = ""
+	# secondSnpLine = ""
+	numSnpLines = 8
+	snpLines = []
+	for _ in range(numSnpLines):
+		snpLines.append("")
 	index = 0
 	estimatedSNPPosition = 0
 	# indexOfNextSnpLocation = 0
 	for nuc in alignedGenomes["genomeWithoutAnySnps"]:
 		# print(indexThatMatchesOriginalSeq)
+		
 		if indexThatMatchesOriginalSeq == refGenes[nextForwardGeneIndex].startPos :#or indexThatMatchesOriginalSeq == refGenes[nextGeneIndex + 1].startPos:
+			if refGenes[nextForwardGeneIndex].name == "cpdB":
+				cpdBStart = index
 			forwardGeneLine = format(forwardGeneLine, refGenes[nextForwardGeneIndex].name + " start", index)
 		elif indexThatMatchesOriginalSeq == refGenes[nextForwardGeneIndex].stopPos:
+			if refGenes[nextForwardGeneIndex].name == "cpdB":
+				cpdBEnd = index
+				metadata = readMetaDataAsDict(metadataPath)
+				blacklist = {"genomeWithoutAnySnps", "scaffold_k-12.fasta.vcf"}
+				allgenomesWithoutK12M12 = {key: value for key, value
+				                           in alignedGenomes.items() if key not in blacklist}
+				# with open("cpdBsFromSnpAlign", "w") as outFile:
+				# 	for name, seq in allgenomesWithoutK12M12.items():
+				# 		outFile.write(">"+name.split()[-1] + "_" +  metadata[name][1] + "\n")
+				# 		outFile.write(seq[cpdBStart - 500:cpdBEnd+500] + "\n")
+				# exit(0)
 			forwardGeneLine = format(forwardGeneLine, refGenes[nextForwardGeneIndex].name + " end", index)
 			nextForwardGeneIndex = moveToNextGene(nextForwardGeneIndex,refGenes,onlyForward=True)
 			# print(nextForwardGeneIndex)
@@ -85,10 +107,11 @@ def mapsSnps(refGenomePath, snpIndexes, alignedSnps, significantSnps, metadataPa
 				                                            "pathogenic nuc is", significantSnps[indexOfNextSnpLocation][indexOfPathogenGroup] + ",",
 				                                            "commensal nuc is", significantSnps[indexOfNextSnpLocation][indexOfCommensalGroup] + ",",
 				                                            significantSnps[indexOfNextSnpLocation][-2]]
-				if estimatedSNPPosition % 2 == 0:
-					firstSnpLine = format(firstSnpLine, " ".join(shortenedSnp), index)
-				else:
-					secondSnpLine = format(secondSnpLine, " ".join(shortenedSnp), index)
+				snpLines[estimatedSNPPosition % len(snpLines)] = format(snpLines[estimatedSNPPosition % len(snpLines)], " ".join(shortenedSnp), index)
+				# if estimatedSNPPosition % 2 == 0:
+				# 	firstSnpLine = format(firstSnpLine, " ".join(shortenedSnp), index)
+				# else:
+				# 	secondSnpLine = format(secondSnpLine, " ".join(shortenedSnp), index)
 				# indexOfNextSnpLocation += 1
 				estimatedSNPPosition += 1
 		# except IndexError:
@@ -104,7 +127,7 @@ def mapsSnps(refGenomePath, snpIndexes, alignedSnps, significantSnps, metadataPa
 	allgenomesWithoutK12M12 = [value for key, value in alignedGenomes.items() if key not in blacklist]
 	
 	geneLines = [forwardGeneLine,reverseGeneLine]
-	snpLines = [firstSnpLine, secondSnpLine]
+	# snpLines = [firstSnpLine, secondSnpLine]
 	return geneLines, alignedGenomes, snpLines
 	
 def writeMappedSnps():
@@ -147,14 +170,15 @@ def writeMappedSnps():
 	metadata = readMetaDataAsDict(metadataPath)
 	
 	patternToShortenGenomes = "scaffold_|.fasta|.vcf|.result"
-	longestGenomeNameLen = max([len(re.sub(patternToShortenGenomes, "",name)) for name in alignedGenomes.keys()])
-	shift = longestGenomeNameLen * " "
 	blacklist = {"genomeWithoutAnySnps", "scaffold_k-12.fasta.vcf"}
 	allgenomesWithoutK12M12 = {key: value for key, value
 	                           in alignedGenomes.items() if key not in blacklist}
+	longestGenomeNameLen = max([len(re.sub(patternToShortenGenomes, "",name) + metadata[name][1]) for name in allgenomesWithoutK12M12.keys()])
+	shift = longestGenomeNameLen * " "
+	
 	
 	with open(outFilePath, "w") as file:
-		nCharsToWrite = 150
+		nCharsToWrite = 300
 		for x in range(0, len(alignedGenomes["genomeWithoutAnySnps"]) - nCharsToWrite, nCharsToWrite):
 			for geneLine in geneLines:
 				file.write(shift + geneLine[x:x + nCharsToWrite] + "\n")
@@ -163,8 +187,9 @@ def writeMappedSnps():
 			file.write(("M12:" + " " * (longestGenomeNameLen - len("M12:"))) + alignedGenomes["genomeWithoutAnySnps"][x:x + nCharsToWrite] + "\n")
 			file.write(("K12:" + " " * (longestGenomeNameLen - len("K12:"))) + alignedGenomes["scaffold_k-12.fasta.vcf"][x:x + nCharsToWrite] + "\n")
 			for genomeName, seq in allgenomesWithoutK12M12.items():
+				ogGenomeName = deepcopy(genomeName)
 				genomeName = re.sub(patternToShortenGenomes, "",genomeName)
-				genomeShift = genomeName + " " * (longestGenomeNameLen - len(genomeName))
+				genomeShift = genomeName + metadata[ogGenomeName][1] + " " * (longestGenomeNameLen - len(genomeName + metadata[ogGenomeName][1]))
 				file.write(genomeShift + seq[x:x + nCharsToWrite] + "\n")
 			file.write("#" * (nCharsToWrite + len(shift)) + "\n")
 			
