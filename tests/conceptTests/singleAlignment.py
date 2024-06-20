@@ -1,13 +1,11 @@
 import sys
 sys.path.insert(1, '/Users/cazcullimore/dev/ericksonLabCode/')
-from alignVcfSnps import *
-from megaCatsPythonVersion import *
-from parsingMegaCatsResults import *
-from reconstructNormalAlignment import *
+from scr.snpalign.alignVcfSnps import *
+from scr.snpalign.reconstructNormalAlignment import *
 import unittest
-sys.path.insert(1, '/Users/cazcullimore/dev/ericksonLabCode/secondaryPythonScripts')
+sys.path.insert(1, '/scr/snpalign/secondaryPythonScripts')
 try:
-    from secondaryPythonScripts.functions import *
+    from scr.snpalign.functions import *
 except ImportError:
     from functions import *
 # hscC is weird

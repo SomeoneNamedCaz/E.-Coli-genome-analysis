@@ -1,14 +1,13 @@
-import re
 import unittest
 import sys
-import os
+
 sys.path.insert(1, '/Users/cazcullimore/dev/ericksonLabCode/')
 try: # so pycharm recognizes it
-    from secondaryPythonScripts.functions import *
+    from scr.snpalign.functions import *
 except ImportError:
     pass
-from reconstructNormalAlignment import *
-from alignVcfSnps import alignVcfSnps
+from scr.snpalign.reconstructNormalAlignment import *
+from scr.snpalign.alignVcfSnps import alignVcfSnps
 
 class MyTestCase(unittest.TestCase):
     def testSingleFile(self):

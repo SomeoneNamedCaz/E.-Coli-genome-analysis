@@ -1,5 +1,5 @@
 from concurrent.futures import *
-from secondaryPythonScripts.functions import *
+from scr.snpalign.functions import *
 from secondaryPythonScripts.findNamesOfGroups import findNamesOfGroups
 def loadIndexes(indexFilePath):
     snpLocations = []  # [snplocation1, ...]

@@ -1,4 +1,4 @@
-from secondaryPythonScripts.functions import *
+from scr.snpalign.functions import *
 pathBeginning = sys.argv[1]#"./AllAssemblies/AllCommensalBovineAssemblies"
 
 if (not os.path.exists(pathBeginning + "/ragtagOutputs/longestScaffoldFiles/")):

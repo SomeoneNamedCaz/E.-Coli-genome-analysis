@@ -1,13 +1,9 @@
-import unittest
 import sys
 sys.path.insert(1, '/Users/cazcullimore/dev/ericksonLabCode/')
-from alignVcfSnps import *
-from megaCatsPythonVersion import *
-from parsingMegaCatsResults import *
-from reconstructNormalAlignment import *
+from scr.snpalign.reconstructNormalAlignment import *
 import unittest
-sys.path.insert(1, '/Users/cazcullimore/dev/ericksonLabCode/secondaryPythonScripts')
-from secondaryPythonScripts.functions import *
+sys.path.insert(1, '/scr/snpalign/secondaryPythonScripts')
+from scr.snpalign.functions import *
 
 class MyTestCase(unittest.TestCase):
 	def testAddRefNucs(self):

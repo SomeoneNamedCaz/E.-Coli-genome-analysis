@@ -1,6 +1,4 @@
-import re
-
-from secondaryPythonScripts.functions import *
+from scr.snpalign.functions import *
 
 def divideGenomesByPhylogroup(alignedSnpsPath, phylogroupsPath, metadataPath="./metaDataForMetaCatsWithExtraMastitis.tsv", outDir="./"):
     genomeNameToSnpGenome = {}

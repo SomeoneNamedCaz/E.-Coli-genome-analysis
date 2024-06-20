@@ -1,4 +1,4 @@
-from secondaryPythonScripts.functions import *
+from scr.snpalign.functions import *
 
 metadataPath = "./metaDataForMetaCatsWithExtraMastitis.tsv"
 catagoryPaths = []#["./AllAssemblies/allMastitisAssemblies/*.fasta"]

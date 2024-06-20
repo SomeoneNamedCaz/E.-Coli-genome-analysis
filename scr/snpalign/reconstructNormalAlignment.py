@@ -1,4 +1,4 @@
-from secondaryPythonScripts.functions import *
+from scr.snpalign.functions import *
 from concurrent.futures import *
 from time import time
 

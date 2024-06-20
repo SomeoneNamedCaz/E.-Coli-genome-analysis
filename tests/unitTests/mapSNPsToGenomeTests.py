@@ -1,9 +1,8 @@
 import sys
 sys.path.insert(1, '/Users/cazcullimore/dev/ericksonLabCode/')
-sys.path.insert(1, '/Users/cazcullimore/dev/ericksonLabCode/secondaryPythonScripts')
+sys.path.insert(1, '/scr/snpalign/secondaryPythonScripts')
 import unittest
-from secondaryPythonScripts.mapSNPsToGenome import *
-from secondaryPythonScripts.functions import *
+from scr.snpalign.secondaryPythonScripts.mapSNPsToGenome import *
 
 
 class MyTestCase(unittest.TestCase):

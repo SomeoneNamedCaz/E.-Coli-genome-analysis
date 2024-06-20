@@ -1,6 +1,5 @@
 import unittest
-from secondaryPythonScripts.functions import *
-from alignVcfSnps import *
+from scr.snpalign.alignVcfSnps import *
 
 class MyTestCase(unittest.TestCase):
 

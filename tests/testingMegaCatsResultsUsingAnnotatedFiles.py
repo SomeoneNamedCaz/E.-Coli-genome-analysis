@@ -3,9 +3,9 @@ import time
 from concurrent.futures import *
 from glob import glob
 
-sys.path.insert(1, '/Users/cazcullimore/dev/ericksonLabCode/secondaryPythonScripts')
+sys.path.insert(1, '/scr/snpalign/secondaryPythonScripts')
 try:
-    from secondaryPythonScripts.functions import *
+    from scr.snpalign.functions import *
 except ImportError:
     pass
 from functions import *

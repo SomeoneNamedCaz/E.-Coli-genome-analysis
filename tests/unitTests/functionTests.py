@@ -1,15 +1,10 @@
 import unittest
 import sys
-from parsingMegaCatsResults import getMutationType
+from scr.snpalign.parsingMegaCatsResults import getMutationType
 
-from Bio import SeqIO
-from Bio.Blast import NCBIWWW
-from Bio.Blast import NCBIXML
 # from Bio
-from Bio.Entrez import *
-import re
-sys.path.insert(1, '/Users/cazcullimore/dev/ericksonLabCode/secondaryPythonScripts')
-from secondaryPythonScripts.functions import *
+sys.path.insert(1, '/scr/snpalign/secondaryPythonScripts')
+from scr.snpalign.functions import *
 
 class MyTestCase(unittest.TestCase):
 

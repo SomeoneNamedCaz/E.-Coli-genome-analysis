@@ -1,12 +1,8 @@
-from secondaryPythonScripts.functions import *
-from alignVcfSnps import *
-from secondaryPythonScripts.makePlinkFiles import *
-from megaCatsPythonVersion import *
-from parsingMegaCatsResults import *
-from reconstructNormalAlignment import *
-from secondaryPythonScripts.makeMLFiles import *
-from secondaryPythonScripts.getSignificantClusters import *
-from secondaryPythonScripts.divideGenomesByPhylogroup import *
+from .alignVcfSnps import *
+from .megaCatsPythonVersion import *
+from .parsingMegaCatsResults import *
+from .reconstructNormalAlignment import *
+from .divideGenomesByPhylogroup import *
 import sys
 
 # assemblyDir = "/".join(pathToAssemblies.split("/")[:-1])
@@ -47,10 +43,10 @@ pathToRefGenomeFasta = re.sub("\..+$","",pathToRefGenomeGb) + ".fasta"
 with open(pathToRefGenomeFasta, "w") as fastaFile:
 	i = 0
 	for contig in getContigs(pathToRefGenomeGb):
-		fastaFile.write(">refContig"+ str(i))
-		fastaFile.write(contig)
+		fastaFile.write(">refContig"+ str(i) + "\n")
+		fastaFile.write(contig + "\n")
 
-pathToAssemblies = sys.argv[1]
+pathToAssemblies = sys.argv
 pathOfAnnotatedScaffolds = "/".join(pathToAssemblies.split("/")[:-1]) + "/annotations/*.gbk"
 
 
@@ -105,27 +101,12 @@ if reRunScaffoldAndGsAlign:
 	os.system("mkdir annotations; for fileName in *.fasta; do conda run prokka $fileName --force --centre X --compliant; cp PROKKA*/*.gbk ./annotations/$fileName.gbk; rm -r PROKKA*/; done;")
 	if reAlignSnps:
 		alignVcfSnps(pathsToGsAlignVCFs, outFilePath=snpAlignPath, thingsToSkip=typesOfSnpsToSkipDuringAlignment, ignoreRefSeq=False, refSeqPath=pathToRefGenomeFasta, numSnpsRequired=1)
-	
-pedFilePath = plinkOutputPath + namePrefix + ".ped"
-covFilePath = plinkOutputPath + namePrefix + ".cov"
-mapFilePath = plinkOutputPath + namePrefix + ".map"
 
 if reRunEzclermont:
 	os.system("rm " + genomeNameToPhylogroupPath + "; for fileName in " + pathToAssemblies + "; do conda run ezclermont $fileName >> " + genomeNameToPhylogroupPath + "; done;")
 
 if divideByPhylogroup:
 	divideGenomesByPhylogroup(snpAlignPath, phylogroupsPath=genomeNameToPhylogroupPath, metadataPath=metadataFilePath, outDir=phylogroupSnpAlignPrefix)
-
-
-if reDoPlinkFiles:
-	if not os.path.exists(plinkOutputPath):
-		os.mkdir(plinkOutputPath)
-	makePedFile(snpGenomeFilePath=snpAlignPath, metaDataFilePath=metadataFilePath, outFilePath=pedFilePath)
-	makeCovFile(metaDataFilePath=metadataFilePath, outFilePath=covFilePath, snpGenomeFilePath=snpAlignPath)
-	makeMapFile(indexPath=snpIndexPath, outFilePath=mapFilePath)
-if runPlink:
-	os.system("cd RedoingEverything/plinkStats/; ./plink --chr-set -1 --allow-extra-chr --assoc --ped " + pedFilePath + " --allow-no-sex "#--all-pheno --pheno " + covFilePath
-	          + " --map " + mapFilePath)
 
 if runMegaCats:
 	if reDoMegaCatsStats:
@@ -163,10 +144,3 @@ if runMegaCats:
 if runNormalAlignment:
 	reconstructNormalAlignment(snpGenomePath=snpAlignPath, snpIndexesPath=snpIndexPath, refGenomePath=pathToRefGenomeGb, outputPath=normalAlignPath)
 	
-if runMLAnalysis:
-	snpAlign = readInFastaAsDict(snpAlignPath)
-	metadata = readMetaDataAsDict(metadataFilePath)
-	for key in metadata.keys():
-		metadata[key] = metadata[key][1:]
-	mlData = makeMLData(snpAlign, metadata)
-	trainRFModel(mlData)

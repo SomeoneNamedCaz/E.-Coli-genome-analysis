@@ -1,11 +1,5 @@
-
-from glob import glob
-import time
 import copy
-import os
-import sys
-import cProfile
-from secondaryPythonScripts.functions import *
+from scr.snpalign.functions import *
 
 
 def fixNucsOnOtherStrand(refGenomeSeq, location, refNucs, altNucs, snpType):
