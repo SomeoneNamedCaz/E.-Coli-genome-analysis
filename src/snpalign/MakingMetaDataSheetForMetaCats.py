@@ -1,4 +1,4 @@
-from scr.snpalign.functions import *
+from .functions import *
 
 metadataPath = "./metaDataForMetaCatsWithExtraMastitis.tsv"
 catagoryPaths = []#["./AllAssemblies/allMastitisAssemblies/*.fasta"]

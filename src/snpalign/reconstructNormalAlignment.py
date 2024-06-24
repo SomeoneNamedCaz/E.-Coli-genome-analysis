@@ -1,4 +1,7 @@
-from scr.snpalign.functions import *
+try:
+    from .functions import *
+except ImportError:
+    from functions import *
 from concurrent.futures import *
 from time import time
 
@@ -22,7 +25,7 @@ def reconstructNormalAlignmentHelper(refSeq, snpIndexes, alignedSnps, ):
     
     numThreads = 1
     t1 = time()
-    pool = ThreadPoolExecutor(numThreads)
+    pool = ProcessPoolExecutor(numThreads)
     futures = []
     
     for key in alignedSnps.keys():

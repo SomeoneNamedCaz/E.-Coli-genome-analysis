@@ -1,5 +1,8 @@
 import copy
-from scr.snpalign.functions import *
+try:
+    from .functions import *
+except ImportError:
+    from functions import *
 
 
 def fixNucsOnOtherStrand(refGenomeSeq, location, refNucs, altNucs, snpType):

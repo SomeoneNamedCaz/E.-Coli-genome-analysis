@@ -1,6 +1,9 @@
-from scr.snpalign.functions import *
+try:
+    from .functions import *
+except ImportError:
+    from functions import *
 
-def divideGenomesByPhylogroup(alignedSnpsPath, phylogroupsPath, metadataPath="./metaDataForMetaCatsWithExtraMastitis.tsv", outDir="./"):
+def divideGenomesByPhylogroup(alignedSnpsPath, phylogroupsPath, metadataPath, outDir="./"):
     genomeNameToSnpGenome = {}
     phylogroupToGenomes = {}
     with open(alignedSnpsPath) as file:

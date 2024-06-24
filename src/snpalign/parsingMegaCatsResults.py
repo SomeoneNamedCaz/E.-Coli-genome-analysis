@@ -1,6 +1,11 @@
 from concurrent.futures import *
-from scr.snpalign.functions import *
-from secondaryPythonScripts.findNamesOfGroups import findNamesOfGroups
+try:
+    from .functions import *
+    from .findNamesOfGroups import findNamesOfGroups
+except ImportError:
+    from functions import *
+    from findNamesOfGroups import findNamesOfGroups
+
 def loadIndexes(indexFilePath):
     snpLocations = []  # [snplocation1, ...]
     with open(indexFilePath) as file:
@@ -83,8 +88,9 @@ def getMutationType(gene, snp,indexesOfFrameShiftSnps):
     return snp.mutationType, oldAA, newAA
 
 
-def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaDataFilePath, annotatedRefGenomePath, removeSparce=True, outputDirectory=".", pathOfAnnotatedScaffolds="/Users/cazcullimore/dev/data/k-12RefGenomeAnalysisFiles/AllAssemblies/allBovineScaffolds/*.gbk"):
-    
+def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaDataFilePath, annotatedRefGenomePath, removeSparce=True, outputDirectory="./", pathOfAnnotatedScaffolds="/Users/cazcullimore/dev/data/k-12RefGenomeAnalysisFiles/AllAssemblies/allBovineScaffolds/*.gbk", ignoreAnnotations=False):
+    if outputDirectory[-1] != "/":
+        outputDirectory += "/" #TODO:fix for windows
     # add FrameShiftedToIndexPath
     snpIndexesFrameShiftedPath = ".".join(snpIndexesPath.split(".")[:-1]) + "FrameShifted." + snpIndexesPath.split(".")[-1]
     # hard-coded parameters for output
@@ -92,12 +98,12 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
     numSnpsToIncludeForMostSigSnps = 10_000_000
     percentSNPsCutOffForPercentSNPs = 0.02 # for pathway analysis
     snpLocations = loadIndexes(snpIndexesPath)
-    significanceLevel = 1# for manhattan plot 0.05/len(snpLocations)  # can change initial P-value cutoff if wanted
-
+    significanceLevel = 0.05/len(snpLocations)  # can change initial P-value cutoff if wanted
+    #1# for manhattan plot
     # outputs
-    snpsFileWithCorrectPosPath = outputDirectory + "/sigSNPsByPosOnRefGenome" + suffix + ".txt" # created and then read
-    snpsSortedBySignificancePath = outputDirectory + "/snpsSortedBySignificanceWithGenesContainingThem" + suffix # created (extension added later)
-    numSnpsWithinGenesPath = outputDirectory + "/numSnpsWithinGenes"
+    snpsFileWithCorrectPosPath = outputDirectory + "sigSNPsByPosOnRefGenome" + suffix + ".txt" # created and then read
+    snpsSortedBySignificancePath = outputDirectory + "snpsSortedBySignificanceWithGenesContainingThem" + suffix # created (extension added later)
+    numSnpsWithinGenesPath = outputDirectory + "numSnpsWithinGenes"
     
     def writeOutputToFiles(listOfGenes, metadataCategory, snpsForCurrentMetadataCategory, weights,numGenesToInclude,numGenomesWithoutGene, namesOfGroups):
         # make file that looks at the most snpped genes
@@ -250,7 +256,10 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
     t1 = time.time()
     contigs = getContigs(annotatedRefGenomePath)
     genes = getGenesOnContigsByPosition(annotatedRefGenomePath, contigs)
-    numGenomesWithoutGene = calcNumGenomesWithoutGene(genes,pathOfAnnotatedScaffolds)
+    if not ignoreAnnotations:
+        numGenomesWithoutGene = calcNumGenomesWithoutGene(genes,pathOfAnnotatedScaffolds)
+    else:
+        numGenomesWithoutGene = {gene: "unknown" for gene in genes.keys()}
     print(numGenomesWithoutGene)
     print(time.time()-t1)
 

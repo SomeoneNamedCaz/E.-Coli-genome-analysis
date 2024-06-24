@@ -2,8 +2,6 @@
  313 	 7.46929814283269 	 0.0238815503170304 	 2 	 Y 	 group1(19_A,_18_C,_1_T)|group2(8_A,_30_C,_1_T) 	severity-rMsaInput.txt-rResultChisqTest.txt"""
 import sys
 from scipy import stats
-import numpy as np
-import copy
 def calculateMegaCatsStats(alignedFilePath, metadataFilePath, outFilePath, matchMegacatsStyle=True):
     charToIndex = {"A": 0, "T": 1, "C": 2, "G": 3, "-": 4, "N": 5}
     indexToChar = {}
