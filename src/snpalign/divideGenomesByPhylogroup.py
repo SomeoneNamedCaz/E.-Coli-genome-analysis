@@ -3,7 +3,7 @@ try:
 except ImportError:
     from functions import *
 
-def divideGenomesByPhylogroup(alignedSnpsPath, phylogroupsPath, metadataPath, outDir="./"):
+def divideGenomesByPhylogroup(alignedSnpsPath, phylogroupsPath, metadataPath, outDir="./", debug=False):
     genomeNameToSnpGenome = {}
     phylogroupToGenomes = {}
     with open(alignedSnpsPath) as file:
@@ -11,29 +11,29 @@ def divideGenomesByPhylogroup(alignedSnpsPath, phylogroupsPath, metadataPath, ou
         for line in file:
             line = line.strip()
             if line[0] == ">":
-                nextKey = line[1:]
+                nextKey = re.sub("\..+","",line[1:])
             else:
                 genomeNameToSnpGenome[nextKey] = line
-    print(genomeNameToSnpGenome.keys())
+    # if debug:
+    #     print(genomeNameToSnpGenome.keys())
     with open(phylogroupsPath) as file:
         for line in file:
             cols = line.strip().split()
             if len(cols) == 0:
                 continue
+                
             # populate phylogroupToGenomes
+            cols[0] = re.sub("\..+","",cols[0]) # remove any extensions
             if not cols[1] in phylogroupToGenomes.keys():
-                phylogroupToGenomes[cols[1]] = {"scaffold_" + re.sub("scaffold_|.fasta.vcf","", cols[0]) + ".fasta.vcf"}
+                phylogroupToGenomes[cols[1]] = {cols[0]}
             else:
-                phylogroupToGenomes[cols[1]].add("scaffold_" + re.sub("scaffold_|.fasta.vcf","", cols[0]) + ".fasta.vcf")
+                phylogroupToGenomes[cols[1]].add(cols[0])
+
     
-    genomeToMetadata = {}
-    with open(metadataPath) as file:
-        for line in file:
-            line = line.strip()
-            cols = line.split("\t")
-            if len(cols) < 2:
-                continue
-            genomeToMetadata[cols[0]] = cols[1:]
+    genomeToMetadata = readMetaDataAsDict(metadataPath)
+    if debug:
+        print("keys_", set(genomeToMetadata.keys()))#.difference(phylogroupToGenomes['G']))
+        print("dif2",phylogroupToGenomes['G'])#.difference(set(genomeToMetadata.keys())))
     print("phylogroup, mastCount, bovCom, avianCom, APEC")
     for phylogroup in phylogroupToGenomes.keys():
         mastCount = 0
@@ -41,6 +41,8 @@ def divideGenomesByPhylogroup(alignedSnpsPath, phylogroupsPath, metadataPath, ou
         avianCom = 0
         APEC = 0
         for genomeName in phylogroupToGenomes[phylogroup]:
+            if debug:
+                print(genomeName)
             if genomeToMetadata[genomeName][0] == "cow":
                 if genomeToMetadata[genomeName][1] == "pathogen":
                     mastCount += 1
@@ -52,16 +54,14 @@ def divideGenomesByPhylogroup(alignedSnpsPath, phylogroupsPath, metadataPath, ou
                 else:
                     avianCom += 1
         print(phylogroup, mastCount, bovCom, avianCom, APEC)
-        try:
-            with open(outDir + "Phylogroup" + phylogroup +".afa", "w") as outFile:
-                for genomeName in phylogroupToGenomes[phylogroup]:
-                    try:
-                        outFile.write(">" + genomeName.strip() + "\n" + genomeNameToSnpGenome[genomeName].strip() + "\n")
-                    except KeyError:
-                        print(genomeName)
-                        print("genome not found")
-        except: # if the phylogroup is unsure
-            pass
+        if "/" in phylogroup:
+            continue
+        with open(outDir + "Phylogroup" + phylogroup +".afa", "w") as outFile:
+            for genomeName in phylogroupToGenomes[phylogroup]:
+                try:
+                    outFile.write(">" + genomeName.strip() + "\n" + genomeNameToSnpGenome[genomeName].strip() + "\n")
+                except KeyError:
+                    print(genomeName,"genome failed to align will be ignored")
 
     with open(outDir + "phylogroupDistribution.tsv", "w") as file:
         file.write("Phylogroup\tnumberOfGenomesInThePhylogroup\tgenomeNames\n")

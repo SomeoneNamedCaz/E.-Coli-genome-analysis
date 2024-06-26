@@ -15,11 +15,11 @@ def loadIndexes(indexFilePath):
             snpLocations.append(line)
     return snpLocations
     
-def calcNumGenomesWithoutGene(refGenes, pathOfAnnotatedScaffolds):
+def calcNumGenomesWithoutGene(refGenes, pathOfAnnotatedScaffolds, metadataPath):
     numGenomesWithoutGene = {} # [gene][metadata] = numberOfgenes
     scaffoldFutures = []
     scaffoldGenesFromAllFiles = {}
-    pool = ThreadPoolExecutor(8)
+    pool = ProcessPoolExecutor(8)
     for file in glob(pathOfAnnotatedScaffolds):
         
         def x(file):
@@ -27,7 +27,8 @@ def calcNumGenomesWithoutGene(refGenes, pathOfAnnotatedScaffolds):
         
         scaffoldFutures.append((file, pool.submit(x, file)))
         
-    genomeNameToMetadata = readMetaDataAsDict(DATA_DIR + "metaDataForMetaCatsWithExtraMastitis.tsv")
+    genomeNameToMetadata = readMetaDataAsDict(metadataPath)
+    print("keys",genomeNameToMetadata.keys())
     for gene in refGenes:
         numGenomesWithoutGene[gene.name] = {}
         for metadataList in genomeNameToMetadata.values():
@@ -88,7 +89,7 @@ def getMutationType(gene, snp,indexesOfFrameShiftSnps):
     return snp.mutationType, oldAA, newAA
 
 
-def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaDataFilePath, annotatedRefGenomePath, removeSparce=True, outputDirectory="./", pathOfAnnotatedScaffolds="/Users/cazcullimore/dev/data/k-12RefGenomeAnalysisFiles/AllAssemblies/allBovineScaffolds/*.gbk", ignoreAnnotations=False):
+def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaDataFilePath, annotatedRefGenomePath, removeSparce=True, outputDirectory="./", pathOfAnnotatedScaffolds="/Users/cazcullimore/dev/data/k-12RefGenomeAnalysisFiles/AllAssemblies/allBovineScaffolds/*.gbk", ignoreAnnotations=False, debug=False):
     if outputDirectory[-1] != "/":
         outputDirectory += "/" #TODO:fix for windows
     # add FrameShiftedToIndexPath
@@ -98,10 +99,9 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
     numSnpsToIncludeForMostSigSnps = 10_000_000
     percentSNPsCutOffForPercentSNPs = 0.02 # for pathway analysis
     snpLocations = loadIndexes(snpIndexesPath)
-    significanceLevel = 0.05/len(snpLocations)  # can change initial P-value cutoff if wanted
-    #1# for manhattan plot
+    significanceLevel = 0.05/len(snpLocations)  # can change initial P-value cutoff if wanted for manhattan plot
     # outputs
-    snpsFileWithCorrectPosPath = outputDirectory + "sigSNPsByPosOnRefGenome" + suffix + ".txt" # created and then read
+    
     snpsSortedBySignificancePath = outputDirectory + "snpsSortedBySignificanceWithGenesContainingThem" + suffix # created (extension added later)
     numSnpsWithinGenesPath = outputDirectory + "numSnpsWithinGenes"
     
@@ -212,8 +212,6 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
 
 
     namesOfGroups = findNamesOfGroups(megaCatsFile)#{'animal': ['chicken','cow'], 'pathogenicity':['commensal', "pathogen"], 'deadliness':['commensal', "pathogen"]}
-    print(namesOfGroups)
-    print("\n\n\n\n\n")
 
     snpsForCurrentMetadataCategory = []
 
@@ -221,9 +219,9 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
         raise Exception("indexes are probably off")
     
     
-
-    print("length of snp genomes", len(getFirstDataLine(snpGenomePath).strip()))
-    print("length of snp indexes",len(snpLocations))
+    if debug:
+        print("length of snp genomes", len(getFirstDataLine(snpGenomePath).strip()))
+        print("length of snp indexes",len(snpLocations))
 
     snpsFileWithCorrectPosData = []
     with open(megaCatsFile) as file:
@@ -259,7 +257,7 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
     if not ignoreAnnotations:
         numGenomesWithoutGene = calcNumGenomesWithoutGene(genes,pathOfAnnotatedScaffolds)
     else:
-        numGenomesWithoutGene = {gene: "unknown" for gene in genes.keys()}
+        numGenomesWithoutGene = {gene.name: "unknown" for gene in genes}
     print(numGenomesWithoutGene)
     print(time.time()-t1)
 

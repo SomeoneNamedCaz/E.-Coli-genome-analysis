@@ -2,8 +2,27 @@
  313 	 7.46929814283269 	 0.0238815503170304 	 2 	 Y 	 group1(19_A,_18_C,_1_T)|group2(8_A,_30_C,_1_T) 	severity-rMsaInput.txt-rResultChisqTest.txt"""
 import sys
 from scipy import stats
-def calculateMegaCatsStats(alignedFilePath, metadataFilePath, outFilePath, matchMegacatsStyle=True):
-    charToIndex = {"A": 0, "T": 1, "C": 2, "G": 3, "-": 4, "N": 5}
+import re
+import multiprocessing as mp
+from functions import *
+from time import time
+
+charToIndex = {"A": 0, "T": 1, "C": 2, "G": 3, "-": 4, "N": 5}
+def poolFunc(args):
+    charIndex = args[0]
+    alignedGenomes = args[1]
+    numPossibleClassValues = args[2]
+    seqNameToMetaDataType = args[3]
+    nucCounters = args[4]
+    # print("in func")
+    for name in alignedGenomes.keys():
+        for i in range(numPossibleClassValues):
+            nameOfNucCounter = seqNameToMetaDataType[name][i]
+            nucCounters[nameOfNucCounter][charIndex][charToIndex[alignedGenomes[name][charIndex]]] += 1
+    # print("outfunc")
+
+def calculateMegaCatsStats(alignedFilePath, metadataFilePath, outFilePath, numProcesses=16, matchMegacatsStyle=True, debug=False):
+    
     indexToChar = {}
     for k,v in charToIndex.items():
         indexToChar[v] = k
@@ -27,7 +46,7 @@ def calculateMegaCatsStats(alignedFilePath, metadataFilePath, outFilePath, match
     
     classNames = []
     possibleClassValues = [] # maybe do a separate class for this
-    seqNameToMetaDataType = {}
+    seqNameToMetaDataType = readMetaDataAsDict(metadataFilePath)
     with open(metadataFilePath) as metadataFile: # process metadata
         isFirstLine = True
         for line in metadataFile:
@@ -39,15 +58,14 @@ def calculateMegaCatsStats(alignedFilePath, metadataFilePath, outFilePath, match
                     possibleClassValues.append(set())
                 isFirstLine = False
             else:
-                seqNameToMetaDataType[cols[0]] = cols[1:]
-                print(cols)
                 for colIndex in range(len(cols[1:])):
                     # try:
                     possibleClassValues[colIndex].add(cols[colIndex + 1])
                     # except TypeError:
                     #     possibleClassValues[colIndex] = {}
     
-    print(possibleClassValues)
+    if debug:
+        print(possibleClassValues)
     
     def makeNucCounters(lengthOfSeqs, optionsForMetadataCategories):
         dictOfNucCounters = {}
@@ -62,17 +80,29 @@ def calculateMegaCatsStats(alignedFilePath, metadataFilePath, outFilePath, match
         return dictOfNucCounters
     
     nucCounters = {}
+    alignedGenomes = {}
+    argsForCountNucs = []
+    lineLen = -1
+    t1 = time()
     with (open(alignedFilePath) as alignedFile):
     
         nameOfSeq = "unknown"
         isFirstDataLine = True
         for line in alignedFile:
             line = line.strip()
+            if line == "":
+                continue
             if line[0] == ">":
-                print("before", line[1:])
-                nameOfSeq = line[1:]
-                print("nameOfSeq", nameOfSeq)
+                
+                if debug:
+                    print("before", line[1:])
+                nameOfSeq = re.sub("\..+","",line[1:])
+                
+                if debug:
+                    print("nameOfSeq", nameOfSeq)
             else:
+                if nameOfSeq == "genomeWithoutAnySnps":
+                    continue
                 if isFirstDataLine:
                     isFirstDataLine = False
                     nucCounters = makeNucCounters(len(line), possibleClassValues)
@@ -85,8 +115,8 @@ def calculateMegaCatsStats(alignedFilePath, metadataFilePath, outFilePath, match
                     for char in line:
                         charIndex += 1
                         nucCounters[nameOfNucCounter].nucCounts[charIndex][charToIndex[char]] += 1
-    
-    
+    if debug:
+        print("took",time()-t1)
     
     with open(outFilePath, "w") as outFile:
         headerInfo = "Position	Chi-Square Score	P-Value	Degrees of Freedom	Sparse Table (i.e. <5 of any residue)	Residue Diversity Between Groups	metaDataCategory"
@@ -99,7 +129,7 @@ def calculateMegaCatsStats(alignedFilePath, metadataFilePath, outFilePath, match
                     
                         nucCountersOfOneMetadataCatagory.append(nucCounters[option])
             except KeyError:
-                print("WARNING: couldn't find genomes with metadata for a catergory")
+                print("WARNING: couldn't find genomes with metadata for a category")
                 continue
             # TODO: only works with two options in each metadatacatagory
             for nucIndex in range(len(nucCountersOfOneMetadataCatagory[0].nucCounts)):

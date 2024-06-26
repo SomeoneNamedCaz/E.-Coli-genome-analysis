@@ -34,7 +34,8 @@ def readInSnps(listOfFiles, refGenomeSeq, ignoreRefSeq):
                 cols = line.split("\t")
                 if line == "" or line[0] == "#":  # or cols[7][5:] == "SUBSTITUTE":
                     continue
-                
+                if len(cols) < 5:
+                    print("not enough cols check for corrupte vcf file in gsAlign outputs:",filePath)
                 location = int(cols[1]) - 1
                 refNucs = cols[3]
                 altNucs = cols[4]

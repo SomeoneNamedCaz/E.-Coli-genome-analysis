@@ -700,7 +700,7 @@ def readMetaDataAsDict(metadataFilePath):
             if isFirstLine:
                 isFirstLine = False
             else:
-                seqNameToMetaDataType[cols[0]] = cols[1:]
+                seqNameToMetaDataType[re.sub("\..+","",cols[0])] = cols[1:]
     return seqNameToMetaDataType
 
 def readIndexes(snpIndexesPath):

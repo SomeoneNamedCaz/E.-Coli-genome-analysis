@@ -75,7 +75,7 @@ def reconstructNormalAlignment(snpGenomePath, snpIndexesPath, refGenomePath, out
             outFile.write(">" + key + "\n")
             outFile.write(alignedGenomes[key] + "\n")
             if len(refSeq) + sum([index != int(index) for index in snpIndexes]) != len(alignedGenomes[key]):
-                print("PROBLEM ALIGNED GENOME IS THE WRONG SIZE")
+                print("PROBLEM: ALIGNED GENOME IS THE WRONG SIZE")
 
 if __name__ == "__main__":
     if len(sys.argv) < 5:
