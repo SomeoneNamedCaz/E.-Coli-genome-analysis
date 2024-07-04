@@ -255,7 +255,7 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
     contigs = getContigs(annotatedRefGenomePath)
     genes = getGenesOnContigsByPosition(annotatedRefGenomePath, contigs)
     if not ignoreAnnotations:
-        numGenomesWithoutGene = calcNumGenomesWithoutGene(genes,pathOfAnnotatedScaffolds)
+        numGenomesWithoutGene = calcNumGenomesWithoutGene(genes,pathOfAnnotatedScaffolds, metaDataFilePath)
     else:
         numGenomesWithoutGene = {gene.name: "unknown" for gene in genes}
     print(numGenomesWithoutGene)

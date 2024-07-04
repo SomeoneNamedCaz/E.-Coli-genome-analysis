@@ -21,9 +21,9 @@ def addRefNucs(seq, indexes, referenceSeq):
     alignedSeq.append(nucsToInsert)
     return "".join(alignedSeq)
 
-def reconstructNormalAlignmentHelper(refSeq, snpIndexes, alignedSnps, ):
+def reconstructNormalAlignmentHelper(refSeq, snpIndexes, alignedSnps, numThreads=16):
     
-    numThreads = 1
+
     t1 = time()
     pool = ProcessPoolExecutor(numThreads)
     futures = []
@@ -40,7 +40,7 @@ def reconstructNormalAlignmentHelper(refSeq, snpIndexes, alignedSnps, ):
     
     
     return alignedGenomes
-def reconstructNormalAlignment(snpGenomePath, snpIndexesPath, refGenomePath, outputPath):
+def reconstructNormalAlignment(snpGenomePath, snpIndexesPath, refGenomePath, outputPath, numThreads=16):
     print("snp genome path", snpGenomePath)
     print("index path", snpIndexesPath)
     print("refGenomePath", refGenomePath)
@@ -65,7 +65,7 @@ def reconstructNormalAlignment(snpGenomePath, snpIndexesPath, refGenomePath, out
             else:
                 alignedSnps[fileName] = line
 
-    alignedGenomes = reconstructNormalAlignmentHelper(refSeq, snpIndexes, alignedSnps)
+    alignedGenomes = reconstructNormalAlignmentHelper(refSeq, snpIndexes, alignedSnps, numThreads=numThreads)
     
     if not os.path.exists("/".join(outputPath.split("/")[:-1])) and outputPath.count("/") != 0:
         os.mkdir("/".join(outputPath.split("/")[:-1]))

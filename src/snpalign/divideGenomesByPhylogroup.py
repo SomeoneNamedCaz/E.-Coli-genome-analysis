@@ -18,16 +18,15 @@ def divideGenomesByPhylogroup(alignedSnpsPath, phylogroupsPath, metadataPath, ou
     #     print(genomeNameToSnpGenome.keys())
     with open(phylogroupsPath) as file:
         for line in file:
-            cols = line.strip().split()
-            if len(cols) == 0:
+            cols = line.strip().split("\t")
+            if len(cols) < 2:
                 continue
-                
             # populate phylogroupToGenomes
             cols[0] = re.sub("\..+","",cols[0]) # remove any extensions
             if not cols[1] in phylogroupToGenomes.keys():
-                phylogroupToGenomes[cols[1]] = {cols[0]}
+                phylogroupToGenomes[cols[-1]] = {cols[0]}
             else:
-                phylogroupToGenomes[cols[1]].add(cols[0])
+                phylogroupToGenomes[cols[-1]].add(cols[0])
 
     
     genomeToMetadata = readMetaDataAsDict(metadataPath)

@@ -113,9 +113,9 @@ def alignSnps(lengthOfLongestSnpGenome, longestRefNucSeq, filesToSnpGenome, file
 def alignVCFSnpsHelper(gsAlignFiles, refSeq, thingsToSkip=[], numSnpsRequired=10, debug = False, ignoreRefSeq=True, includeGenomeWithoutAnySnps=True):
     snps = readInSnps(gsAlignFiles, refSeq, ignoreRefSeq=ignoreRefSeq)
     snps.sort(key=lambda a: a[1])
-    # if debug:
-    for snp in snps[:1_00]:
-        print(snp) #to test
+    if debug:
+        for snp in snps[:1_00]:
+            print(snp) #to test
 
     allFiles = gsAlignFiles
 
@@ -123,7 +123,7 @@ def alignVCFSnpsHelper(gsAlignFiles, refSeq, thingsToSkip=[], numSnpsRequired=10
         allFiles[index] = allFiles[index].split("/")[-1]
     allFiles = set(allFiles)
     if includeGenomeWithoutAnySnps:
-        allFiles.add("genomeWithoutAnySnps")
+        allFiles.add(nameOfRefSnpGenome)
     filesWithoutSNP = set(copy.deepcopy(allFiles))
 
     removedFiles = set()
