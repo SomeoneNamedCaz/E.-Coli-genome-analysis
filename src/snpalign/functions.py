@@ -11,7 +11,7 @@ from copy import deepcopy
 
 DATA_DIR = "/Users/cazcullimore/dev/data/"
 TEST_DATA_DIR = "/Users/cazcullimore/dev/ericksonLabCode/tests/testFiles/"
-nameOfRefSnpGenome = "refSnps"
+nameOfRefSnpGenome = "genomeWithoutAnySnps"
 
 def reverseComplement(seq):
     reverseComplementSeq = ''  # string of complementary nucleotides
@@ -82,6 +82,8 @@ class SNP:
         self.location = location
         self.oldNuc = oldNuc
         self.newNuc = newNuc
+        self.oldAA = "n/a"
+        self.newAA = "n/a"
         self.allNucCounts = allNucCounts
         self.pValue = pValue
         self.typeOfMutation = typeOfMutation

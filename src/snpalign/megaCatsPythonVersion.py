@@ -135,14 +135,12 @@ def calculateMegaCatsStats(alignedFilePath, metadataFilePath, outFilePath, numPr
     with open(outFilePath, "w") as outFile:
         headerInfo = "Position	Chi-Square Score	P-Value	Degrees of Freedom	Sparse Table (i.e. <5 of any residue)	Residue Diversity Between Groups	metaDataCategory"
         outFile.write(headerInfo + "\n")
-        print(possibleClassValues)
         for metaDataCategoryIndex in range(len(possibleClassValues) - 1, -1, -1):
             
             nucCountersOfOneMetadataCatagory = []
             metaDataCategoryName = classNames[metaDataCategoryIndex]
             try:
                 for option in possibleClassValues[metaDataCategoryIndex]:
-                    print("option",option)
                     
                     # ["A","T","C","G"]
                     nucCountersOfOneMetadataCatagory.append(nucCounters[option + metaDataCategoryName])

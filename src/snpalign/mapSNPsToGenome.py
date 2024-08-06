@@ -122,6 +122,9 @@ def writeMappedSnps( namePrefix,refGenomePath,snpAlignPath, snpIndexPath,sigSnps
 			blacklist.add("scaffold_k-12.fasta.vcf")
 		allgenomesWithoutK12M12 = {re.sub("\..+", "",key): value for key, value
 		                           in alignedGenomes.items() if key not in blacklist}
+		whitelist = {"scaffold_ESC_JB5131AA_AS.fasta.vcf", "scaffold_M12_closed_genome.fasta.vcf"}
+		allgenomesWithoutK12M12 = {re.sub("\..+", "", key): value for key, value
+		                           in alignedGenomes.items() if key in whitelist}
 		longestGenomeNameLen = max([len(name + metadata[name][1]) for name in allgenomesWithoutK12M12.keys()])
 		shift = longestGenomeNameLen * " "
 		

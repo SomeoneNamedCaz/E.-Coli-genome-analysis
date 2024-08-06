@@ -14,18 +14,21 @@ def loadIndexes(indexFilePath):
             line = round((line - int(line)) * 1000 + int(line))
             snpLocations.append(line)
     return snpLocations
+
+def getGenesFromFile(file):
+    return getGenesOnContigs(file, getContigs(file))
     
-def calcNumGenomesWithoutGene(refGenes, pathOfAnnotatedScaffolds, metadataPath):
+def calcNumGenomesWithoutGene(refGenes, pathOfAnnotatedScaffolds, metadataPath, numThreads=16):
+    # TODO: this needs to be a list of dicts in case of duplicate metadat names or maybe a dict of dicts
     numGenomesWithoutGene = {} # [gene][metadata] = numberOfgenes
     scaffoldFutures = []
     scaffoldGenesFromAllFiles = {}
-    pool = ProcessPoolExecutor(8)
+    pool = ProcessPoolExecutor(numThreads)
     for file in glob(pathOfAnnotatedScaffolds):
         
-        def x(file):
-            return getGenesOnContigs(file, getContigs(file))
         
-        scaffoldFutures.append((file, pool.submit(x, file)))
+        
+        scaffoldFutures.append((file, pool.submit(getGenesFromFile, file)))
         
     genomeNameToMetadata = readMetaDataAsDict(metadataPath)
     print("keys",genomeNameToMetadata.keys())
@@ -37,7 +40,7 @@ def calcNumGenomesWithoutGene(refGenes, pathOfAnnotatedScaffolds, metadataPath):
     
     for future in scaffoldFutures:
         genomeName = future[0].split("/")[-1]
-        metadataForGenome = genomeNameToMetadata[re.sub("(.fasta)|(.gbk)","",genomeName) + ".fasta.vcf"]
+        metadataForGenome = genomeNameToMetadata[re.sub("\..+","",genomeName)]
         scafGenes = future[1].result()
         for gene in refGenes:
                 try:
@@ -89,7 +92,7 @@ def getMutationType(gene, snp,indexesOfFrameShiftSnps):
     return snp.mutationType, oldAA, newAA
 
 
-def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaDataFilePath, annotatedRefGenomePath, removeSparce=True, outputDirectory="./", pathOfAnnotatedScaffolds="/Users/cazcullimore/dev/data/k-12RefGenomeAnalysisFiles/AllAssemblies/allBovineScaffolds/*.gbk", ignoreAnnotations=False, debug=False):
+def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaDataFilePath, annotatedRefGenomePath, removeSparce=True, outputDirectory="./", pathOfAnnotatedScaffolds="/Users/cazcullimore/dev/data/k-12RefGenomeAnalysisFiles/AllAssemblies/allBovineScaffolds/*.gbk", ignoreAnnotations=False, debug=False, numThreads=16):
     if outputDirectory[-1] != "/":
         outputDirectory += "/" #TODO:fix for windows
     # add FrameShiftedToIndexPath
@@ -134,7 +137,7 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
                 frameShiftPositions = []
                 
                 for snp in gene.snps:
-                    snp.mutationType = getMutationType(gene, snp, indexesOfFrameShiftSnps=indexesOfFrameShiftSnps)[0]
+                    snp.mutationType, snp.oldAA, snp.newAA = getMutationType(gene, snp, indexesOfFrameShiftSnps=indexesOfFrameShiftSnps)
                     if snp.mutationType == SNP.mutationType.frameShift:
                         frameShiftPositions.append(str(snp.location))
                         nonSynSnpPositions.append(str(snp.location))
@@ -194,6 +197,9 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
                 except KeyError:
                     pass
                 if snp.mutationType != SNP.mutationType.silent:
+                    mutationInfo = snp.mutationType.name
+                    if snp.mutationType == SNP.mutationType.misSense:
+                        mutationInfo = snp.oldAA + str(snpIndexInGene // 3 + 1) + snp.newAA
                     outFile.write(
                         str(snp.pValue) + "\t" +
                         snp.nameOfGroupMoreLikelyToHaveSNP + "\t" +
@@ -204,7 +210,7 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
                         genomesWithoutGene + "\t" +
                         snp.oldNuc + "\t" +
                         str(nonSnpGroupDistribution) + "\t" +
-                        str(snp.mutationType.name) + "\t" +
+                        str(mutationInfo) + "\t" +
                         str(snp.geneContainingSnp.startPos) + "\t" +
                         snp.geneContainingSnp.sequence + "\n")
 
@@ -255,7 +261,7 @@ def parseMegaCatsFile(megaCatsFile, snpGenomePath, snpIndexesPath, suffix, metaD
     contigs = getContigs(annotatedRefGenomePath)
     genes = getGenesOnContigsByPosition(annotatedRefGenomePath, contigs)
     if not ignoreAnnotations:
-        numGenomesWithoutGene = calcNumGenomesWithoutGene(genes,pathOfAnnotatedScaffolds, metaDataFilePath)
+        numGenomesWithoutGene = calcNumGenomesWithoutGene(genes,pathOfAnnotatedScaffolds, metaDataFilePath,numThreads=numThreads)
     else:
         numGenomesWithoutGene = {gene.name: "unknown" for gene in genes}
     print(numGenomesWithoutGene)

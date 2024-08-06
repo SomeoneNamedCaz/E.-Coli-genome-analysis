@@ -1,7 +1,7 @@
 import os.path
 import re
 import sys
-
+# MIKFSATLLATLIAASVNAATVDLRIMETTDLHSNMMDFDYYKDTATEKFGLVRTASLINDARNEVKNSVLVDNGDLIQGSPLADYISAKGLKAGDVHPVYKALNTLDYTVGTLGNHEFNYGLDYLKNALAGAKFPYVNANVIDARTKQPMFTPYLIKDTEVVDKDGKKQTLKIGYIGVPPQIMGWDKANLSGKVTVNDITETVRKYVPEMREKGADVVVVLAHSGLSADPYKVMAENSVYYLSEIPGVNAIMFGHAHAVFPGKDFADIEGADIAKGTLNGVPAVMPGMWGDHLGVVDLQLSNNSGKWQVTQAKAEARPIYDIANKKSLAAEDSKLVETLKADHDATRQFVSKPIGKSADNMYSYLALVQDDPTVQVVNNAQKAYVEHYIQGDPDLAKLPVLSAAAPFKVGGRKNDPASYVEVEKGQLTFRNAADLYLYPNTLIVVKASGKEVKEWLECSAGQFNQIDPDNTKPQSLINWDGFRTYNFDVIDGVNYQIDVTQPARYDGECQMVNANAERIKNLTFNGKPIDPNAMFLVATNNYRAYGGKFAGTGDSHIAFASPDENRSVLAAWIADESKRAGEIHPAADNNWRLAPIAGDKKLDIRFETSPSDKAAAFIKEKGQYPMNKVATDDIGFAIYQVDLSK
 try:
 	from .alignVcfSnps import *
 	from .megaCatsPythonVersion import *
@@ -36,7 +36,7 @@ def printHelp():
 		"usage: --ref <reference genbank file> --metadata <tsv with metadata categories> --fastas <fasta genome assembly files>\n"
 		"optional: --name: add a name to the output file names\n"
 		"          --outdir: specify the output directory\n"
-		"          --" + skipProkkaFlag + ": don't annotate genomes. This checks to ensure that the snp found isn't a result of a large deletion or gap in the fasta\n"
+		"          --" + skipProkkaFlag + ": don't annotate genomes. Annotation will allow snpalign to make sure  that the snp found isn't a result of a large deletion or gap in the fasta\n"
 		"          --" + readAnnotationFlag + ": read annotation files, must be genbank files (i.e. .gb, .gbk, .gbff). This replaces the prokka annotation step\n"
 		"          --" + skipStatsFlag + ": don't run the chi-squared stats just make the snp alignment\n"
 		"          --" + runPhylogroupFlag + ": divide genomes by clermont phylogroup and run statistics for each phylogroup\n"
@@ -137,7 +137,7 @@ def parseArgs():
 			args["fastas"] = glob(args["fastas"][0]) # if it was in quotes and so it didn't expand automatically
 		elif os.path.isdir(args["fastas"][0]):
 			# .fasta,.fas,.fa,.fna,.ffn,.faa,.mpfa,.frn
-			args["fastas"] = glob(os.path.join(args["fastas"][0], "*.f*")) + glob(os.path.join(args["fastas"][0], "*.mpfa"))
+			args["fastas"] = glob(os.path.join(args["fastas"][0], "*.fasta")) + glob(os.path.join(args["fastas"][0], "*.fa")) #+ glob(os.path.join(args["fastas"][0], "*.mpfa"))
 		else:
 			print("hi")
 		
@@ -154,7 +154,7 @@ def runGWASOnAssemblies(args):
 		namePrefix = args["name"]
 		skipProkka = args[skipProkkaFlag]
 		metadataFilePath = args["metadata"]
-		threads = args["threads"]
+		threads = int(args["threads"])
 		
 		if args["outdir"][-1] != "/": # TODO: test for windows compatability
 			args["outdir"] += "/"
@@ -173,8 +173,9 @@ def runGWASOnAssemblies(args):
 					print("WARNING: ref genome has more than one contig, some unexpected behavior might occur") #TODO: implement support for ref genome files with more than one contig
 				i += 1
 		
-		pathOfAnnotatedScaffolds = "/".join(pathToAssemblies[0].split("/")[:-1]) + "/annotations/*.gbk" # automatically generated
-		
+		pathOfAnnotatedScaffolds = args["outdir"] + "/annotations/*.gbk" # automatically generated
+		if not args[readAnnotationFlag] is None:
+			pathOfAnnotatedScaffolds = args[readAnnotationFlag]
 		
 		if type(pathToAssemblies) == str:
 			assemblyDir = "/".join(pathToAssemblies.split("/")[:-1])
@@ -195,16 +196,16 @@ def runGWASOnAssemblies(args):
 		
 		normalAlignPath = args["outdir"] + namePrefix + "normalAlign.afa"
 		
-		redoSingleAlignment = True
+		redoSingleAlignment = False
 		reAlignSnps = False
 		reRunEzclermont = args[runPhylogroupFlag]
 		divideByPhylogroup = args[runPhylogroupFlag]
 		runMegaCats = not args[skipStatsFlag]
-		reDoMegaCatsStats = True
+		reDoMegaCatsStats = False
 		runNormalAlignment = False
 		
 		typesOfSnpsToSkipDuringAlignment = []#["INSERT", "DELETE"]
-		pool = mp.Pool(int(threads))
+		pool = mp.Pool(threads)
 		
 		commandsToRun = []
 		if redoSingleAlignment:
@@ -225,15 +226,16 @@ def runGWASOnAssemblies(args):
 			indexPrefix = re.sub("\..+","",pathToRefGenomeFasta.split("/")[-1])
 			subprocess.run(["conda", "run", "bwt_index", pathToRefGenomeFasta, indexPrefix])
 			print("took", time() - t1, "to run ragtag")
-			if not skipProkka:
+			if not skipProkka and args[readAnnotationFlag] is None:
 				subprocess.run(["mkdir", args["outdir"] + "annotations"])
 			listToAlign = pathToAssemblies
 			if doRagtag:
-				listToAlign = glob(os.path.join(scaffoldDir,"*"))
+				listToAlign = glob(os.path.join(scaffoldDir,"*fasta"))
+			print("will align: ", listToAlign)
 			for assemblyPath in listToAlign:
 				commandArgs = ["conda", "run", "gsAlign", "-i", indexPrefix, "-q", assemblyPath, "-o", re.sub("\..+","",os.path.basename(assemblyPath))]
 				commandsToRun.append(commandArgs) # removing threads for now since threads will be part of the pool "-t", threads,
-				if not skipProkka:
+				if not skipProkka and args[readAnnotationFlag] is None:
 					commandsToRun.append(["conda", "run", "prokka",
 					               assemblyPath,
 					                "--cpus", "1", "--force", "--centre", "X", "--compliant", "--prefix",
@@ -242,9 +244,9 @@ def runGWASOnAssemblies(args):
 			t1 = time()
 			print("started gsalign and prokka")
 			pool.map(silentSubprocessRun, commandsToRun)
-			print("took", time()-t1, "to run prokka")
-			subprocess.run(["mv"] + glob("*.vcf") + [os.path.join(args[
-				                                                      "outdir"], "gsAlignOutputs")])
+			print("took", time()-t1, "to run prokka and/or gsalign")
+			subprocess.run(["mv"] + glob("*.vcf") + [os.path.join(args["outdir"], "gsAlignOutputs")])
+			
 		if reRunEzclermont:  # can do this parallel too
 			commandsToRun = []
 			for assemblyPath in pathToAssemblies:
@@ -272,19 +274,19 @@ def runGWASOnAssemblies(args):
 			if reDoMegaCatsStats:
 				print("calculating chi-squared stats")
 				t1 = time()
-				import cProfile, pstats, io
-				from pstats import SortKey
-				pr = cProfile.Profile()
-				pr.enable()
+				# import cProfile, pstats, io
+				# from pstats import SortKey
+				# pr = cProfile.Profile()
+				# pr.enable()
 				
 				calculateMegaCatsStats(alignedFilePath=snpAlignPath, metadataFilePath=metadataFilePath, outFilePath=megaCatStatsFilePath,
 				                       matchMegacatsStyle=True)
-				pr.disable()
-				s = io.StringIO()
-				sortby = SortKey.CUMULATIVE
-				ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-				ps.print_stats()
-				print(s.getvalue())
+				# pr.disable()
+				# s = io.StringIO()
+				# sortby = SortKey.CUMULATIVE
+				# ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+				# ps.print_stats()
+				# print(s.getvalue())
 				
 				for phylogroupSnpFile in glob(phylogroupSnpAlignPrefix + "Phylogroup*.afa"):
 					fileName = phylogroupSnpFile.split("/")[-1]
@@ -302,7 +304,7 @@ def runGWASOnAssemblies(args):
 			parseMegaCatsFile(megaCatsFile=megaCatStatsFilePath, snpGenomePath=snpAlignPath, snpIndexesPath=snpIndexPath,
 			                  suffix=namePrefix, metaDataFilePath=metadataFilePath, annotatedRefGenomePath=pathToRefGenomeGb,
 			                  removeSparce=True, outputDirectory=parsedMegaCatsFilePath,
-			                  pathOfAnnotatedScaffolds=pathOfAnnotatedScaffolds, ignoreAnnotations=skipProkka)
+			                  pathOfAnnotatedScaffolds=pathOfAnnotatedScaffolds, ignoreAnnotations=skipProkka, numThreads=threads)
 			
 			for phylogroupSnpFile in glob(phylogroupSnpAlignPrefix + "Phylogroup*.afa"):
 				fileName = re.sub("\.afa", "",phylogroupSnpFile.split("/")[-1])
@@ -313,7 +315,7 @@ def runGWASOnAssemblies(args):
 					                  suffix=namePrefix + fileName, metaDataFilePath=metadataFilePath,
 					                  annotatedRefGenomePath=pathToRefGenomeGb,
 					                  removeSparce=True, outputDirectory=parsedMegaCatsFilePath,
-					                  pathOfAnnotatedScaffolds=pathOfAnnotatedScaffolds, ignoreAnnotations=skipProkka)
+					                  pathOfAnnotatedScaffolds=pathOfAnnotatedScaffolds, ignoreAnnotations=skipProkka, numThreads=threads)
 				except Exception as e:
 					print(e)
 					print("no genomes in phylogroup from:", fileName)
@@ -338,6 +340,7 @@ def runGWASOnAssemblies(args):
 		if runNormalAlignment:
 			reconstructNormalAlignment(snpGenomePath=snpAlignPath, snpIndexesPath=snpIndexPath, refGenomePath=pathToRefGenomeGb, outputPath=normalAlignPath,numThreads=threads)
 	except KeyboardInterrupt or Exception as e:
+		# global e
 		threwError = True
 	# cleanup
 	pool.close()
@@ -350,9 +353,11 @@ def runGWASOnAssemblies(args):
 			if ".fasta" == file.split(".")[-1]:
 				continue  # don't remove fastas
 			os.remove(file)
-	for file in glob(re.sub('\.fasta', "", pathToRefGenomeFasta) + ".*"):
+	print("files to remove", glob(re.sub('\.fasta$', ".*", pathToRefGenomeFasta)))
+	for file in glob(re.sub('\.fasta$', ".*", pathToRefGenomeFasta)):
+		print(file)
 		os.remove(file)
-	if threwError: # to allow cleanup first
+	if threwError: # pass along error after clean up
 		raise e
 def silentSubprocessRun(argsToRun):
 	print("started:", argsToRun)
