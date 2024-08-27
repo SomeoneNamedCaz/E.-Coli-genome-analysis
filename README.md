@@ -6,12 +6,11 @@ It used to require MegaCats to do the chi-square test but now does that internal
 
 
 ## Installation
-TBD: not on conda yet
-
-    usage:
-      snpalign [options] <*.fasta>
-    --ref: specifies the path to the genome you want to be used as a reference genome. This needs to be a genbank file with a single contig 
-    --name: specifies a name to add to each output file
+    usage: 
+        snpalign [options] --ref <reference genbank file> --metadata <tsv with metadata categories> --fastas <fasta genome assembly files
+    optional:
+            --name: specifies a name to add to each output file
+            --outdir: specify the output directory
     
 
 ## scripts to download from NCBI
