@@ -81,7 +81,7 @@ def parseArgs():
 	
 	idx = 0
 	if args[readAnnotationFlag][0] is None:
-		pass
+		args[readAnnotationFlag] = None
 	elif os.path.isdir(args[readAnnotationFlag][0]): # test this
 		args[readAnnotationFlag] = glob(os.path.join(args[readAnnotationFlag][0], "*.gb*"))
 	else:
@@ -196,7 +196,7 @@ def runGWASOnAssemblies(args):
 		
 		normalAlignPath = args["outdir"] + namePrefix + "normalAlign.afa"
 		
-		redoSingleAlignment = False
+		redoSingleAlignment = True
 		reAlignSnps = False
 		reRunEzclermont = args[runPhylogroupFlag]
 		divideByPhylogroup = args[runPhylogroupFlag]
@@ -226,7 +226,10 @@ def runGWASOnAssemblies(args):
 			indexPrefix = re.sub("\..+","",pathToRefGenomeFasta.split("/")[-1])
 			subprocess.run(["conda", "run", "bwt_index", pathToRefGenomeFasta, indexPrefix])
 			print("took", time() - t1, "to run ragtag")
+			print("args[readAnnotationFlag]", args[readAnnotationFlag], "args[readAnnotationFlag] is None",
+			      args[readAnnotationFlag] is None)
 			if not skipProkka and args[readAnnotationFlag] is None:
+				
 				subprocess.run(["mkdir", args["outdir"] + "annotations"])
 			listToAlign = pathToAssemblies
 			if doRagtag:
