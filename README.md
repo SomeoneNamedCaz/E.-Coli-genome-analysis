@@ -6,6 +6,8 @@ It used to require MegaCats to do the chi-square test but now does that internal
 
 
 ## Installation
+TBD: not on anaconda yet
+
     usage: 
         snpalign [options] --ref <reference genbank file> --metadata <tsv with metadata categories> --fastas <fasta genome assembly files
     optional:
