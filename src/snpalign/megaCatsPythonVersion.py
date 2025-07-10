@@ -4,7 +4,10 @@ import sys
 from scipy import stats
 import re
 import multiprocessing as mp
-from functions import *
+try:
+    from functions import *
+except ImportError:
+    from .functions import *
 from time import time
 
 charToIndex = {"A": 0, "T": 1, "C": 2, "G": 3, "-": 4, "N": 5}
