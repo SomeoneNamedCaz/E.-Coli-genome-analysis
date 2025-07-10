@@ -6,13 +6,22 @@ It used to require MegaCats to do the chi-square test but now does that internal
 
 
 ## Installation
-TBD: not on anaconda yet
+    git clone https://github.com/SomeoneNamedCaz/E.-Coli-genome-analysis.git
+    conda create -n snpAlign # make new conda env
+    conda activate snpAlign # activate
+    conda install python ragtag gsalign ezclermont prokka scipy # install reqs
+    cd E.-Coli-genome-analysis
+    pip install -e . # install snpalign
 
-    usage: 
-        snpalign [options] --ref <reference genbank file> --metadata <tsv with metadata categories> --fastas <fasta genome assembly files
-    optional:
-            --name: specifies a name to add to each output file
-            --outdir: specify the output directory
+## Usage
+    snpalign --ref <reference genbank file> --metadata <tsv with metadata categories> --fastas <fasta genome assembly files>
+    optional: --name: add a name to the output file names
+              --outdir: specify the output directory
+              --noprokka: don't annotate genomes. Annotation will allow snpalign to make sure  that the snp found isn't a result of a large deletion or gap in the fasta
+              --annotations: read annotation files, must be genbank files (i.e. .gb, .gbk, .gbff). This replaces the prokka annotation step
+              --nostats: don't run the chi-squared stats just make the snp alignment
+              --phylo: divide genomes by clermont phylogroup and run statistics for each phylogroup
+              --mapsnps: map snps to the reference genome to see where they line up relative to the genes in the reference genome
     
 
 ## scripts to download from NCBI
